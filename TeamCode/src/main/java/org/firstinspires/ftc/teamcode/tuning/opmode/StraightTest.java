@@ -1,26 +1,27 @@
-package org.firstinspires.ftc.teamcode.drive.opmode;
+package org.firstinspires.ftc.teamcode.opmode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.SampleMecanumDrive;
 
+/*
+ * This is a simple routine to test translational drive capabilities.
+ */
 @Config
 @Autonomous(group = "drive")
-public class ComplicatedStrafeTesting extends LinearOpMode {
-    public static Vector2d Vector_1 = new Vector2d(30, -30);
-    public static double heading = Math.toRadians(0);
+public class StraightTest extends LinearOpMode {
+    public static double DISTANCE = 60; // in
 
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
-                .strafeTo(Vector_1)
+                .forward(DISTANCE)
                 .build();
 
         waitForStart();
@@ -34,11 +35,6 @@ public class ComplicatedStrafeTesting extends LinearOpMode {
         telemetry.addData("finalY", poseEstimate.getY());
         telemetry.addData("finalHeading", poseEstimate.getHeading());
         telemetry.update();
-
-        drive.followTrajectory(
-                drive.trajectoryBuilder(trajectory.end(), true)
-                .strafeTo(new Vector2d(0, 0))
-                .build());
 
         while (!isStopRequested() && opModeIsActive()) ;
     }
