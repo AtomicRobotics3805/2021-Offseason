@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive;
+package org.firstinspires.ftc.teamcode.autonomous.compbot2020;
 
 import androidx.annotation.NonNull;
 
@@ -9,8 +9,8 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
-import com.acmerobotics.roadrunner.drive.TankDrive;
-import com.acmerobotics.roadrunner.followers.TankPIDVAFollower;
+import com.acmerobotics.roadrunner.drive.MecanumDrive;
+import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.profile.MotionProfile;
@@ -19,7 +19,7 @@ import com.acmerobotics.roadrunner.profile.MotionState;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
-import com.acmerobotics.roadrunner.trajectory.constraints.TankConstraints;
+import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -35,29 +35,33 @@ import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.BASE_CONSTRAINTS;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MOTOR_VELO_PID;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.BASE_CONSTRAINTS;
+import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.kA;
+import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.kV;
 
 /*
- * Simple tank drive hardware implementation for REV hardware.
+ * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
-public class SampleTankDrive extends TankDrive {
-    public static PIDCoefficients AXIAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients CROSS_TRACK_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+public class MecanumDrive2020 extends com.acmerobotics.roadrunner.drive.MecanumDrive {
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(10, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
+
+    public static double LATERAL_MULTIPLIER = 1.23;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
+
+    public static int POSE_HISTORY_LIMIT = 100;
 
     public enum Mode {
         IDLE,
@@ -77,15 +81,18 @@ public class SampleTankDrive extends TankDrive {
     private DriveConstraints constraints;
     private TrajectoryFollower follower;
 
-    private List<Pose2d> poseHistory;
+    private LinkedList<Pose2d> poseHistory;
 
-    private List<DcMotorEx> motors, leftMotors, rightMotors;
+    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
+    private List<DcMotorEx> motors;
     private BNO055IMU imu;
 
     private VoltageSensor batteryVoltageSensor;
 
-    public SampleTankDrive(HardwareMap hardwareMap) {
-        super(kV, kA, kStatic, TRACK_WIDTH);
+    private Pose2d lastPoseOnTurn;
+
+    public MecanumDrive2020(HardwareMap hardwareMap) {
+        super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
@@ -97,11 +104,11 @@ public class SampleTankDrive extends TankDrive {
         turnController = new PIDFController(HEADING_PID);
         turnController.setInputBounds(0, 2 * Math.PI);
 
-        constraints = new TankConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
-        follower = new TankPIDVAFollower(AXIAL_PID, CROSS_TRACK_PID,
+        constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
+        follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
 
-        poseHistory = new ArrayList<>();
+        poseHistory = new LinkedList<>();
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -121,15 +128,12 @@ public class SampleTankDrive extends TankDrive {
         // upward (normal to the floor) using a command like the following:
         // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
 
-        // add/remove motors depending on your robot (e.g., 6WD)
-        DcMotorEx leftFront = hardwareMap.get(DcMotorEx.class, "LF");
-        DcMotorEx leftRear = hardwareMap.get(DcMotorEx.class, "LR");
-        DcMotorEx rightRear = hardwareMap.get(DcMotorEx.class, "RR");
-        DcMotorEx rightFront = hardwareMap.get(DcMotorEx.class, "RF");
+        leftFront = hardwareMap.get(DcMotorEx.class, "LF");
+        leftRear = hardwareMap.get(DcMotorEx.class, "LB");
+        rightRear = hardwareMap.get(DcMotorEx.class, "RB");
+        rightFront = hardwareMap.get(DcMotorEx.class, "RF");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
-        leftMotors = Arrays.asList(leftFront, leftRear);
-        rightMotors = Arrays.asList(rightFront, rightRear);
 
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
@@ -169,6 +173,9 @@ public class SampleTankDrive extends TankDrive {
 
     public void turnAsync(double angle) {
         double heading = getPoseEstimate().getHeading();
+
+        lastPoseOnTurn = getPoseEstimate();
+
         turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
                 new MotionState(heading, 0, 0, 0),
                 new MotionState(heading + angle, 0, 0, 0),
@@ -176,6 +183,7 @@ public class SampleTankDrive extends TankDrive {
                 constraints.maxAngAccel,
                 constraints.maxAngJerk
         );
+
         turnStart = clock.seconds();
         mode = Mode.TURN;
     }
@@ -186,7 +194,6 @@ public class SampleTankDrive extends TankDrive {
     }
 
     public void followTrajectoryAsync(Trajectory trajectory) {
-        poseHistory.clear();
         follower.followTrajectory(trajectory);
         mode = Mode.FOLLOW_TRAJECTORY;
     }
@@ -215,6 +222,10 @@ public class SampleTankDrive extends TankDrive {
         Pose2d lastError = getLastError();
 
         poseHistory.add(currentPose);
+
+        if (POSE_HISTORY_LIMIT > -1 && poseHistory.size() > POSE_HISTORY_LIMIT) {
+            poseHistory.removeFirst();
+        }
 
         TelemetryPacket packet = new TelemetryPacket();
         Canvas fieldOverlay = packet.fieldOverlay();
@@ -250,6 +261,11 @@ public class SampleTankDrive extends TankDrive {
                         0, 0, targetAlpha
                 )));
 
+                Pose2d newPose = lastPoseOnTurn.copy(lastPoseOnTurn.getX(), lastPoseOnTurn.getY(), targetState.getX());
+
+                fieldOverlay.setStroke("#4CAF50");
+                DashboardUtil.drawRobot(fieldOverlay, newPose);
+
                 if (t >= turnProfile.duration()) {
                     mode = Mode.IDLE;
                     setDriveSignal(new DriveSignal());
@@ -263,14 +279,13 @@ public class SampleTankDrive extends TankDrive {
                 Trajectory trajectory = follower.getTrajectory();
 
                 fieldOverlay.setStrokeWidth(1);
-                fieldOverlay.setStroke("4CAF50");
+                fieldOverlay.setStroke("#4CAF50");
                 DashboardUtil.drawSampledPath(fieldOverlay, trajectory.getPath());
                 double t = follower.elapsedTime();
                 DashboardUtil.drawRobot(fieldOverlay, trajectory.get(t));
 
                 fieldOverlay.setStroke("#3F51B5");
                 DashboardUtil.drawPoseHistory(fieldOverlay, poseHistory);
-                DashboardUtil.drawRobot(fieldOverlay, currentPose);
 
                 if (!follower.isFollowing()) {
                     mode = Mode.IDLE;
@@ -280,6 +295,9 @@ public class SampleTankDrive extends TankDrive {
                 break;
             }
         }
+
+        fieldOverlay.setStroke("#3F51B5");
+        DashboardUtil.drawRobot(fieldOverlay, currentPose);
 
         dashboard.sendTelemetryPacket(packet);
     }
@@ -339,35 +357,28 @@ public class SampleTankDrive extends TankDrive {
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
-        double leftSum = 0, rightSum = 0;
-        for (DcMotorEx leftMotor : leftMotors) {
-            leftSum += encoderTicksToInches(leftMotor.getCurrentPosition());
+        List<Double> wheelPositions = new ArrayList<>();
+        for (DcMotorEx motor : motors) {
+            wheelPositions.add(encoderTicksToInches(motor.getCurrentPosition()));
         }
-        for (DcMotorEx rightMotor : rightMotors) {
-            rightSum += encoderTicksToInches(rightMotor.getCurrentPosition());
-        }
-        return Arrays.asList(leftSum / leftMotors.size(), rightSum / rightMotors.size());
-    }
-
-    public List<Double> getWheelVelocities() {
-        double leftSum = 0, rightSum = 0;
-        for (DcMotorEx leftMotor : leftMotors) {
-            leftSum += encoderTicksToInches(leftMotor.getVelocity());
-        }
-        for (DcMotorEx rightMotor : rightMotors) {
-            rightSum += encoderTicksToInches(rightMotor.getVelocity());
-        }
-        return Arrays.asList(leftSum / leftMotors.size(), rightSum / rightMotors.size());
+        return wheelPositions;
     }
 
     @Override
-    public void setMotorPowers(double v, double v1) {
-        for (DcMotorEx leftMotor : leftMotors) {
-            leftMotor.setPower(v);
+    public List<Double> getWheelVelocities() {
+        List<Double> wheelVelocities = new ArrayList<>();
+        for (DcMotorEx motor : motors) {
+            wheelVelocities.add(encoderTicksToInches(motor.getVelocity()));
         }
-        for (DcMotorEx rightMotor : rightMotors) {
-            rightMotor.setPower(v1);
-        }
+        return wheelVelocities;
+    }
+
+    @Override
+    public void setMotorPowers(double v, double v1, double v2, double v3) {
+        leftFront.setPower(v);
+        leftRear.setPower(v1);
+        rightRear.setPower(v2);
+        rightFront.setPower(v3);
     }
 
     @Override
