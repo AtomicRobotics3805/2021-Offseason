@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autonomous.compbot2020;
+package org.firstinspires.ftc.teamcode.hardware.compbot2020;
 
 import androidx.annotation.NonNull;
 
@@ -30,6 +30,8 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.tuning.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.tuning.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
@@ -51,7 +53,7 @@ import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.kV;
  * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
-public class MecanumDrive2020 extends com.acmerobotics.roadrunner.drive.MecanumDrive {
+public class MecanumDrive2020 extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(10, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
 
@@ -157,6 +159,7 @@ public class MecanumDrive2020 extends com.acmerobotics.roadrunner.drive.MecanumD
 
         // FINISHED: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+        setLocalizer(new TwoWheelTrackingLocalizer2020(hardwareMap, this));
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
