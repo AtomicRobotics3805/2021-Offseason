@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autonomous.compbot2020;
+package org.firstinspires.ftc.teamcode.hardware.compbot2020;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
  * and op modes themselves.
  */
 @Config
-public class DriveConstants {
+public class DriveConstants2020 {
 
     /*
      * These are motor constants that should be listed online for your motors.

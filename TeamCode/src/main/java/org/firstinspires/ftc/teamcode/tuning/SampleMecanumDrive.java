@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.tuning;
 
 import androidx.annotation.NonNull;
 
@@ -38,14 +38,14 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.DriveConstants.BASE_CONSTRAINTS;
-import static org.firstinspires.ftc.teamcode.DriveConstants.MOTOR_VELO_PID;
-import static org.firstinspires.ftc.teamcode.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.DriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.DriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.DriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.DriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.BASE_CONSTRAINTS;
+import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.kA;
+import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.kV;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
@@ -72,7 +72,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     private FtcDashboard dashboard;
     private NanoClock clock;
 
-    private Mode mode;
+    private SampleMecanumDrive.Mode mode;
 
     private PIDFController turnController;
     private MotionProfile turnProfile;
@@ -99,7 +99,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         clock = NanoClock.system();
 
-        mode = Mode.IDLE;
+        mode = SampleMecanumDrive.Mode.IDLE;
 
         turnController = new PIDFController(HEADING_PID);
         turnController.setInputBounds(0, 2 * Math.PI);
@@ -157,6 +157,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         // FINISHED: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+        setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -185,7 +186,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         );
 
         turnStart = clock.seconds();
-        mode = Mode.TURN;
+        mode = SampleMecanumDrive.Mode.TURN;
     }
 
     public void turn(double angle) {
@@ -195,7 +196,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public void followTrajectoryAsync(Trajectory trajectory) {
         follower.followTrajectory(trajectory);
-        mode = Mode.FOLLOW_TRAJECTORY;
+        mode = SampleMecanumDrive.Mode.FOLLOW_TRAJECTORY;
     }
 
     public void followTrajectory(Trajectory trajectory) {
@@ -267,7 +268,7 @@ public class SampleMecanumDrive extends MecanumDrive {
                 DashboardUtil.drawRobot(fieldOverlay, newPose);
 
                 if (t >= turnProfile.duration()) {
-                    mode = Mode.IDLE;
+                    mode = SampleMecanumDrive.Mode.IDLE;
                     setDriveSignal(new DriveSignal());
                 }
 
@@ -288,7 +289,7 @@ public class SampleMecanumDrive extends MecanumDrive {
                 DashboardUtil.drawPoseHistory(fieldOverlay, poseHistory);
 
                 if (!follower.isFollowing()) {
-                    mode = Mode.IDLE;
+                    mode = SampleMecanumDrive.Mode.IDLE;
                     setDriveSignal(new DriveSignal());
                 }
 
@@ -309,7 +310,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 
     public boolean isBusy() {
-        return mode != Mode.IDLE;
+        return mode != SampleMecanumDrive.Mode.IDLE;
     }
 
     public void setMode(DcMotor.RunMode runMode) {
