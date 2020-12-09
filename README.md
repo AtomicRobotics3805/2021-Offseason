@@ -40,8 +40,16 @@ Note that the online documentation is an "evergreen" document that is constantly
 ### Javadoc Reference Material
 The Javadoc reference documentation for the FTC SDK is now available online.  Click on the following link to view the FTC SDK Javadoc documentation as a live website:
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[FTC Javadoc Documentation](https://first-tech-challenge.github.io/FtcRobotController)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[FTC Javadoc Documentation](https://first-tech-challenge.github.io/FtcRobotController/doc/javadoc/index.html)
 
+<<<<<<< HEAD
+=======
+Documentation for the FTC SDK is also included with this repository.  There is a subfolder called "doc" which contains several subfolders:
+
+ * The folder "apk" contains the .apk files for the FTC Driver Station and FTC Robot Controller apps.
+ * The folder "javadoc" contains the JavaDoc user documentation for the FTC SDK.
+
+>>>>>>> c9300be (FtcRobotController v6.1)
 ### Online User Forum
 For technical questions regarding the Control System or the FTC SDK, please visit the FTC Technology forum:
 
@@ -56,6 +64,7 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
 
 # Release Information
 
+<<<<<<< HEAD
 ## Version 6.2 (20210218-074821)
 
 ### Enhancements
@@ -85,6 +94,8 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
 * Fixes issue where logcat would be spammed with InterruptedExceptions when stop is requested from the Driver Station (this behavior was accidentally introduced in v5.3). This change has no impact on functionality.
 * Fixes issue where the blocks editor fails to load if the name of any TeleOp opmode contains an apostrophe.
 
+=======
+>>>>>>> c9300be (FtcRobotController v6.1)
 ## Version 6.1 (20201209-113742)
 * Makes the scan button on the configuration screen update the list of Expansion Hubs connected via RS-485
     * Fixes [SkyStone issue #143](https://github.com/FIRST-Tech-Challenge/SkyStone/issues/143)
