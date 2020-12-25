@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode.teleop
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import org.firstinspires.ftc.teamcode.tuning.SampleMecanumDrive
 
+@TeleOp(name = "Competition OpMode")
 class OpMode : LinearOpMode() {
     @Throws(InterruptedException::class)
     override fun runOpMode() {
