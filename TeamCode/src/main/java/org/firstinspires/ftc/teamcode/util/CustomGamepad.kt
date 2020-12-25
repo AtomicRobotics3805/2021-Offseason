@@ -101,7 +101,7 @@ class CustomGamepad() {
     }
 }
 
-class Button() {
+class Button {
     var down = false
     var pressed = false
     var released = false
