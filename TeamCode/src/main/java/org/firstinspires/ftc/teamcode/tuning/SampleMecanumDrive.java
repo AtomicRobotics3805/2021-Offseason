@@ -157,7 +157,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         // FINISHED: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-        setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
+        setLocalizer(new CustomTwoWheelLocalizer(hardwareMap, this));
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -385,5 +385,10 @@ public class SampleMecanumDrive extends MecanumDrive {
     @Override
     public double getRawExternalHeading() {
         return imu.getAngularOrientation().firstAngle;
+    }
+
+    @Override
+    public Double getExternalHeadingVelocity() {
+        return (double) imu.getAngularVelocity().zRotationRate;
     }
 }
