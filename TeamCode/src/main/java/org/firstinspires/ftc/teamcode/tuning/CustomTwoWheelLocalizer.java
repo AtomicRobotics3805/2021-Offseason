@@ -2,14 +2,11 @@ package org.firstinspires.ftc.teamcode.tuning;
 
 import androidx.annotation.NonNull;
 
-import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.TwoTrackingWheelLocalizer;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.hardware.compbot2020.MecanumDrive2020;
-import org.firstinspires.ftc.teamcode.tuning.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 import java.util.Arrays;
@@ -35,7 +32,7 @@ import java.util.List;
  *    \--------------/
  *
  */
-public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
+public class LocalizerTwoTrackingWheel extends TwoTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 2400;
     public static double WHEEL_RADIUS = 1.5; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
@@ -53,7 +50,7 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
 
     private SampleMecanumDrive drive;
 
-    public TwoWheelTrackingLocalizer(HardwareMap hardwareMap, SampleMecanumDrive drive) {
+    public LocalizerTwoTrackingWheel(HardwareMap hardwareMap, SampleMecanumDrive drive) {
         super(Arrays.asList(
                 new Pose2d(PARALLEL_X, PARALLEL_Y, 0),
                 new Pose2d(PERPENDICULAR_X, PERPENDICULAR_Y, Math.toRadians(90))
@@ -74,6 +71,11 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
     @Override
     public double getHeading() {
         return drive.getRawExternalHeading();
+    }
+
+    @Override
+    public Double getHeadingVelocity() {
+        return drive.getExternalHeadingVelocity();
     }
 
     @NonNull
