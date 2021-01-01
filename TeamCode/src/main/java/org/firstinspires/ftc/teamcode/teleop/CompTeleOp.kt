@@ -9,8 +9,8 @@ class CompTeleOp : BasicTeleOp() {
 
     @Throws(InterruptedException::class)
     override fun runOpMode() {
-        val drive = SampleMecanumDrive(hardwareMap)
-        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
+        drive = SampleMecanumDrive(hardwareMap)
+        drive?.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
         waitForStart()
 
         while (opModeIsActive()) {
