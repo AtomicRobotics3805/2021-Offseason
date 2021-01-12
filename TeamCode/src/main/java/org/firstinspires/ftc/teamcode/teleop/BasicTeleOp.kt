@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.teleop
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.tuning.SampleMecanumDrive
+import org.firstinspires.ftc.teamcode.hardware.compbot.CompMecanumDrive
 
 /*
     Contains simple functionality that will likely be reused in future competitions
@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.tuning.SampleMecanumDrive
 @TeleOp(name = "Competition OpMode")
 abstract class BasicTeleOp : LinearOpMode() {
 
-    var drive: SampleMecanumDrive? = null
+    var drive: CompMecanumDrive? = null
 
     private val speedController = SpeedController(TeleOpConstants.speeds)
 

@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
  * and op modes themselves.
  */
 @Config
-public class DriveConstants2021 {
+public class CompDriveConstants {
 
     /*
      * These are motor constants that should be listed online for your motors.
