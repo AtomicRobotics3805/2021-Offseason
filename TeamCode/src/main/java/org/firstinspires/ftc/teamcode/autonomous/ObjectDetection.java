@@ -3,13 +3,13 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import org.firstinspires.ftc.teamcode.hardware.compbot.CompMecanumDrive;
 
 public class ObjectDetection {
-    enum StackSize {
+    public enum StackSize {
         NONE,
         ONE,
         FOUR
     }
 
-    public StackSize detect(CompMecanumDrive drive) {
+    public static StackSize detect(CompMecanumDrive drive) {
         StackSize stackSize = null;
         return stackSize;
     }
