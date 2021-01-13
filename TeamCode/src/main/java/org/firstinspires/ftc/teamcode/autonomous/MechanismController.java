@@ -2,12 +2,20 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import org.firstinspires.ftc.teamcode.hardware.compbot.CompMecanumDrive;
 
-public class IntakeShooter {
+public class MechanismController {
 
     private CompMecanumDrive drive;
 
-    public IntakeShooter(CompMecanumDrive drive) {
+    public MechanismController(CompMecanumDrive drive) {
         this.drive = drive;
+    }
+
+    public void grabGoal() {
+
+    }
+
+    public void dropGoal() {
+
     }
 
     public void startIntake() {

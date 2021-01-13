@@ -6,9 +6,24 @@ import org.firstinspires.ftc.teamcode.hardware.compbot.CompMecanumDrive
 
 class CompAutonomous : LinearOpMode() {
 
-    var drive: CompMecanumDrive? = null;
+    private var drive: CompMecanumDrive? = null
+    private var mechanismController: MechanismController? = null
+
+    private var stackSize = ObjectDetection.StackSize.NONE;
+
 
     override fun runOpMode() {
+        drive = CompMecanumDrive(hardwareMap)
         drive?.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
+
+        mechanismController = MechanismController(drive)
+
+        stackSize = ObjectDetection.detect(drive)
+
+        followPath()
+    }
+
+    fun followPath() {
+
     }
 }
