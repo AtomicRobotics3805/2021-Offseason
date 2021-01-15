@@ -33,4 +33,12 @@ public class MechanismController {
     public void stopShooter() {
 
     }
+
+    public void shootRing() {
+        shootRing(false);
+    }
+
+    public void shootRing(boolean pause) {
+
+    }
 }
