@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.util.ElapsedTime
@@ -7,7 +8,8 @@ import org.firstinspires.ftc.teamcode.autonomous.ObjectDetection
 import org.firstinspires.ftc.teamcode.autonomous.PathManager
 import org.firstinspires.ftc.teamcode.hardware.compbot.CompMecanumDrive
 
-class CompAutonomous : LinearOpMode() {
+@Autonomous(name="Blue Auto")
+class CompAutonomousBlue : LinearOpMode() {
     private var stackSize = ObjectDetection.StackSize.NONE
 
     private lateinit var drive: CompMecanumDrive
@@ -23,7 +25,7 @@ class CompAutonomous : LinearOpMode() {
 
         drive = CompMecanumDrive(hardwareMap)
         mech = MechanismController(drive)
-        pathManager = PathManager(drive, mech)
+        pathManager = PathManager(drive, mech, PathManager.Color.BLUE)
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
 
