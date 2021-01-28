@@ -3,13 +3,13 @@ package org.firstinspires.ftc.teamcode.autonomous
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.trajectory.Trajectory
-import org.firstinspires.ftc.teamcode.hardware.compbot.CompMecanumDrive
 import org.firstinspires.ftc.teamcode.util.Vector2d
 import org.firstinspires.ftc.teamcode.util.toRadians
 import org.firstinspires.ftc.teamcode.autonomous.ObjectDetection.*
+import org.firstinspires.ftc.teamcode.hardware.BaseMecanumDrive
 import kotlin.math.atan
 
-class PathManager (private var drive: CompMecanumDrive, private var mech: MechanismController, private val color: Color) {
+class PathManager (private var drive: BaseMecanumDrive, private var mech: MechanismController, private val color: Color) {
 
     private val startPose = Pose2d(-48.0, 48.0, 0.0.toRadians)
 

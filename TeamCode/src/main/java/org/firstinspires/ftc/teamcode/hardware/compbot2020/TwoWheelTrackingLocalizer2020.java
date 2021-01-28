@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.localization.TwoTrackingWheelLocalizer;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.hardware.BaseMecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
@@ -35,9 +36,9 @@ import java.util.List;
  *
  */
 public class TwoWheelTrackingLocalizer2020 extends TwoTrackingWheelLocalizer {
-    public static double TICKS_PER_REV = 2400;
-    public static double WHEEL_RADIUS = 1.5; // in
-    public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
+    public static double ticksPerRev = 2400;
+    public static double wheelRadius = 1.5; // in
+    public static double gearRatio = 1; // output (wheel) speed / input (encoder) speed
 
     public static double PARALLEL_X = -9; // X is the up and down direction
     public static double PARALLEL_Y = 6.25; // Y is the strafe direction
@@ -50,9 +51,9 @@ public class TwoWheelTrackingLocalizer2020 extends TwoTrackingWheelLocalizer {
     // Perpendicular is perpendicular to the forward axis
     private Encoder parallelEncoder, perpendicularEncoder;
 
-    private MecanumDrive2020 drive;
+    private BaseMecanumDrive drive;
 
-    public TwoWheelTrackingLocalizer2020(HardwareMap hardwareMap, MecanumDrive2020 drive) {
+    public TwoWheelTrackingLocalizer2020(HardwareMap hardwareMap, BaseMecanumDrive drive) {
         super(Arrays.asList(
                 new Pose2d(PARALLEL_X, PARALLEL_Y, 0),
                 new Pose2d(PERPENDICULAR_X, PERPENDICULAR_Y, Math.toRadians(90))
@@ -68,12 +69,12 @@ public class TwoWheelTrackingLocalizer2020 extends TwoTrackingWheelLocalizer {
     }
 
     public static double encoderTicksToInches(double ticks) {
-        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
+        return wheelRadius * 2 * Math.PI * gearRatio * ticks / ticksPerRev;
     }
 
     @Override
     public double getHeading() {
-        return drive.getRawExternalHeading();
+        return drive.getExternalHeading();
     }
 
     @NonNull

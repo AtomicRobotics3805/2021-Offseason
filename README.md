@@ -353,7 +353,7 @@ Version 5.5 requires Android Studio 4.0 or later.
     * Warning messages in a Blocks op mode are now visible by default.
 * Adds goBILDA 5201 and 5202 motors to Robot Configurator
 * Adds PIDF Annotation values to AndyMark, goBILDA and TETRIX motor configurations.
-    This has the effect of causing the RUN_USING_ENCODERS and RUN_TO_POSITION modes to use
+    This has the effect of causing the runUsingEncoderS and RUN_TO_POSITION modes to use
     PIDF vs PID closed loop control on these motors.  This should provide more responsive, yet stable, speed control.
     PIDF adds Feedforward control to the basic PID control loop.
     Feedforward is useful when controlling a motor's speed because it "anticipates" how much the control voltage

@@ -7,6 +7,8 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.hardware.BaseDriveConstants;
+import org.firstinspires.ftc.teamcode.tuning.DriveConstants;
 import org.firstinspires.ftc.teamcode.tuning.SampleMecanumDrive;
 
 @Config
@@ -14,10 +16,11 @@ import org.firstinspires.ftc.teamcode.tuning.SampleMecanumDrive;
 public class ComplicatedStrafeTesting extends LinearOpMode {
     public static Vector2d Vector_1 = new Vector2d(30, -30);
     public static double heading = Math.toRadians(0);
+    private final BaseDriveConstants driveConstants = new DriveConstants();
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, driveConstants);
 
         Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
                 .strafeTo(Vector_1)

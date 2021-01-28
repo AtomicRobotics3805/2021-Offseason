@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
-import org.firstinspires.ftc.teamcode.hardware.compbot.CompMecanumDrive;
+
+import org.firstinspires.ftc.teamcode.hardware.BaseMecanumDrive;
 
 public class MechanismController {
 
-    private CompMecanumDrive drive;
+    private BaseMecanumDrive drive;
 
-    public MechanismController(CompMecanumDrive drive) {
+    public MechanismController(BaseMecanumDrive drive) {
         this.drive = drive;
     }
 

@@ -13,14 +13,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.teamcode.hardware.BaseDriveConstants;
 import org.firstinspires.ftc.teamcode.tuning.DriveConstants;
 import org.firstinspires.ftc.teamcode.tuning.SampleMecanumDrive;
 
 import java.util.List;
-
-import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.MOTOR_VELO_PID;
-import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.kV;
 
 /*
  * This routine is designed to tune the PID coefficients used by the REV Expansion Hubs for closed-
@@ -33,7 +30,7 @@ import static org.firstinspires.ftc.teamcode.tuning.DriveConstants.kV;
  * a motion profile. Your job is to graph the velocity errors over time and adjust the PID
  * coefficients (note: the tuning variable will not appear until the op mode finishes initializing).
  * Once you've found a satisfactory set of gains, add them to the DriveConstants.java file under the
- * MOTOR_VELO_PID field.
+ * motorVeloPID field.
  *
  * Recommended tuning process:
  *
@@ -57,6 +54,8 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
     private SampleMecanumDrive drive;
 
+    private final BaseDriveConstants constants = new DriveConstants();
+
     enum Mode {
         DRIVER_MODE,
         TUNING_MODE
@@ -64,34 +63,33 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
     private Mode mode;
 
-    private double lastKp = MOTOR_VELO_PID.p;
-    private double lastKi = MOTOR_VELO_PID.i;
-    private double lastKd = MOTOR_VELO_PID.d;
-    private double lastKf = MOTOR_VELO_PID.f;
+    private double lastKp = constants.getMotorVeloPID().p;
+    private double lastKi = constants.getMotorVeloPID().i;
+    private double lastKd = constants.getMotorVeloPID().d;
+    private double lastKf = constants.getMotorVeloPID().f;
 
-    private static MotionProfile generateProfile(boolean movingForward) {
+    private MotionProfile generateProfile(boolean movingForward) {
         MotionState start = new MotionState(movingForward ? 0 : DISTANCE, 0, 0, 0);
         MotionState goal = new MotionState(movingForward ? DISTANCE : 0, 0, 0, 0);
         return MotionProfileGenerator.generateSimpleMotionProfile(start, goal,
-                DriveConstants.BASE_CONSTRAINTS.maxVel,
-                DriveConstants.BASE_CONSTRAINTS.maxAccel,
-                DriveConstants.BASE_CONSTRAINTS.maxJerk);
+                constants.getMaxVel(),
+                constants.getMaxAccel());
     }
 
     @Override
     public void runOpMode() {
-        if (!RUN_USING_ENCODER) {
+        if (!constants.isRunUsingEncoder()) {
             RobotLog.setGlobalErrorMsg("%s does not need to be run if the built-in motor velocity" +
                     "PID is not in use", getClass().getSimpleName());
         }
 
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
-        drive = new SampleMecanumDrive(hardwareMap);
+        drive = new SampleMecanumDrive(hardwareMap, constants);
 
         mode = Mode.TUNING_MODE;
 
-        drive.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
+        drive.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, constants.getMotorVeloPID());
 
         NanoClock clock = NanoClock.system();
 
@@ -129,7 +127,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
                     }
 
                     MotionState motionState = activeProfile.get(profileTime);
-                    double targetPower = kV * motionState.getV();
+                    double targetPower = constants.getKV() * motionState.getV();
                     drive.setDrivePower(new Pose2d(targetPower, 0, 0));
 
                     List<Double> velocities = drive.getWheelVelocities();
@@ -164,14 +162,14 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
                     break;
             }
 
-            if (lastKp != MOTOR_VELO_PID.p || lastKd != MOTOR_VELO_PID.d
-                    || lastKi != MOTOR_VELO_PID.i || lastKf != MOTOR_VELO_PID.f) {
-                drive.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
+            if (lastKp != constants.getMotorVeloPID().p || lastKd != constants.getMotorVeloPID().d
+                    || lastKi != constants.getMotorVeloPID().i || lastKf != constants.getMotorVeloPID().f) {
+                drive.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, constants.getMotorVeloPID());
 
-                lastKp = MOTOR_VELO_PID.p;
-                lastKi = MOTOR_VELO_PID.i;
-                lastKd = MOTOR_VELO_PID.d;
-                lastKf = MOTOR_VELO_PID.f;
+                lastKp = constants.getMotorVeloPID().p;
+                lastKi = constants.getMotorVeloPID().i;
+                lastKd = constants.getMotorVeloPID().d;
+                lastKf = constants.getMotorVeloPID().f;
             }
 
             telemetry.update();
