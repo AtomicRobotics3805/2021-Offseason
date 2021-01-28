@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardware.compbot2020;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 /*
@@ -65,10 +64,10 @@ public class DriveConstants2020 {
      * acceleration values are required, and the jerk values are optional (setting a jerk of 0.0
      * forces acceleration-limited profiling). All distance units are inches.
      */
-    public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            63.95, 30.0, 0.0,
-            Math.toRadians(180.0), Math.toRadians(180.0), 0.0
-    );
+    public static double MAX_VEL = 63.95;
+    public static double MAX_ACCEL = 30;
+    public static double MAX_ANG_VEL = Math.toRadians(60);
+    public static double MAX_ANG_ACCEL = Math.toRadians(60);
 
 
     public static double encoderTicksToInches(double ticks) {
