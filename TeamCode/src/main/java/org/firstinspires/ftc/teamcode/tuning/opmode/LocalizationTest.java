@@ -7,8 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.hardware.BaseDriveConstants;
-import org.firstinspires.ftc.teamcode.tuning.DriveConstants;
-import org.firstinspires.ftc.teamcode.tuning.SampleMecanumDrive;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
