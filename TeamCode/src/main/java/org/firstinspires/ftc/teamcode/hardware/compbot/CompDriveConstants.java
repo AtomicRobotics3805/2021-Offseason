@@ -64,10 +64,10 @@ public class CompDriveConstants {
      * acceleration values are required, and the jerk values are optional (setting a jerk of 0.0
      * forces acceleration-limited profiling). All distance units are inches.
      */
-        public static double MAX_VEL = 63.95;
-        public static double MAX_ACCEL = 30;
-        public static double MAX_ANG_VEL = Math.toRadians(60);
-        public static double MAX_ANG_ACCEL = Math.toRadians(60);
+    public static double MAX_VEL = 63.95;
+    public static double MAX_ACCEL = 30;
+    public static double MAX_ANG_VEL = Math.toRadians(60);
+    public static double MAX_ANG_ACCEL = Math.toRadians(60);
 
 
     public static double encoderTicksToInches(double ticks) {
