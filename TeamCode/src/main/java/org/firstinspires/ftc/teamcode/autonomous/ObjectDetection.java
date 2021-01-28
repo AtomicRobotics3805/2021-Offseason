@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
-import org.firstinspires.ftc.teamcode.hardware.compbot.CompMecanumDrive;
+import org.firstinspires.ftc.teamcode.hardware.BaseMecanumDrive;
 
 public class ObjectDetection {
     public enum StackSize {
@@ -9,7 +9,7 @@ public class ObjectDetection {
         FOUR
     }
 
-    public static StackSize detect(CompMecanumDrive drive) {
+    public static StackSize detect(BaseMecanumDrive drive) {
         StackSize stackSize = null;
         return stackSize;
     }

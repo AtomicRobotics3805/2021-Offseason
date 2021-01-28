@@ -1,15 +1,20 @@
 package org.firstinspires.ftc.teamcode.autonomous
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.util.ElapsedTime
-import org.firstinspires.ftc.teamcode.hardware.compbot.CompMecanumDrive
+import org.firstinspires.ftc.teamcode.hardware.BaseDriveConstants
+import org.firstinspires.ftc.teamcode.hardware.BaseMecanumDrive
+import org.firstinspires.ftc.teamcode.hardware.compbot.DriveConstantsComp
+import org.firstinspires.ftc.teamcode.hardware.compbot.MecanumDriveComp
 
 @Autonomous(name="Red Auto")
 class CompAutonomousRed : LinearOpMode() {
     private var stackSize = ObjectDetection.StackSize.NONE
 
-    private lateinit var drive: CompMecanumDrive
+    private lateinit var constants: BaseDriveConstants
+    private lateinit var drive: BaseMecanumDrive
     private lateinit var mech: MechanismController
     private lateinit var pathManager: PathManager
     private var runtime: ElapsedTime = ElapsedTime()
@@ -20,7 +25,8 @@ class CompAutonomousRed : LinearOpMode() {
         telemetry.addLine("Initializing")
         telemetry.update()
 
-        drive = CompMecanumDrive(hardwareMap)
+        constants = DriveConstantsComp()
+        drive = MecanumDriveComp(hardwareMap, constants)
         mech = MechanismController(drive)
         pathManager = PathManager(drive, mech, PathManager.Color.RED)
 
