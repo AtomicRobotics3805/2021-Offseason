@@ -104,7 +104,6 @@ class MecanumDrive2020(val hardwareMap: HardwareMap, val constants: BaseDriveCon
                 Mode.TURN -> Pose2d(0.0, 0.0, turnController.lastError)
                 Mode.IDLE -> Pose2d()
             }
-            throw AssertionError()
         }
 
     override fun update() {
@@ -230,11 +229,11 @@ class MecanumDrive2020(val hardwareMap: HardwareMap, val constants: BaseDriveCon
         return wheelVelocities
     }
 
-    override fun setMotorPowers(v: Double, v1: Double, v2: Double, v3: Double) {
-        leftFront.power = v
-        leftRear.power = v1
-        rightRear.power = v2
-        rightFront.power = v3
+    override fun setMotorPowers(frontLeft: Double, rearLeft: Double, rearRight: Double, frontRight: Double) {
+        leftFront.power = frontLeft
+        leftRear.power = rearLeft
+        rightRear.power = rearRight
+        rightFront.power = frontRight
     }
 
     override val rawExternalHeading: Double
@@ -283,7 +282,7 @@ class MecanumDrive2020(val hardwareMap: HardwareMap, val constants: BaseDriveCon
             setMode(RunMode.RUN_USING_ENCODER)
         }
         setZeroPowerBehavior(ZeroPowerBehavior.BRAKE)
-        if (constants.isRunUsingEncoder && constants.motorVeloPID != null) {
+        if (constants.isRunUsingEncoder) {
             setPIDFCoefficients(RunMode.RUN_USING_ENCODER, constants.motorVeloPID)
         }
 
