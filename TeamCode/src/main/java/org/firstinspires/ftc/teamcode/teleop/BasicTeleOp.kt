@@ -24,9 +24,9 @@ abstract class BasicTeleOp : LinearOpMode() {
 
     fun telemetryPosition() {
         val poseEstimate = drive.poseEstimate
-        telemetry.addData("x", poseEstimate.x ?: "Unknown")
-        telemetry.addData("y", poseEstimate.y ?: "Unknown")
-        telemetry.addData("heading", poseEstimate.heading ?: "Unknown")
+        telemetry.addData("x", poseEstimate.x)
+        telemetry.addData("y", poseEstimate.y)
+        telemetry.addData("heading", poseEstimate.heading)
         telemetry.update()
     }
 }
