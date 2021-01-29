@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.hardware.compbot.DriveConstantsComp
 import org.firstinspires.ftc.teamcode.hardware.compbot.MecanumDriveComp
 
 @TeleOp(name = "Competition OpMode")
-class CompTeleOp : BasicTeleOp() {
+class CompTeleOp : BasicTeleOp(listOf(0.5, 1.0)) {
 
     @Throws(InterruptedException::class)
     override fun runOpMode() {
@@ -16,7 +16,7 @@ class CompTeleOp : BasicTeleOp() {
         waitForStart()
 
         while (opModeIsActive()) {
-            driveMotors()
+            driveMotors(gamepad1)
             telemetryPosition()
         }
     }
