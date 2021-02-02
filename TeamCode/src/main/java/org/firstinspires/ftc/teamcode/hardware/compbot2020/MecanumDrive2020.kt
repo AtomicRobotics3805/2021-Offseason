@@ -26,6 +26,7 @@ import org.firstinspires.ftc.teamcode.hardware.BaseMecanumDrive
 import org.firstinspires.ftc.teamcode.util.DashboardUtil
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil
 import java.util.*
+import kotlin.math.abs
 
 /*
 * Simple mecanum drive hardware implementation for REV hardware.
@@ -97,7 +98,7 @@ class MecanumDrive2020(val hardwareMap: HardwareMap, val constants: BaseDriveCon
         waitForIdle()
     }
 
-    val lastError: Pose2d
+    private val lastError: Pose2d
         get() {
             return when (mode) {
                 Mode.FOLLOW_TRAJECTORY -> follower.lastError
@@ -200,10 +201,10 @@ class MecanumDrive2020(val hardwareMap: HardwareMap, val constants: BaseDriveCon
 
     override fun setWeightedDrivePower(drivePower: Pose2d) {
         var vel = drivePower
-        if ((Math.abs(drivePower.x) + Math.abs(drivePower.y)
-                        + Math.abs(drivePower.heading)) > 1) {
+        if ((abs(drivePower.x) + abs(drivePower.y)
+                        + abs(drivePower.heading)) > 1) {
             // re-normalize the powers according to the weights
-            val denom = VX_WEIGHT * Math.abs(drivePower.x) + VY_WEIGHT * Math.abs(drivePower.y) + OMEGA_WEIGHT * Math.abs(drivePower.heading)
+            val denom = VX_WEIGHT * abs(drivePower.x) + VY_WEIGHT * abs(drivePower.y) + OMEGA_WEIGHT * abs(drivePower.heading)
             vel = Pose2d(
                     VX_WEIGHT * drivePower.x,
                     VY_WEIGHT * drivePower.y,
@@ -221,7 +222,7 @@ class MecanumDrive2020(val hardwareMap: HardwareMap, val constants: BaseDriveCon
         return wheelPositions
     }
 
-    override fun getWheelVelocities(): List<Double>? {
+    override fun getWheelVelocities(): List<Double> {
         val wheelVelocities: MutableList<Double> = ArrayList()
         for (motor in motors) {
             wheelVelocities.add(constants.encoderTicksToInches(motor.velocity))
