@@ -23,6 +23,7 @@ import com.qualcomm.robotcore.hardware.DcMotor.RunMode
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior
 import org.firstinspires.ftc.teamcode.hardware.BaseDriveConstants
 import org.firstinspires.ftc.teamcode.hardware.BaseMecanumDrive
+import org.firstinspires.ftc.teamcode.hardware.compbot2020.ThreeWheelTrackingLocalizer2020
 import org.firstinspires.ftc.teamcode.util.DashboardUtil
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil
 import java.util.*
@@ -293,5 +294,6 @@ class SampleMecanumDrive(val hardwareMap: HardwareMap, val constants: BaseDriveC
 
         // FINISHED: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+        localizer = ThreeWheelTrackingLocalizer2020(hardwareMap)
     }
 }

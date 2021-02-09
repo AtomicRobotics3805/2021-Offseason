@@ -29,7 +29,7 @@ class DriveConstantsComp : BaseDriveConstants() {
      * If using the built-in motor velocity PID, update motorVeloPID with the tuned coefficients
      * from DriveVelocityPIDTuner.
      */
-    override val isRunUsingEncoder = true
+    override val isRunUsingEncoder = false
     override var motorVeloPID = PIDFCoefficients(0.0, 0.0, 0.0, 12.225)
 
     /*
