@@ -63,7 +63,7 @@ class DriveConstants : BaseDriveConstants() {
      * forces acceleration-limited profiling). All distance units are inches.
      */
     override val maxVel = 63.95
-    override val maxAccel = 30.0
+    override val maxAccel = 80.0
     override val maxAngVel = Math.toRadians(60.0)
     override val maxAngAccel = Math.toRadians(60.0)
 
