@@ -34,10 +34,12 @@ class CompAutonomousBlue : LinearOpMode() {
 
         stackSize = ObjectDetection.detect(drive)
 
-        telemetry.addLine("Ready")
-        telemetry.addData("Time Elapsed", runtime.seconds())
-        telemetry.addData("Detected Stack Size", stackSize.name)
-        telemetry.update()
+        while(!(opModeIsActive() || isStopRequested)) {
+            telemetry.addLine("Ready")
+            telemetry.addData("Time Elapsed", runtime.seconds())
+            telemetry.addData("Detected Stack Size", stackSize.name)
+            telemetry.update()
+        }
 
         waitForStart()
 
@@ -48,10 +50,10 @@ class CompAutonomousBlue : LinearOpMode() {
 
         pathManager.followPath(stackSize)
 
-        telemetry.addLine("Path Complete")
-        telemetry.addData("Time Elapsed", runtime.seconds())
-        telemetry.update()
-
-        while(opModeIsActive()) { }
+        while(opModeIsActive()) {
+            telemetry.addLine("Path Complete")
+            telemetry.addData("Time Elapsed", runtime.seconds())
+            telemetry.update()
+        }
     }
 }
