@@ -21,9 +21,12 @@ import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.*
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder
 import org.firstinspires.ftc.teamcode.hardware.BaseDriveConstants
 import org.firstinspires.ftc.teamcode.hardware.BaseMecanumDrive
 import org.firstinspires.ftc.teamcode.hardware.compbot2020.ThreeWheelTrackingLocalizer2020
+import org.firstinspires.ftc.teamcode.util.AxesSigns
+import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil
 import org.firstinspires.ftc.teamcode.util.DashboardUtil
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil
 import java.util.*
@@ -34,8 +37,8 @@ import kotlin.math.abs
 */
 @Config
 class SampleMecanumDrive(val hardwareMap: HardwareMap, val constants: BaseDriveConstants) : BaseMecanumDrive(constants) {
-    override var TRANSLATIONAL_PID = PIDCoefficients(10.0, 0.0, 0.0)
-    override var HEADING_PID = PIDCoefficients(8.0, 0.0, 0.0)
+    override var TRANSLATIONAL_PID = StandardTrackingWheelLocalizer.TRANSLATIONAL_PID
+    override var HEADING_PID = StandardTrackingWheelLocalizer.HEADING_PID
     override var VX_WEIGHT = 1.0
     override var VY_WEIGHT = 1.0
     override var OMEGA_WEIGHT = 1.0
@@ -269,7 +272,7 @@ class SampleMecanumDrive(val hardwareMap: HardwareMap, val constants: BaseDriveC
 
         // FINISHED: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:
-        // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+        BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN)
         leftFront = hardwareMap.get(DcMotorEx::class.java, "LF")
         leftRear = hardwareMap.get(DcMotorEx::class.java, "LB")
         rightRear = hardwareMap.get(DcMotorEx::class.java, "RB")
@@ -289,11 +292,11 @@ class SampleMecanumDrive(val hardwareMap: HardwareMap, val constants: BaseDriveC
         }
 
         // FINISHED: reverse any motors using DcMotor.setDirection()
-        rightRear.direction = DcMotorSimple.Direction.REVERSE
-        rightFront.direction = DcMotorSimple.Direction.REVERSE
+        leftRear.direction = DcMotorSimple.Direction.REVERSE
+        leftFront.direction = DcMotorSimple.Direction.REVERSE
 
         // FINISHED: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-        localizer = ThreeWheelTrackingLocalizer2020(hardwareMap)
+        localizer = StandardTrackingWheelLocalizer(hardwareMap)
     }
 }

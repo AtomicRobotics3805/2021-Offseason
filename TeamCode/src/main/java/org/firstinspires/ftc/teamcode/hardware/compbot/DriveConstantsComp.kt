@@ -41,8 +41,8 @@ class DriveConstantsComp : BaseDriveConstants() {
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from gearRatio.
      */
     override val wheelRadius = 2.0 // in
-    override val gearRatio = 1.053 // output (wheel) speed / input (motor) speed
-    override val trackWidth = 7.81 // in
+    override val gearRatio = 0.5 // output (wheel) speed / input (motor) speed
+    override val trackWidth = 23.0 // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -50,9 +50,9 @@ class DriveConstantsComp : BaseDriveConstants() {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    override val kV = 1.0 / rpmToVelocity(maxRPM)
-    override val kA = 0.0
-    override val kStatic = 0.0
+    override val kV = 0.0245
+    override val kA = 0.0035
+    override val kStatic = 0.01
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -62,12 +62,12 @@ class DriveConstantsComp : BaseDriveConstants() {
      * acceleration values are required, and the jerk values are optional (setting a jerk of 0.0
      * forces acceleration-limited profiling). All distance units are inches.
      */
-    override val maxVel = 63.95
-    override val maxAccel = 30.0
+    override val maxVel = 35.0
+    override val maxAccel = 45.0
     override val maxAngVel = Math.toRadians(60.0)
     override val maxAngAccel = Math.toRadians(60.0)
 
-    override val lateralMultiplier = 1.23
+    override val lateralMultiplier = 1.0
 
     override fun encoderTicksToInches(ticks: Double): Double {
         return wheelRadius * 2 * Math.PI * gearRatio * ticks / ticksPerRev

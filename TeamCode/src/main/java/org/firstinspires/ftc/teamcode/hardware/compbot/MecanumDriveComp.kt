@@ -33,7 +33,7 @@ import kotlin.math.abs
 */
 @Config
 class MecanumDriveComp(val hardwareMap: HardwareMap, val constants: BaseDriveConstants) : BaseMecanumDrive(constants) {
-    override var TRANSLATIONAL_PID = PIDCoefficients(10.0, 0.0, 0.0)
+    override var TRANSLATIONAL_PID = PIDCoefficients(8.0, 0.0, 0.0)
     override var HEADING_PID = PIDCoefficients(8.0, 0.0, 0.0)
     override var VX_WEIGHT = 1.0
     override var VY_WEIGHT = 1.0
@@ -293,5 +293,6 @@ class MecanumDriveComp(val hardwareMap: HardwareMap, val constants: BaseDriveCon
 
         // FINISHED: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+        localizer = LocalizerComp(hardwareMap)
     }
 }

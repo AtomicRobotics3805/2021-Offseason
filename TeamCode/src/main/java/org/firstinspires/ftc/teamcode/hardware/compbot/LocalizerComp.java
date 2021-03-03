@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.tuning;
+package org.firstinspires.ftc.teamcode.hardware.compbot;
 
 import androidx.annotation.NonNull;
 
@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 import java.util.Arrays;
@@ -27,7 +28,7 @@ import java.util.List;
  *
  */
 @Config
-public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer {
+public class LocalizerComp extends ThreeTrackingWheelLocalizer {
     public static double ticksPerRev = 2400;
     public static double wheelRadius = 1.5; // in
     public static double gearRatio = 1; // output (wheel) speed / input (encoder) speed
@@ -42,23 +43,12 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     public static double X_MULTIPLIER = 1.04;
     public static double Y_MULTIPLIER = 1.04;
 
-    public static double kV = 0.0245;
-    public static double kA = 0.0035;
-    public static double kStatic = 0.01;
-    
-    public static double maxAccel = 45;
-    public static double maxVel = 35;
-
-    public static double maxAngVel = Math.toRadians(60.0);
-    public static double maxAngAccel = Math.toRadians(60.0);
-    public static double trackWidth = 23.0;
-
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8.0, 0.0, 0.0);
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8.0, 0.0, 0.0);
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
-    public StandardTrackingWheelLocalizer(HardwareMap hardwareMap) {
+    public LocalizerComp(HardwareMap hardwareMap) {
         super(Arrays.asList(
                 new Pose2d(0, LATERAL_DISTANCE / 2, 0), // left
                 new Pose2d(0, -LATERAL_DISTANCE / 2, 0), // right
