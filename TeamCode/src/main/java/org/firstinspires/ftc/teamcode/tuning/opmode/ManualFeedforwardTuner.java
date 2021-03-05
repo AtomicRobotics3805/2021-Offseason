@@ -44,7 +44,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
     private FtcDashboard dashboard = FtcDashboard.getInstance();
 
     private SampleMecanumDrive drive;
-    private final BaseDriveConstants constants = new DriveConstants();
+    private final BaseDriveConstants constants = DriveConstants.INSTANCE;
 
     enum Mode {
         DRIVER_MODE,
@@ -57,13 +57,13 @@ public class ManualFeedforwardTuner extends LinearOpMode {
         MotionState start = new MotionState(movingForward ? 0 : DISTANCE, 0, 0, 0);
         MotionState goal = new MotionState(movingForward ? DISTANCE : 0, 0, 0, 0);
         return MotionProfileGenerator.generateSimpleMotionProfile(start, goal,
-                constants.getMaxVel(),
-                constants.getMaxAccel());
+                constants.maxVel,
+                constants.maxAccel);
     }
 
     @Override
     public void runOpMode() {
-        if (constants.isRunUsingEncoder()) {
+        if (constants.isRunUsingEncoder) {
             RobotLog.setGlobalErrorMsg("Feedforward constants usually don't need to be tuned " +
                     "when using the built-in drive motor velocity PID.");
         }
@@ -109,7 +109,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
                     }
 
                     MotionState motionState = activeProfile.get(profileTime);
-                    double targetPower = Kinematics.calculateMotorFeedforward(motionState.getV(), motionState.getA(), constants.getKV(), constants.getKA(), constants.getKStatic());
+                    double targetPower = Kinematics.calculateMotorFeedforward(motionState.getV(), motionState.getA(), constants.kV, constants.kA, constants.kStatic);
 
                     drive.setDrivePower(new Pose2d(targetPower, 0, 0));
                     drive.updatePoseEstimate();

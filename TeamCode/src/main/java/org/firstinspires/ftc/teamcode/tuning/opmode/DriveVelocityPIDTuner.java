@@ -54,7 +54,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
     private SampleMecanumDrive drive;
 
-    private final BaseDriveConstants constants = new DriveConstants();
+    private final BaseDriveConstants constants = DriveConstants.INSTANCE;
 
     enum Mode {
         DRIVER_MODE,
@@ -72,13 +72,13 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
         MotionState start = new MotionState(movingForward ? 0 : DISTANCE, 0, 0, 0);
         MotionState goal = new MotionState(movingForward ? DISTANCE : 0, 0, 0, 0);
         return MotionProfileGenerator.generateSimpleMotionProfile(start, goal,
-                constants.getMaxVel(),
-                constants.getMaxAccel());
+                constants.maxVel,
+                constants.maxAccel);
     }
 
     @Override
     public void runOpMode() {
-        if (!constants.isRunUsingEncoder()) {
+        if (!constants.isRunUsingEncoder) {
             RobotLog.setGlobalErrorMsg("%s does not need to be run if the built-in motor velocity" +
                     "PID is not in use", getClass().getSimpleName());
         }
@@ -127,7 +127,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
                     }
 
                     MotionState motionState = activeProfile.get(profileTime);
-                    double targetPower = constants.getKV() * motionState.getV();
+                    double targetPower = constants.kV * motionState.getV();
                     drive.setDrivePower(new Pose2d(targetPower, 0, 0));
 
                     List<Double> velocities = drive.getWheelVelocities();

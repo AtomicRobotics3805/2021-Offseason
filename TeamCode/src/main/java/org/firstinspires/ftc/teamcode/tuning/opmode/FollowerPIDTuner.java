@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.tuning.SampleMecanumDrive;
 @Autonomous(group = "drive")
 public class FollowerPIDTuner extends LinearOpMode {
     public static double DISTANCE = 48; // in
-    private final BaseDriveConstants constants = new DriveConstants();
+    private final BaseDriveConstants constants = DriveConstants.INSTANCE;
 
     @Override
     public void runOpMode() throws InterruptedException {

@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.tuning.SampleMecanumDrive;
 @Config
 @TeleOp(group = "drive")
 public class LocalizationTest extends LinearOpMode {
-    private final BaseDriveConstants constants = new DriveConstants();
+    private final BaseDriveConstants constants = DriveConstants.INSTANCE;
 
     @Override
     public void runOpMode() throws InterruptedException {

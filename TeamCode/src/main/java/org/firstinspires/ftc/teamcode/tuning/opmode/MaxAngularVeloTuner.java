@@ -32,7 +32,7 @@ public class MaxAngularVeloTuner extends LinearOpMode {
     private ElapsedTime timer;
     private double maxAngVelocity = 0.0;
 
-    private final BaseDriveConstants constants = new DriveConstants();
+    private final BaseDriveConstants constants = DriveConstants.INSTANCE;
 
     @Override
     public void runOpMode() throws InterruptedException {

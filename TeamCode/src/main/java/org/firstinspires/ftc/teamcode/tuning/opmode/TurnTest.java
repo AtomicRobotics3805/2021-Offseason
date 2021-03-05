@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.tuning.SampleMecanumDrive;
 @Autonomous(group = "drive")
 public class TurnTest extends LinearOpMode {
     public static double ANGLE = 90; // deg
-    private final BaseDriveConstants constants = new DriveConstants();
+    private final BaseDriveConstants constants = DriveConstants.INSTANCE;
 
     @Override
     public void runOpMode() throws InterruptedException {

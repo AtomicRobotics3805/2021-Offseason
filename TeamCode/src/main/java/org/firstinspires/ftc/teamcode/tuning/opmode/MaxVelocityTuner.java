@@ -32,7 +32,7 @@ public class MaxVelocityTuner extends LinearOpMode {
 
     private VoltageSensor batteryVoltageSensor;
 
-    private BaseDriveConstants constants = new DriveConstants();
+    private BaseDriveConstants constants = DriveConstants.INSTANCE;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -76,6 +76,6 @@ public class MaxVelocityTuner extends LinearOpMode {
     }
 
     private double veloInchesToTicks(double inchesPerSec) {
-        return inchesPerSec / (2 * Math.PI * constants.getWheelRadius()) / constants.getGearRatio() * constants.getTicksPerRev();
+        return inchesPerSec / (2 * Math.PI * constants.wheelRadius) / constants.gearRatio * constants.ticksPerRev;
     }
 }

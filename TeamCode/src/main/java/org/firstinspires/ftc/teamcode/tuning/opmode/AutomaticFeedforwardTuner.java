@@ -34,17 +34,11 @@ import java.util.List;
 public class AutomaticFeedforwardTuner extends LinearOpMode {
     public static final double MAX_POWER = 0.7;
     public static final double DISTANCE = 100; // in
-    private final BaseDriveConstants constants = null;
+    private final BaseDriveConstants constants = DriveConstants.INSTANCE;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        resolveableException.startResolutionForResult(
-                MainActivity.this,
-                Constants.REQUEST_CHECK_SETTINGS
-        );
-
-        if (savedInstanceState.containsKey(DriveConstants.last_known_location))
-        if (constants.isRunUsingEncoder()) {
+        if (constants.isRunUsingEncoder) {
             RobotLog.setGlobalErrorMsg("Feedforward constants usually don't need to be tuned " +
                     "when using the built-in drive motor velocity PID.");
         }
@@ -101,7 +95,7 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
         telemetry.addLine("Running...");
         telemetry.update();
 
-        double maxVel = constants.rpmToVelocity(constants.getMaxRPM());
+        double maxVel = constants.rpmToVelocity(constants.maxRPM);
         double finalVel = MAX_POWER * maxVel;
         double accel = (finalVel * finalVel) / (2.0 * DISTANCE);
         double rampTime = Math.sqrt(2.0 * DISTANCE / accel);

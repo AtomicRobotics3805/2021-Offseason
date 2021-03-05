@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.tuning.SampleMecanumDrive;
 @Autonomous(group = "drive")
 public class StrafeBackAndForth extends LinearOpMode {
     public static double DISTANCE = 60; // in
-    private final BaseDriveConstants constants = new DriveConstants();
+    private final BaseDriveConstants constants = DriveConstants.INSTANCE;
 
     @Override
     public void runOpMode() throws InterruptedException {

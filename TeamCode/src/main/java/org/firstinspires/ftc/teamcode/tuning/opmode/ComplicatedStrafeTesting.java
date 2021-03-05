@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.tuning.SampleMecanumDrive;
 public class ComplicatedStrafeTesting extends LinearOpMode {
     public static Vector2d Vector_1 = new Vector2d(30, -30);
     public static double heading = Math.toRadians(0);
-    private final BaseDriveConstants driveConstants = new DriveConstants();
+    private final BaseDriveConstants driveConstants = DriveConstants.INSTANCE;
 
     @Override
     public void runOpMode() throws InterruptedException {

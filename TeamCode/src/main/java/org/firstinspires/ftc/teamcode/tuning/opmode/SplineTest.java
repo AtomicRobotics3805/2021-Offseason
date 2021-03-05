@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.tuning.SampleMecanumDrive;
  */
 @Autonomous(group = "drive")
 public class SplineTest extends LinearOpMode {
-    private final BaseDriveConstants constants = new DriveConstants();
+    private final BaseDriveConstants constants = DriveConstants.INSTANCE;
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, constants);

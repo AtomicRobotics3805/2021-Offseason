@@ -29,7 +29,7 @@ public class TrackWidthTuner extends LinearOpMode {
     public static double ANGLE = 180; // deg
     public static int NUM_TRIALS = 5;
     public static int DELAY = 1000; // ms
-    private final BaseDriveConstants constants = new DriveConstants();
+    private final BaseDriveConstants constants = DriveConstants.INSTANCE;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -69,7 +69,7 @@ public class TrackWidthTuner extends LinearOpMode {
                 drive.update();
             }
 
-            double trackWidth = constants.getTrackWidth() * Math.toRadians(ANGLE) / headingAccumulator;
+            double trackWidth = constants.trackWidth * Math.toRadians(ANGLE) / headingAccumulator;
             trackWidthStats.add(trackWidth);
 
             sleep(DELAY);
