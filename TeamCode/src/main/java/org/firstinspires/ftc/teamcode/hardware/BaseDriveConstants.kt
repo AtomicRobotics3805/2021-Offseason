@@ -1,13 +1,16 @@
 package org.firstinspires.ftc.teamcode.hardware
 
+import com.acmerobotics.roadrunner.control.PIDCoefficients
 import com.qualcomm.robotcore.hardware.PIDFCoefficients
 
 abstract class BaseDriveConstants {
     /*
      * These are motor constants that should be listed online for your motors.
      */
-    abstract val ticksPerRev: Double
-    abstract val maxRPM: Double
+    @JvmField
+    var ticksPerRev = 0.0
+    @JvmField
+    var maxRPM = 0.0
 
     /*
      * Set runUsingEncoder to true to enable built-in hub velocity control using drive encoders.
@@ -17,8 +20,9 @@ abstract class BaseDriveConstants {
      * If using the built-in motor velocity PID, update motorVeloPID with the tuned coefficients
      * from DriveVelocityPIDTuner.
      */
-    abstract val isRunUsingEncoder: Boolean
-    abstract var motorVeloPID: PIDFCoefficients
+    @JvmField
+    var isRunUsingEncoder = false
+    lateinit var motorVeloPID: PIDFCoefficients
 
     /*
      * These are physical constants that can be determined from your robot (including the track
@@ -28,9 +32,12 @@ abstract class BaseDriveConstants {
      * angular distances although most angular parameters are wrapped in Math.toRadians() for
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from gearRatio.
      */
-    abstract val wheelRadius: Double // in
-    abstract val gearRatio: Double // output (wheel) speed / input (motor) speed
-    abstract val trackWidth: Double // in
+    @JvmField
+    var wheelRadius = 0.0 // in
+    @JvmField
+    var gearRatio = 0.0 // output (wheel) speed / input (motor) speed
+    @JvmField
+    var trackWidth = 0.0 // in
 
 
     /*
@@ -39,9 +46,12 @@ abstract class BaseDriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    abstract val kV: Double
-    abstract val kA: Double
-    abstract val kStatic: Double
+    @JvmField
+    var kV = 0.0
+    @JvmField
+    var kA = 0.0
+    @JvmField
+    var kStatic = 0.0
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -51,15 +61,21 @@ abstract class BaseDriveConstants {
      * acceleration values are required, and the jerk values are optional (setting a jerk of 0.0
      * forces acceleration-limited profiling). All distance units are inches.
      */
-    abstract val maxVel: Double
-    abstract val maxAccel: Double
-    abstract val maxAngVel: Double
-    abstract val maxAngAccel: Double
+    @JvmField
+    var maxVel = 0.0
+    @JvmField
+    var maxAccel = 0.0
+    @JvmField
+    var maxAngVel = 0.0
+    @JvmField
+    var maxAngAccel = 0.0
+    
+    @JvmField
+    var lateralMultiplier = 0.0
 
-
-    abstract val lateralMultiplier: Double
-
-
+    lateinit var translationalPID: PIDCoefficients
+    lateinit var headingPID: PIDCoefficients
+    
     open fun encoderTicksToInches(ticks: Double): Double {
         return wheelRadius * 2 * Math.PI * gearRatio * ticks / ticksPerRev
     }

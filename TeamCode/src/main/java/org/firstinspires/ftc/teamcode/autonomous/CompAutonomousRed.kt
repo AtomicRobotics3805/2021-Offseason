@@ -25,7 +25,7 @@ class CompAutonomousRed : LinearOpMode() {
         telemetry.addLine("Initializing")
         telemetry.update()
 
-        constants = DriveConstantsComp()
+        constants = DriveConstantsComp
         drive = MecanumDriveComp(hardwareMap, constants)
         mech = MechanismController(drive)
         pathManager = PathManager(drive, mech, PathManager.Color.RED)

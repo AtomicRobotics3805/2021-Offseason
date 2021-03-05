@@ -42,20 +42,6 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     public static double X_MULTIPLIER = 1.04;
     public static double Y_MULTIPLIER = 1.04;
 
-    public static double kV = 0.0245;
-    public static double kA = 0.0035;
-    public static double kStatic = 0.01;
-    
-    public static double maxAccel = 45;
-    public static double maxVel = 35;
-
-    public static double maxAngVel = Math.toRadians(60.0);
-    public static double maxAngAccel = Math.toRadians(60.0);
-    public static double trackWidth = 23.0;
-
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8.0, 0.0, 0.0);
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8.0, 0.0, 0.0);
-
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
     public StandardTrackingWheelLocalizer(HardwareMap hardwareMap) {
