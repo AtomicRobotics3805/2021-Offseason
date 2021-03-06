@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.teamcode.hardware.BaseMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.compbot.MecanumDriveComp;
 
@@ -43,15 +45,16 @@ public class MechanismController {
     }
 
     public void shootRing(boolean pause) {
+        drive.leftShooterTrigger.setPosition(0.7);
+        drive.rightShooterTrigger.setPosition(0.475);
         if(pause) {
-
+            ElapsedTime runtime = new ElapsedTime();
+            while(runtime.seconds() < 0.3);
         }
-        else {
-            drive.leftShooterTrigger.setPosition(0.5);
-            drive.rightShooterTrigger.setPosition(0.6);
+    }
 
-            drive.leftShooterTrigger.setPosition(0.9);
-            drive.rightShooterTrigger.setPosition(0.25);
-        }
+    public void retractShooterServos() {
+        drive.leftShooterTrigger.setPosition(0.925);
+        drive.rightShooterTrigger.setPosition(0.25);
     }
 }

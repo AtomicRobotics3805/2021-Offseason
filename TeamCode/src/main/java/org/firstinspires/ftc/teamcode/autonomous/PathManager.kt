@@ -3,19 +3,23 @@ package org.firstinspires.ftc.teamcode.autonomous
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.trajectory.Trajectory
+import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.util.Vector2d
 import org.firstinspires.ftc.teamcode.util.toRadians
 import org.firstinspires.ftc.teamcode.autonomous.ObjectDetection.*
 import org.firstinspires.ftc.teamcode.hardware.BaseMecanumDrive
+import org.firstinspires.ftc.teamcode.hardware.compbot.MecanumDriveComp
 import kotlin.math.atan
 
-class PathManager (private var drive: BaseMecanumDrive, private var mech: MechanismController, private val color: Color) {
+class PathManager(private var drive: MecanumDriveComp, private var mech: MechanismController, private val color: Color) {
 
     private val startPose = Pose2d(-48.0, 48.0, 0.0.toRadians)
 
     private val powerShotPose = listOf(Vector2d(72.0, 20.0), Vector2d(72.0, 12.0), Vector2d(72.0, 4.0))
 
-    private val towerPose = Vector2d(72.0,36.0)
+    private val towerPose = Vector2d(72.0, 36.0)
+
+    private val runtime = ElapsedTime()
 
     enum class Color {
         BLUE,
@@ -44,21 +48,36 @@ class PathManager (private var drive: BaseMecanumDrive, private var mech: Mechan
     // travel to ring(s)
     private var shootPowershotToRing: Trajectory = drive.trajectoryBuilder(startToMidToShootPowershot.end(), startToMidToShootPowershot.end().heading)
             .lineToLinearHeading(Pose2d(-24.0, 36.0.y, 320.0.a.toRadians))
+            .addTemporalMarker(0.3) {
+                mech.retractShooterServos()
+            }
             .build()
 
     // travel to second wobble goal
     private var shootPowershotToWobbleBlue = drive.trajectoryBuilder(startToLowToShootPowershot.end(), true)
             .splineToSplineHeading(Pose2d(-48.0, 35.0.y, 10.0.a.toRadians), 200.0.a.toRadians)
+            .addTemporalMarker(0.3) {
+                mech.retractShooterServos()
+            }
             .build()
     private var ringToWobbleBlue = drive.trajectoryBuilder(shootPowershotToRing.end(), true)
             .splineToSplineHeading(Pose2d(-48.0, 35.0.y, 10.0.a.toRadians), 200.0.a.toRadians)
+            .addTemporalMarker(0.3) {
+                mech.retractShooterServos()
+            }
             .build()
 
     private var shootPowershotToWobbleRed = drive.trajectoryBuilder(startToLowToShootPowershot.end(), true)
             .splineToSplineHeading(Pose2d(-48.0, 35.0.y, 195.0.a.toRadians), 200.0.a.toRadians)
+            .addTemporalMarker(0.3) {
+                mech.retractShooterServos()
+            }
             .build()
     private var ringToWobbleRed = drive.trajectoryBuilder(shootPowershotToRing.end(), true)
             .splineToSplineHeading(Pose2d(-48.0, 35.0.y, 195.0.toRadians), 200.0.a.toRadians)
+            .addTemporalMarker(0.3) {
+                mech.retractShooterServos()
+            }
             .build()
 
     // travel to drop zone, drop wobble goal between movements, park
@@ -107,31 +126,16 @@ class PathManager (private var drive: BaseMecanumDrive, private var mech: Mechan
         // travel to drop zone, drop wobble goal between movements, prepare to shoot rings
         drive.followTrajectory(startToLowToShootPowershot)
 
-        var pos = Vector2d(startToLowToShootPowershot.end())
-
-        // shoot powershot 1
-        mech.shootRing()
-
-        // turn to powershot 2
-        drive.turn(powerShotAngle(pos, 2))
-
-        // shoot powershot 2
-        mech.shootRing()
-
-        // turn to powershot 3
-        drive.turn(powerShotAngle(pos, 3))
-
-        // shoot powershot 3
-        mech.shootRing()
+        shootPowershot()
 
         // travel to second wobble goal
-        drive.followTrajectory(if(color == Color.BLUE) shootPowershotToWobbleBlue else shootPowershotToWobbleRed)
+        drive.followTrajectory(if (color == Color.BLUE) shootPowershotToWobbleBlue else shootPowershotToWobbleRed)
 
         // pick up second wobble goal
         mech.grabGoal()
 
         // travel to drop zone, drop wobble goal between movements, park
-        drive.followTrajectory(if(color == Color.BLUE) wobbleToLowToParkBlue else wobbleToLowToParkRed)
+        drive.followTrajectory(if (color == Color.BLUE) wobbleToLowToParkBlue else wobbleToLowToParkRed)
     }
 
     private fun followPathMid() {
@@ -141,20 +145,7 @@ class PathManager (private var drive: BaseMecanumDrive, private var mech: Mechan
         // travel to drop zone, drop wobble goal between movements, prepare to shoot rings
         drive.followTrajectory(startToMidToShootPowershot)
 
-        // shoot powershot 1
-        mech.shootRing()
-
-        // turn to powershot 2
-        drive.turn(powerShotAngle(Vector2d(startToMidToShootPowershot.end()), 2))
-
-        // shoot powershot 2
-        mech.shootRing()
-
-        // turn to powershot 3
-        drive.turn(powerShotAngle(Vector2d(startToMidToShootPowershot.end()), 3))
-
-        // shoot powershot 3
-        mech.shootRing()
+        shootPowershot()
 
         // travel to ring
         drive.followTrajectory(shootPowershotToRing)
@@ -166,13 +157,13 @@ class PathManager (private var drive: BaseMecanumDrive, private var mech: Mechan
         mech.shootRing()
 
         // travel to second wobble goal
-        drive.followTrajectory(if(color == Color.BLUE) ringToWobbleBlue else ringToWobbleRed)
+        drive.followTrajectory(if (color == Color.BLUE) ringToWobbleBlue else ringToWobbleRed)
 
         // pick up second wobble goal
         mech.grabGoal()
 
         // travel to drop zone, drop wobble goal between movements, park
-        drive.followTrajectory(if(color == Color.BLUE) wobbleToMidToParkBlue else wobbleToMidToParkRed)
+        drive.followTrajectory(if (color == Color.BLUE) wobbleToMidToParkBlue else wobbleToMidToParkRed)
 
         // stop intake
         mech.stopIntake()
@@ -185,20 +176,7 @@ class PathManager (private var drive: BaseMecanumDrive, private var mech: Mechan
         // travel to drop zone, drop wobble goal between movements, prepare to shoot rings
         drive.followTrajectory(startToHighToShootPowershot)
 
-        // shoot powershot 1
-        mech.shootRing()
-
-        // turn to powershot 2
-        drive.turn(powerShotAngle(Vector2d(startToHighToShootPowershot.end()), 2))
-
-        // shoot powershot 2
-        mech.shootRing()
-
-        // turn to powershot 3
-        drive.turn(powerShotAngle(Vector2d(startToHighToShootPowershot.end()), 3))
-
-        // shoot powershot 3
-        mech.shootRing()
+        shootPowershot()
 
         // travel to ring
         drive.followTrajectory(shootPowershotToRing)
@@ -212,16 +190,46 @@ class PathManager (private var drive: BaseMecanumDrive, private var mech: Mechan
         mech.shootRing()
 
         // travel to second wobble goal
-        drive.followTrajectory(if(color == Color.BLUE) ringToWobbleBlue else ringToWobbleRed)
+        drive.followTrajectory(if (color == Color.BLUE) ringToWobbleBlue else ringToWobbleRed)
 
         // pick up second wobble goal
         mech.grabGoal()
 
         // travel to drop zone, drop wobble goal between movements, park
-        drive.followTrajectory(if(color == Color.BLUE) wobbleToHighToParkBlue else wobbleToHighToParkRed)
+        drive.followTrajectory(if (color == Color.BLUE) wobbleToHighToParkBlue else wobbleToHighToParkRed)
 
         // stop intake
         mech.stopIntake()
+    }
+
+    private fun shootPowershot() {
+        val pos = Vector2d(startToLowToShootPowershot.end())
+
+        // shoot powershot 1
+        mech.shootRing()
+
+        // turn to powershot 2
+        drive.turnAsync(powerShotAngle(pos, 2))
+
+        runtime.reset()
+        while(drive.isBusy) {
+            if(runtime.seconds() > 0.3) mech.retractShooterServos()
+        }
+
+        // shoot powershot 2
+        mech.shootRing()
+
+        // turn to powershot 3
+        drive.turnAsync(powerShotAngle(pos, 3))
+
+        runtime.reset()
+        while(drive.isBusy) {
+            if(runtime.seconds() > 0.3) mech.retractShooterServos()
+        }
+
+        // shoot powershot 3
+        mech.shootRing()
+
     }
 
     private fun towerAngle(position: Vector2d): Double {
