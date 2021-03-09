@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.teleop
 
-class TeleOpConstants {
-    companion object {
-        val speeds = listOf(1.0, 0.5)
-    }
+import com.acmerobotics.dashboard.config.Config
+
+@Config
+object TeleOpConstants {
+    @JvmField
+    val speeds = doubleArrayOf(1.0, 0.5)
 }
