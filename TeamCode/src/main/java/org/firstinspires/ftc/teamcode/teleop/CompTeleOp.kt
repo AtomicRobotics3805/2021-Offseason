@@ -11,8 +11,6 @@ import org.firstinspires.ftc.teamcode.util.toRadians
 import kotlin.math.abs
 import kotlin.math.atan
 
-const val HEADING_THRESHOLD = 1.0
-
 /**
  *  Competition Driver Controlled OpMode for 2021
  *
@@ -32,8 +30,9 @@ const val HEADING_THRESHOLD = 1.0
  *      B Button: Causes robot to turn towards the tower goals
  */
 @TeleOp(name = "Competition OpMode")
-class CompTeleOp : BasicTeleOp(listOf(0.5, 1.0)) {
-    private val powerShotPose = listOf(Vector2d(72.0, 20.0), Vector2d(72.0, 12.0), Vector2d(72.0, 4.0))
+class CompTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
+    private val powerShotPose = listOf(
+            Vector2d(72.0, 20.0), Vector2d(72.0, 12.0), Vector2d(72.0, 4.0))
     private val towerPose = Vector2d(72.0,36.0)
     private val startingPose = Pose2d(0.0, 0.0, 0.0)
 
@@ -42,44 +41,24 @@ class CompTeleOp : BasicTeleOp(listOf(0.5, 1.0)) {
         set(targetPose) {
             drive.poseEstimate = targetPose - startingPose
         }
-    private var mode = Modes.DRIVER_CONTROLLED
-
-    private enum class Modes {
-        DRIVER_CONTROLLED,
-        TURNING
-    }
 
     @Throws(InterruptedException::class)
     override fun runOpMode() {
-        constants = DriveConstantsComp()
-        drive = MecanumDriveComp(hardwareMap, constants)
+        constants = DriveConstantsComp
+        drive = MecanumDriveComp(hardwareMap, constants, true)
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
         waitForStart()
 
         while (opModeIsActive()) {
             // turning towards tower
             if(gamepad1.b) {
-                mode = Modes.TURNING
+                drive.turnAsync(towerAngle(Vector2d(poseEstimate)))
             }
 
-            // figuring out if we are close enough to our target heading
-            val targetHeading = towerAngle(Vector2d(poseEstimate))
-            if(!closeToHeading(targetHeading))
-                mode = Modes.DRIVER_CONTROLLED
-
-            when(mode) {
-                Modes.DRIVER_CONTROLLED -> driveMotors(gamepad1) // uses parent method
-                Modes.TURNING -> drive.turnAsync(targetHeading)
-            }
+            drive.update()
 
             telemetryPosition()
         }
-    }
-
-    private fun closeToHeading(targetHeading: Double): Boolean {
-        val currentHeading = drive.poseEstimate.heading
-
-        return abs(currentHeading - targetHeading) > HEADING_THRESHOLD.toRadians
     }
 
     private fun towerAngle(position: Vector2d): Double {

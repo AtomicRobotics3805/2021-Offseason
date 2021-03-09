@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.util.CustomGamepad
     Controls motor speed & slow mode
  */
 
-class SpeedController(private val speeds: List<Double>) {
+class SpeedController(private vararg val speeds: Double) {
     private val customGamepad = CustomGamepad()
 
     private var mode = 0

@@ -20,7 +20,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor
 import java.util.*
 import kotlin.math.abs
 
-abstract class BaseMecanumDrive(val constants: BaseDriveConstants):
+abstract class BaseMecanumDrive(val constants: BaseDriveConstants, var teleOp: Boolean = false):
         MecanumDrive(constants.kV, constants.kA, constants.kStatic, constants.trackWidth, constants.trackWidth, constants.lateralMultiplier) {
     var TRANSLATIONAL_PID = constants.translationalPID
     var HEADING_PID = constants.headingPID
@@ -41,7 +41,7 @@ abstract class BaseMecanumDrive(val constants: BaseDriveConstants):
     protected abstract val motors: List<DcMotorEx>
 
     protected abstract val clock: NanoClock
-    protected abstract var mode: Mode
+    abstract var mode: Mode
     protected abstract val turnController: PIDFController
     protected abstract val batteryVoltageSensor: VoltageSensor
     protected var turnProfile: MotionProfile? = null
@@ -163,6 +163,6 @@ abstract class BaseMecanumDrive(val constants: BaseDriveConstants):
     abstract fun update()
 
     enum class Mode {
-        IDLE, TURN, FOLLOW_TRAJECTORY
+        IDLE, TURN, FOLLOW_TRAJECTORY, DRIVER_CONTROLLED
     }
 }
