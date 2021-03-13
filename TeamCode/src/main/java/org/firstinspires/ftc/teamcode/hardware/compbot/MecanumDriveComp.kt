@@ -23,6 +23,8 @@ import com.qualcomm.robotcore.hardware.DcMotor.RunMode
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior
 import org.firstinspires.ftc.teamcode.hardware.BaseDriveConstants
 import org.firstinspires.ftc.teamcode.hardware.BaseMecanumDrive
+import org.firstinspires.ftc.teamcode.teleop.SpeedController
+import org.firstinspires.ftc.teamcode.teleop.TeleOpConstants
 import org.firstinspires.ftc.teamcode.util.DashboardUtil
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil
 import java.util.*
@@ -32,7 +34,7 @@ import kotlin.math.abs
 * Simple mecanum drive hardware implementation for REV hardware.
 */
 @Config
-class MecanumDriveComp(val hardwareMap: HardwareMap, constants: BaseDriveConstants) : BaseMecanumDrive(constants) {
+class MecanumDriveComp(val hardwareMap: HardwareMap, constants: BaseDriveConstants, teleOp: Boolean = false, var gamepad: Gamepad? = null) : BaseMecanumDrive(constants, teleOp) {
     override var VX_WEIGHT = 1.0
     override var VY_WEIGHT = 1.0
     override var OMEGA_WEIGHT = 1.0
@@ -76,6 +78,8 @@ class MecanumDriveComp(val hardwareMap: HardwareMap, constants: BaseDriveConstan
     val wobbleHand: CRServo
 
     private val imu: BNO055IMU
+
+    private var speedController = SpeedController(*TeleOpConstants.speeds)
 
     init {
         dashboard.telemetryTransmissionInterval = 25
@@ -141,11 +145,13 @@ class MecanumDriveComp(val hardwareMap: HardwareMap, constants: BaseDriveConstan
             return when (mode) {
                 Mode.FOLLOW_TRAJECTORY -> follower.lastError
                 Mode.TURN -> Pose2d(0.0, 0.0, turnController.lastError)
-                Mode.IDLE -> Pose2d()
+                else -> Pose2d()
             }
         }
 
     override fun update() {
+        gamepad?.let { speedController.update(it) }
+
         updatePoseEstimate()
         val currentPose = poseEstimate
         val lastError = lastError
@@ -162,6 +168,7 @@ class MecanumDriveComp(val hardwareMap: HardwareMap, constants: BaseDriveConstan
         packet.put("xError", lastError.x)
         packet.put("yError", lastError.y)
         packet.put("headingError", lastError.heading)
+        if(teleOp && mode == Mode.IDLE) mode = Mode.DRIVER_CONTROLLED
         when (mode) {
             Mode.IDLE -> {
             }
@@ -199,6 +206,9 @@ class MecanumDriveComp(val hardwareMap: HardwareMap, constants: BaseDriveConstan
                     mode = Mode.IDLE
                     setDriveSignal(DriveSignal())
                 }
+            }
+            Mode.DRIVER_CONTROLLED -> {
+                setWeightedDrivePower(speedController.drivePower)
             }
         }
         fieldOverlay.setStroke("#3F51B5")

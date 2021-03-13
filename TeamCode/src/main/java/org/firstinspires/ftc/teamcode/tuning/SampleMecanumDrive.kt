@@ -116,7 +116,7 @@ class SampleMecanumDrive(val hardwareMap: HardwareMap, constants: BaseDriveConst
             return when (mode) {
                 Mode.FOLLOW_TRAJECTORY -> follower.lastError
                 Mode.TURN -> Pose2d(0.0, 0.0, turnController.lastError)
-                Mode.IDLE -> Pose2d()
+                else -> Pose2d()
             }
         }
 
@@ -138,8 +138,6 @@ class SampleMecanumDrive(val hardwareMap: HardwareMap, constants: BaseDriveConst
         packet.put("yError", lastError.y)
         packet.put("headingError", lastError.heading)
         when (mode) {
-            Mode.IDLE -> {
-            }
             Mode.TURN -> {
                 val t = clock.seconds() - turnStart
                 val targetState = turnProfile!![t]
@@ -174,6 +172,8 @@ class SampleMecanumDrive(val hardwareMap: HardwareMap, constants: BaseDriveConst
                     mode = Mode.IDLE
                     setDriveSignal(DriveSignal())
                 }
+            }
+            else -> {
             }
         }
         fieldOverlay.setStroke("#3F51B5")

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.tuning
 
+import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.control.PIDCoefficients
 import com.qualcomm.robotcore.hardware.PIDFCoefficients
 import org.firstinspires.ftc.teamcode.hardware.BaseDriveConstants
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.teamcode.hardware.BaseDriveConstants
 * These are not the only parameters; some are located in the localizer classes, drive base classes,
 * and op modes themselves.
 */
+@Config
 object DriveConstants : BaseDriveConstants() {
     init {
         /*

@@ -4,15 +4,16 @@ import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.util.ElapsedTime
+import org.firstinspires.ftc.teamcode.autonomous.MechanismController
 import org.firstinspires.ftc.teamcode.hardware.compbot.DriveConstantsComp
 import org.firstinspires.ftc.teamcode.hardware.compbot.MecanumDriveComp
+import org.firstinspires.ftc.teamcode.util.CustomGamepad
 import org.firstinspires.ftc.teamcode.util.Vector2d
 import org.firstinspires.ftc.teamcode.util.toRadians
 import kotlin.jvm.Throws
 import kotlin.math.abs
 import kotlin.math.atan
-
-const val HEADING_THRESHOLD = 1.0
 
 /**
  *  Competition Driver Controlled OpMode for 2021
@@ -22,6 +23,8 @@ const val HEADING_THRESHOLD = 1.0
  *          speed. Only applicable when the driver is actively controlling the robot
  *      Automatic Turning: Whenever the user presses a different button, the robot begins to turn
  *          towards the tower goals.
+ *
+ *  Down aligns with goal, up moves it to position that transfers
  *
  *  Gamepad Map:
  *      Left Stick:
@@ -33,55 +36,74 @@ const val HEADING_THRESHOLD = 1.0
  *      B Button: Causes robot to turn towards the tower goals
  */
 @TeleOp(name = "Competition OpMode")
-class CompTeleOp : BasicTeleOp(listOf(0.5, 1.0)) {
-    private val powerShotPose = listOf(Vector2d(72.0, 20.0), Vector2d(72.0, 12.0), Vector2d(72.0, 4.0))
+class CompTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
+    private val powerShotPose = listOf(
+            Vector2d(72.0, 20.0), Vector2d(72.0, 12.0), Vector2d(72.0, 4.0))
     private val towerPose = Vector2d(72.0,36.0)
     private val startingPose = Pose2d(0.0, 0.0, 0.0)
+    private lateinit var mech: MechanismController
+    private var ringServoTimer = ElapsedTime()
+    private var shootRingTimer = ElapsedTime()
+    private val customGamepad1 = CustomGamepad()
+    private val customGamepad2 = CustomGamepad()
 
     private var poseEstimate: Pose2d
         get() = drive.poseEstimate + startingPose
         set(targetPose) {
             drive.poseEstimate = targetPose - startingPose
         }
-    private var mode = Modes.DRIVER_CONTROLLED
-
-    private enum class Modes {
-        DRIVER_CONTROLLED,
-        TURNING
-    }
 
     @Throws(InterruptedException::class)
     override fun runOpMode() {
         constants = DriveConstantsComp
-        drive = MecanumDriveComp(hardwareMap, constants)
+        drive = MecanumDriveComp(hardwareMap, constants, true)
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
+        mech = MechanismController(drive)
         waitForStart()
 
         while (opModeIsActive()) {
+            customGamepad1.update(gamepad1)
+            customGamepad2.update(gamepad1)
             // turning towards tower
-            if(gamepad1.b) {
-                mode = Modes.TURNING
+            if(customGamepad1.b.pressed) {
+                drive.turnAsync(towerAngle(Vector2d(poseEstimate)))
             }
 
-            // figuring out if we are close enough to our target heading
-            val targetHeading = towerAngle(Vector2d(poseEstimate))
-            if(!closeToHeading(targetHeading))
-                mode = Modes.DRIVER_CONTROLLED
-
-            when(mode) {
-                Modes.DRIVER_CONTROLLED -> driveMotors(gamepad1) // uses parent method
-                Modes.TURNING -> drive.turnAsync(targetHeading)
+//            if(customGamepad2.a.pressed) {
+            if(customGamepad2.left_bumper.pressed) {
+                mech.switchIntake()
             }
-            driveMotors(gamepad1)
+
+//            if(customGamepad2.b.pressed) {
+            if(customGamepad2.right_bumper.pressed) {
+                mech.switchShooter()
+            }
+
+            if(customGamepad2.dpad_up.pressed) {
+                mech.grabGoal()
+            }
+
+            if(customGamepad2.dpad_down.pressed) {
+                mech.alignGoal()
+            }
+
+            if(customGamepad2.dpad_left.pressed) {
+                mech.dropGoal()
+            }
+
+            if(customGamepad2.y.pressed && shootRingTimer.seconds() > TeleOpConstants.SHOOT_TIME) {
+                mech.shootRing()
+                ringServoTimer.reset()
+            }
+
+            if(mech.areServosExtended() && ringServoTimer.seconds() > TeleOpConstants.SERVO_BACK_TIME) {
+                mech.retractShooterServos()
+            }
+
+            drive.update()
 
             telemetryPosition()
         }
-    }
-
-    private fun closeToHeading(targetHeading: Double): Boolean {
-        val currentHeading = drive.poseEstimate.heading
-
-        return abs(currentHeading - targetHeading) > HEADING_THRESHOLD.toRadians
     }
 
     private fun towerAngle(position: Vector2d): Double {

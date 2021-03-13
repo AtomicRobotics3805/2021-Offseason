@@ -13,22 +13,15 @@ import org.firstinspires.ftc.teamcode.util.CustomGamepad
     This includes driving and slow modes. It does NOT include contraption usage (arms, pulleys, etc.)
  */
 
-abstract class BasicTeleOp(private val speeds: List<Double>) : LinearOpMode() {
-    private val customGamepad = CustomGamepad()
-
-    private var mode = 0
-
-    var drivePower = Pose2d(0.0, 0.0, 0.0)
-
+abstract class BasicTeleOp( vararg speeds: Double) : LinearOpMode() {
     protected lateinit var drive: BaseMecanumDrive
     protected lateinit var constants: BaseDriveConstants
 
-    private val speedController = SpeedController(TeleOpConstants.speeds)
+    private val speedController = SpeedController(*speeds)
 
-    fun driveMotors(gamepad: Gamepad) {
-        speedControl(gamepad)
-        drive.setWeightedDrivePower(drivePower)
-        telemetry.addData("Drive Power", drivePower)
+    fun driveMotors() {
+        speedController.update(gamepad1)
+        drive.setWeightedDrivePower(speedController.drivePower)
     }
 
     fun telemetryPosition() {
@@ -37,22 +30,5 @@ abstract class BasicTeleOp(private val speeds: List<Double>) : LinearOpMode() {
         telemetry.addData("y", poseEstimate.y)
         telemetry.addData("heading", poseEstimate.heading)
         telemetry.update()
-    }
-
-    private fun speedControl(gamepad: Gamepad) {
-        customGamepad.update(gamepad)
-
-        drivePower = Pose2d(
-                (gamepad.left_stick_y).toDouble(),
-                (gamepad.left_stick_x).toDouble(),
-                (gamepad.right_stick_x).toDouble()
-        )
-
-        if(customGamepad.a.pressed) {
-            mode++
-            if(mode >= speeds.size) mode = 0
-        }
-
-        drivePower *= speeds[mode]
     }
 }
