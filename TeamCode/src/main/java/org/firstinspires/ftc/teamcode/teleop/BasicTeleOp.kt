@@ -27,7 +27,8 @@ abstract class BasicTeleOp(private val speeds: List<Double>) : LinearOpMode() {
 
     fun driveMotors(gamepad: Gamepad) {
         speedControl(gamepad)
-        drive.setWeightedDrivePower(speedController.drivePower)
+        drive.setWeightedDrivePower(drivePower)
+        telemetry.addData("Drive Power", drivePower)
     }
 
     fun telemetryPosition() {
@@ -42,9 +43,9 @@ abstract class BasicTeleOp(private val speeds: List<Double>) : LinearOpMode() {
         customGamepad.update(gamepad)
 
         drivePower = Pose2d(
-                (-gamepad.left_stick_y).toDouble(),
-                (-gamepad.left_stick_x).toDouble(),
-                (-gamepad.right_stick_x).toDouble()
+                (gamepad.left_stick_y).toDouble(),
+                (gamepad.left_stick_x).toDouble(),
+                (gamepad.right_stick_x).toDouble()
         )
 
         if(customGamepad.a.pressed) {

@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.hardware.compbot.DriveConstantsComp
 import org.firstinspires.ftc.teamcode.hardware.compbot.MecanumDriveComp
 import org.firstinspires.ftc.teamcode.util.Vector2d
 import org.firstinspires.ftc.teamcode.util.toRadians
+import kotlin.jvm.Throws
 import kotlin.math.abs
 import kotlin.math.atan
 
@@ -51,7 +52,7 @@ class CompTeleOp : BasicTeleOp(listOf(0.5, 1.0)) {
 
     @Throws(InterruptedException::class)
     override fun runOpMode() {
-        constants = DriveConstantsComp()
+        constants = DriveConstantsComp
         drive = MecanumDriveComp(hardwareMap, constants)
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
         waitForStart()
@@ -71,6 +72,7 @@ class CompTeleOp : BasicTeleOp(listOf(0.5, 1.0)) {
                 Modes.DRIVER_CONTROLLED -> driveMotors(gamepad1) // uses parent method
                 Modes.TURNING -> drive.turnAsync(targetHeading)
             }
+            driveMotors(gamepad1)
 
             telemetryPosition()
         }
