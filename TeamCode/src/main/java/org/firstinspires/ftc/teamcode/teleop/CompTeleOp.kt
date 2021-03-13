@@ -4,8 +4,11 @@ import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.util.ElapsedTime
+import org.firstinspires.ftc.teamcode.autonomous.MechanismController
 import org.firstinspires.ftc.teamcode.hardware.compbot.DriveConstantsComp
 import org.firstinspires.ftc.teamcode.hardware.compbot.MecanumDriveComp
+import org.firstinspires.ftc.teamcode.util.CustomGamepad
 import org.firstinspires.ftc.teamcode.util.Vector2d
 import org.firstinspires.ftc.teamcode.util.toRadians
 import kotlin.math.abs
@@ -35,6 +38,11 @@ class CompTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
             Vector2d(72.0, 20.0), Vector2d(72.0, 12.0), Vector2d(72.0, 4.0))
     private val towerPose = Vector2d(72.0,36.0)
     private val startingPose = Pose2d(0.0, 0.0, 0.0)
+    private lateinit var mech: MechanismController
+    private var ringServoTimer = ElapsedTime()
+    private var shootRingTimer = ElapsedTime()
+    private val customGamepad1 = CustomGamepad()
+    private val customGamepad2 = CustomGamepad()
 
     private var poseEstimate: Pose2d
         get() = drive.poseEstimate + startingPose
@@ -47,12 +55,38 @@ class CompTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
         constants = DriveConstantsComp
         drive = MecanumDriveComp(hardwareMap, constants, true)
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
+        mech = MechanismController(drive)
         waitForStart()
 
         while (opModeIsActive()) {
+            customGamepad1.update(gamepad1)
+            customGamepad2.update(gamepad1)
             // turning towards tower
-            if(gamepad1.b) {
+            if(customGamepad1.b.pressed) {
                 drive.turnAsync(towerAngle(Vector2d(poseEstimate)))
+            }
+
+//            if(customGamepad2.a.pressed) {
+            if(customGamepad2.left_bumper.pressed) {
+                mech.switchIntake()
+            }
+
+//            if(customGamepad2.b.pressed) {
+            if(customGamepad2.right_bumper.pressed) {
+                mech.switchShooter()
+            }
+
+            if(customGamepad2.x.pressed) {
+                mech.switchWobbleGoal()
+            }
+
+            if(customGamepad2.y.pressed && shootRingTimer.seconds() > TeleOpConstants.SHOOT_TIME) {
+                mech.shootRing()
+                ringServoTimer.reset()
+            }
+
+            if(mech.areServosExtended() && ringServoTimer.seconds() > TeleOpConstants.SERVO_BACK_TIME) {
+                mech.retractShooterServos()
             }
 
             drive.update()
