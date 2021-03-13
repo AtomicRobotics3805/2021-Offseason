@@ -35,8 +35,10 @@ public class MechanismController {
         }
     }
 
-    public void midGoal() {
-
+    public void alignGoal() {
+        drive.wobbleArm.setTargetPosition(-1050);
+        drive.wobbleArm.setPower(0.5);
+        drive.wobbleHand.setPower(0);
     }
 
     public void dropGoal() {

@@ -23,6 +23,8 @@ import kotlin.math.atan
  *      Automatic Turning: Whenever the user presses a different button, the robot begins to turn
  *          towards the tower goals.
  *
+ *  Down aligns with goal, up moves it to position that transfers
+ *
  *  Gamepad Map:
  *      Left Stick:
  *          X Axis: Controls strafing (horizontal movement)
@@ -76,8 +78,16 @@ class CompTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
                 mech.switchShooter()
             }
 
-            if(customGamepad2.x.pressed) {
-                mech.switchWobbleGoal()
+            if(customGamepad2.dpad_up.pressed) {
+                mech.grabGoal()
+            }
+
+            if(customGamepad2.dpad_down.pressed) {
+                mech.alignGoal()
+            }
+
+            if(customGamepad2.dpad_left.pressed) {
+                mech.dropGoal()
             }
 
             if(customGamepad2.y.pressed && shootRingTimer.seconds() > TeleOpConstants.SHOOT_TIME) {

@@ -31,18 +31,21 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
             .splineToSplineHeading(Pose2d(8.0, 50.0.y, 140.0.a.flip.toRadians), 320.0.a.toRadians)
             .addDisplacementMarker{ mech.dropGoal() }
             .splineToSplineHeading(Pose2d(-7.0, 28.0.y, powerShotAngle(Vector2d(-7.0, 28.0), 0)), 200.0.a.toRadians)
+            .addDisplacementMarker{ mech.alignGoal() }
             .build()
     private var startToMidToShootPowershot = drive.trajectoryBuilder(startPose, startPose.heading)
             .splineToSplineHeading(Pose2d(-30.0, 52.0.y, 0.0.a.toRadians), 30.0.a.toRadians)
             .splineToSplineHeading(Pose2d(18.0, 38.0.y, 90.0.toRadians), 270.0.a.toRadians)
             .addDisplacementMarker{ mech.dropGoal() }
             .splineToSplineHeading(Pose2d(-7.0, 28.0.y, powerShotAngle(Vector2d(-7.0, 28.0), 0)), 160.0.a.toRadians)
+            .addDisplacementMarker{ mech.alignGoal() }
             .build()
     private var startToHighToShootPowershot = drive.trajectoryBuilder(startPose, startPose.heading)
             .splineToSplineHeading(Pose2d(-27.0, 52.0.y, 0.0.toRadians), 0.0.a.toRadians)
             .splineToSplineHeading(Pose2d(42.0, 58.0.y, 90.0.toRadians), 350.0.a.toRadians)
             .addDisplacementMarker{ mech.dropGoal() }
             .splineToSplineHeading(Pose2d(-7.0, 28.0.y, powerShotAngle(Vector2d(-7.0, 28.0), 0)), 160.0.a.toRadians)
+            .addDisplacementMarker{ mech.alignGoal() }
             .build()
 
     // travel to ring(s)
@@ -85,31 +88,38 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
             .splineToSplineHeading(Pose2d(8.0, 50.0.y, 140.0.a.flip.toRadians), 330.0.a.toRadians)
             .addDisplacementMarker{ mech.dropGoal() }
             .splineToSplineHeading(Pose2d(10.0, 28.0.y, 0.0.a.toRadians), 270.0.a.toRadians)
+            .addDisplacementMarker{ mech.alignGoal() }
             .build()
     private var wobbleToMidToParkBlue = drive.trajectoryBuilder(ringToWobbleBlue.end(), ringToWobbleBlue.end().heading)
             .splineToSplineHeading(Pose2d(18.0, 38.0.y, 90.0.toRadians), 270.0.a.toRadians)
             .addDisplacementMarker{ mech.dropGoal() }
             .splineToSplineHeading(Pose2d(10.0, 28.0.y, 0.0.a.toRadians), 240.0.a.toRadians)
+            .addDisplacementMarker{ mech.alignGoal() }
             .build()
     private var wobbleToHighToParkBlue = drive.trajectoryBuilder(ringToWobbleBlue.end(), ringToWobbleBlue.end().heading)
             .splineToSplineHeading(Pose2d(42.0, 58.0.y, 90.0.toRadians), 350.0.a.toRadians)
             .addDisplacementMarker{ mech.dropGoal() }
             .splineToSplineHeading(Pose2d(10.0, 28.0.y, 0.0.toRadians), 160.0.a.toRadians)
+            .addDisplacementMarker{ mech.alignGoal() }
             .build()
 
     private var wobbleToLowToParkRed = drive.trajectoryBuilder(shootPowershotToWobbleRed.end(), true)
             .splineToSplineHeading(Pose2d(8.0, 50.0.y, 140.0.a.flip.toRadians), 330.0.a.toRadians)
+            .addDisplacementMarker{ mech.dropGoal() }
             .splineToSplineHeading(Pose2d(10.0, 28.0.y, 0.0.a.toRadians), 270.0.a.toRadians)
+            .addDisplacementMarker{ mech.alignGoal() }
             .build()
     private var wobbleToMidToParkRed = drive.trajectoryBuilder(ringToWobbleRed.end(), true)
             .splineToSplineHeading(Pose2d(18.0, 38.0.y, 90.0.toRadians), 270.0.a.toRadians)
             .addDisplacementMarker{ mech.dropGoal() }
             .splineToSplineHeading(Pose2d(10.0, 28.0.y, 0.0.a.toRadians), 240.0.a.toRadians)
+            .addDisplacementMarker{ mech.alignGoal() }
             .build()
     private var wobbleToHighToParkRed = drive.trajectoryBuilder(ringToWobbleRed.end(), true)
             .splineToSplineHeading(Pose2d(42.0, 58.0.y, 90.0.toRadians), 350.0.a.toRadians)
             .addDisplacementMarker{ mech.dropGoal() }
             .splineToSplineHeading(Pose2d(10.0, 28.0.y, 0.0.toRadians), 160.0.a.toRadians)
+            .addDisplacementMarker{ mech.alignGoal() }
             .build()
 
     fun followPath(stackSize: StackSize) {
