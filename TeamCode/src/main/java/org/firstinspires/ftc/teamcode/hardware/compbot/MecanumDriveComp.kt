@@ -117,8 +117,8 @@ class MecanumDriveComp(val hardwareMap: HardwareMap, constants: BaseDriveConstan
         }
 
         // FINISHED: reverse any motors using DcMotor.setDirection()
-        rightRear.direction = DcMotorSimple.Direction.REVERSE
-        rightFront.direction = DcMotorSimple.Direction.REVERSE
+        leftRear.direction = DcMotorSimple.Direction.REVERSE
+        leftFront.direction = DcMotorSimple.Direction.REVERSE
 
         // FINISHED: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));

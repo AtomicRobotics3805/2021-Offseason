@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.autonomous
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
+import com.acmerobotics.roadrunner.trajectory.MarkerCallback
 import com.acmerobotics.roadrunner.trajectory.Trajectory
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.util.Vector2d
@@ -13,7 +14,7 @@ import kotlin.math.atan
 
 class PathManager(private var drive: MecanumDriveComp, private var mech: MechanismController, private val color: Color) {
 
-    private val startPose = Pose2d(-48.0, 48.0, 0.0.toRadians)
+    private val startPose = Pose2d(-48.0, 48.0.y, 0.0.toRadians)
 
     private val powerShotPose = listOf(Vector2d(72.0, 20.0), Vector2d(72.0, 12.0), Vector2d(72.0, 4.0))
 
@@ -124,6 +125,7 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
 
     fun followPath(stackSize: StackSize) {
         mech.startIntake()
+        drive.poseEstimate = startPose
         when (stackSize) {
             StackSize.NONE -> followPathLow()
             StackSize.ONE -> followPathMid()

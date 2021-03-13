@@ -7,6 +7,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.hardware.BaseDriveConstants;
+import org.firstinspires.ftc.teamcode.hardware.BaseMecanumDrive;
+import org.firstinspires.ftc.teamcode.hardware.compbot.DriveConstantsComp;
+import org.firstinspires.ftc.teamcode.hardware.compbot.MecanumDriveComp;
 import org.firstinspires.ftc.teamcode.tuning.DriveConstants;
 import org.firstinspires.ftc.teamcode.tuning.SampleMecanumDrive;
 
@@ -20,11 +23,11 @@ import org.firstinspires.ftc.teamcode.tuning.SampleMecanumDrive;
 @Config
 @TeleOp(group = "drive")
 public class LocalizationTest extends LinearOpMode {
-    private final BaseDriveConstants constants = DriveConstants.INSTANCE;
+    private final BaseDriveConstants constants = DriveConstantsComp.INSTANCE;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, constants);
+        BaseMecanumDrive drive = new MecanumDriveComp(hardwareMap, constants, false, gamepad1);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 

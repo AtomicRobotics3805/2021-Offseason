@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.autonomous
 
+import com.acmerobotics.roadrunner.geometry.Pose2d
+import com.acmerobotics.roadrunner.trajectory.Trajectory
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -48,6 +50,11 @@ class CompAutonomousBlue : LinearOpMode() {
         telemetry.addLine("Running Path")
         telemetry.update()
 
+        /*
+        var trajectory = drive.trajectoryBuilder(Pose2d())
+                .forward(20.0)
+                .build()
+        drive.followTrajectory(trajectory)*/
         pathManager.followPath(stackSize)
 
         while(opModeIsActive()) {

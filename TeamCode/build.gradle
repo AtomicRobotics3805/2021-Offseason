@@ -8,47 +8,15 @@
 // please think carefully as to whether such customizations are really necessary
 // before doing so.
 
+
 // Custom definitions may go here
 
 // Include common definitions from above.
-
-
 apply from: '../build.common.gradle'
+apply from: '../build.dependencies.gradle'
 apply plugin: 'kotlin-android'
-
-repositories {
-    jcenter()
-}
-
-repositories {
-    maven { url = "https://dl.bintray.com/first-tech-challenge/ftcsdk/" }
-}
 
 dependencies {
     implementation project(':FtcRobotController')
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
-}
-android {
-    packagingOptions {
-        exclude 'kotlin/coroutines/coroutines.kotlin_builtins'
-        exclude 'kotlin/reflect/reflect.kotlin_builtins'
-        exclude 'kotlin/collections/collections.kotlin_builtins'
-        exclude 'kotlin/internal/internal.kotlin_builtins'
-        exclude 'META-INF/daemon-common.kotlin_module'
-        exclude 'META-INF/metadata.kotlin_module'
-        exclude 'META-INF/descriptors.runtime.kotlin_module'
-        exclude 'META-INF/descriptors.kotlin_module'
-        exclude 'META-INF/deserialization.kotlin_module'
-        exclude 'META-INF/kotlin-util-io.kotlin_module'
-        exclude 'META-INF/util.runtime.kotlin_module'
-        exclude 'META-INF/compiler.common.jvm.kotlin_module'
-        exclude 'META-INF/metadata.jvm.kotlin_module'
-        exclude 'META-INF/descriptors.jvm.kotlin_module'
-        exclude 'kotlin/kotlin.kotlin_builtins'
-        exclude 'META-INF/compiler.common.kotlin_module'
-        exclude 'kotlin/ranges/ranges.kotlin_builtins'
-        exclude 'META-INF/kotlin-build-common.kotlin_module'
-        exclude 'META-INF/kotlin-util-klib.kotlin_module'
-        exclude 'kotlin/annotation/annotation.kotlin_builtins'
-    }
 }
