@@ -138,6 +138,8 @@ class MecanumDriveComp(val hardwareMap: HardwareMap, constants: BaseDriveConstan
 
         leftShooterTrigger.position = 0.9
         rightShooterTrigger.position = 0.25
+
+        intake.direction = DcMotorSimple.Direction.REVERSE
     }
 
     private val lastError: Pose2d

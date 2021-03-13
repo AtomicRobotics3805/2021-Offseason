@@ -56,7 +56,7 @@ class CompTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
     @Throws(InterruptedException::class)
     override fun runOpMode() {
         constants = DriveConstantsComp
-        drive = MecanumDriveComp(hardwareMap, constants, true)
+        drive = MecanumDriveComp(hardwareMap, constants, true, gamepad1)
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
         mech = MechanismController(drive)
         waitForStart()
@@ -79,21 +79,22 @@ class CompTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
                 mech.switchShooter()
             }
 
-            if(customGamepad2.dpad_up.pressed) {
+            if(gamepad1.dpad_up) {
                 mech.grabGoal()
             }
 
-            if(customGamepad2.dpad_down.pressed) {
+            if(gamepad1.dpad_down) {
                 mech.alignGoal()
             }
 
-            if(customGamepad2.dpad_left.pressed) {
+            if(gamepad1.dpad_left) {
                 mech.dropGoal()
             }
 
             if(customGamepad2.y.pressed && shootRingTimer.seconds() > TeleOpConstants.SHOOT_TIME) {
                 mech.shootRing()
                 ringServoTimer.reset()
+                shootRingTimer.reset()
             }
 
             if(mech.areServosExtended() && ringServoTimer.seconds() > TeleOpConstants.SERVO_BACK_TIME) {

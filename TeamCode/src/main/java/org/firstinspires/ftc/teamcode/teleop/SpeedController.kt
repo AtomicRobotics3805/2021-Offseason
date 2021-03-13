@@ -19,9 +19,9 @@ class SpeedController(private vararg val speeds: Double) {
         customGamepad.update(gamepad)
 
         drivePower = Pose2d(
-                (-gamepad.left_stick_y).toDouble(),
-                (-gamepad.left_stick_x).toDouble(),
-                (-gamepad.right_stick_x).toDouble()
+                (gamepad.left_stick_y).toDouble(),
+                (gamepad.left_stick_x).toDouble(),
+                (gamepad.right_stick_x).toDouble()
         )
 
         if(customGamepad.a.pressed) {
