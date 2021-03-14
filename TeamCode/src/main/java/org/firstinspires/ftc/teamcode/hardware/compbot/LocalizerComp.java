@@ -43,9 +43,6 @@ public class LocalizerComp extends ThreeTrackingWheelLocalizer {
     public static double X_MULTIPLIER = 1.04;
     public static double Y_MULTIPLIER = 1.04;
 
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8.0, 0.0, 0.0);
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8.0, 0.0, 0.0);
-
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
     public LocalizerComp(HardwareMap hardwareMap) {

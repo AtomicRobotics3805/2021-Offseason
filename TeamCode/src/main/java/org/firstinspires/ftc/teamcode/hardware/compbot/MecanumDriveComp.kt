@@ -170,49 +170,6 @@ class MecanumDriveComp(val hardwareMap: HardwareMap, constants: BaseDriveConstan
         packet.put("xError", lastError.x)
         packet.put("yError", lastError.y)
         packet.put("headingError", lastError.heading)
-        if(teleOp && mode == Mode.IDLE) mode = Mode.DRIVER_CONTROLLED
-        when (mode) {
-            Mode.IDLE -> {
-            }
-            Mode.TURN -> {
-                val t = clock.seconds() - turnStart
-                val targetState = turnProfile!![t]
-                turnController.targetPosition = targetState.x
-                val correction = turnController.update(currentPose.heading)
-                val targetOmega = targetState.v
-                val targetAlpha = targetState.a
-                setDriveSignal(DriveSignal(Pose2d(
-                        0.0, 0.0, targetOmega + correction
-                ), Pose2d(
-                        0.0, 0.0, targetAlpha
-                )))
-                val newPose = lastPoseOnTurn!!.copy(lastPoseOnTurn!!.x, lastPoseOnTurn!!.y, targetState.x)
-                fieldOverlay.setStroke("#4CAF50")
-                DashboardUtil.drawRobot(fieldOverlay, newPose)
-                if (t >= turnProfile!!.duration()) {
-                    mode = Mode.IDLE
-                    setDriveSignal(DriveSignal())
-                }
-            }
-            Mode.FOLLOW_TRAJECTORY -> {
-                setDriveSignal(follower.update(currentPose))
-                val trajectory = follower.trajectory
-                fieldOverlay.setStrokeWidth(1)
-                fieldOverlay.setStroke("#4CAF50")
-                DashboardUtil.drawSampledPath(fieldOverlay, trajectory.path)
-                val t = follower.elapsedTime()
-                DashboardUtil.drawRobot(fieldOverlay, trajectory[t])
-                fieldOverlay.setStroke("#3F51B5")
-                DashboardUtil.drawPoseHistory(fieldOverlay, poseHistory)
-                if (!follower.isFollowing()) {
-                    mode = Mode.IDLE
-                    setDriveSignal(DriveSignal())
-                }
-            }
-            Mode.DRIVER_CONTROLLED -> {
-                setWeightedDrivePower(speedController.drivePower)
-            }
-        }
         fieldOverlay.setStroke("#3F51B5")
         DashboardUtil.drawRobot(fieldOverlay, currentPose)
         dashboard.sendTelemetryPacket(packet)
