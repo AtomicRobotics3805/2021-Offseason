@@ -1,19 +1,10 @@
 package org.firstinspires.ftc.teamcode.hardware.compbot
 
-import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
-import com.acmerobotics.roadrunner.control.PIDCoefficients
 import com.acmerobotics.roadrunner.control.PIDFController
-import com.acmerobotics.roadrunner.drive.DriveSignal
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower
-import com.acmerobotics.roadrunner.followers.TrajectoryFollower
 import com.acmerobotics.roadrunner.geometry.Pose2d
-import com.acmerobotics.roadrunner.profile.MotionProfile
-import com.acmerobotics.roadrunner.profile.MotionProfileGenerator.generateSimpleMotionProfile
-import com.acmerobotics.roadrunner.profile.MotionState
-import com.acmerobotics.roadrunner.trajectory.Trajectory
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder
 import com.acmerobotics.roadrunner.trajectory.constraints.*
 import com.acmerobotics.roadrunner.util.NanoClock
 import com.qualcomm.hardware.bosch.BNO055IMU
@@ -23,12 +14,9 @@ import com.qualcomm.robotcore.hardware.DcMotor.RunMode
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior
 import org.firstinspires.ftc.teamcode.hardware.BaseDriveConstants
 import org.firstinspires.ftc.teamcode.hardware.BaseMecanumDrive
-import org.firstinspires.ftc.teamcode.teleop.SpeedController
-import org.firstinspires.ftc.teamcode.teleop.TeleOpConstants
 import org.firstinspires.ftc.teamcode.util.DashboardUtil
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil
 import java.util.*
-import kotlin.math.abs
 
 /*
 * Simple mecanum drive hardware implementation for REV hardware.
@@ -78,8 +66,6 @@ class MecanumDriveComp(val hardwareMap: HardwareMap, constants: BaseDriveConstan
     val wobbleHand: CRServo
 
     private val imu: BNO055IMU
-
-    private var speedController = SpeedController(*TeleOpConstants.speeds)
 
     init {
         dashboard.telemetryTransmissionInterval = 25
@@ -152,8 +138,6 @@ class MecanumDriveComp(val hardwareMap: HardwareMap, constants: BaseDriveConstan
         }
 
     override fun update() {
-        gamepad?.let { speedController.update(it) }
-
         updatePoseEstimate()
         val currentPose = poseEstimate
         val lastError = lastError
