@@ -105,6 +105,7 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
 
     fun followPath(stackSize: StackSize) {
         drive.poseEstimate = startPose
+        drive.wobbleHand.power = 1.0
         when (stackSize) {
             StackSize.NONE -> followPathLow()
             StackSize.ONE -> followPathMid()
