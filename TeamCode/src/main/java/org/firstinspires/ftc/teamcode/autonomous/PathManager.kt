@@ -22,6 +22,8 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
 
     private val runtime = ElapsedTime()
 
+    private lateinit var lastPose: Pose2d
+
     enum class Color {
         BLUE,
         RED
@@ -29,99 +31,76 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
 
     // travel to drop zone, drop wobble goal between movements, prepare to shoot rings
     private var startToLowToShootPowershot = drive.trajectoryBuilder(startPose, startPose.heading)
-            .splineToSplineHeading(Pose2d(8.0, 50.0.y, 140.0.a.flip.toRadians), 320.0.a.toRadians)
+            .splineToSplineHeading(Pose2d(8.0, 50.0.y, 320.0.a.flip.toRadians), 320.0.a.toRadians)
             .addDisplacementMarker{ mech.dropGoal() }
             .splineToSplineHeading(Pose2d(-7.0, 28.0.y, powerShotAngle(Vector2d(-7.0, 28.0), 0)), 200.0.a.toRadians)
             .addDisplacementMarker{ mech.alignGoal() }
             .build()
     private var startToMidToShootPowershot = drive.trajectoryBuilder(startPose, startPose.heading)
-            .splineToSplineHeading(Pose2d(-30.0, 52.0.y, 0.0.a.toRadians), 30.0.a.toRadians)
-            .splineToSplineHeading(Pose2d(18.0, 38.0.y, 90.0.toRadians), 270.0.a.toRadians)
+            .splineToSplineHeading(Pose2d(18.0, 38.0.y, 270.0.toRadians), 270.0.a.toRadians)
             .addDisplacementMarker{ mech.dropGoal() }
             .splineToSplineHeading(Pose2d(-7.0, 28.0.y, powerShotAngle(Vector2d(-7.0, 28.0), 0)), 160.0.a.toRadians)
             .addDisplacementMarker{ mech.alignGoal() }
             .build()
     private var startToHighToShootPowershot = drive.trajectoryBuilder(startPose, startPose.heading)
-            .splineToSplineHeading(Pose2d(-27.0, 52.0.y, 0.0.toRadians), 0.0.a.toRadians)
-            .splineToSplineHeading(Pose2d(42.0, 58.0.y, 90.0.toRadians), 350.0.a.toRadians)
+            .splineToSplineHeading(Pose2d(42.0, 58.0.y, 270.0.toRadians), 0.0.a.toRadians)
             .addDisplacementMarker{ mech.dropGoal() }
             .splineToSplineHeading(Pose2d(-7.0, 28.0.y, powerShotAngle(Vector2d(-7.0, 28.0), 0)), 160.0.a.toRadians)
             .addDisplacementMarker{ mech.alignGoal() }
             .build()
 
     // travel to ring(s)
-    private var shootPowershotToRing: Trajectory = drive.trajectoryBuilder(startToMidToShootPowershot.end(), startToMidToShootPowershot.end().heading)
-            .lineToLinearHeading(Pose2d(-24.0, 36.0.y, 320.0.a.toRadians))
+    private var shootPowershotToRing: Trajectory = drive.trajectoryBuilder(drive.poseEstimate, drive.poseEstimate.heading)
+            .lineToLinearHeading(Pose2d(-24.0, 36.0.y, 140.0.a.toRadians))
             .addTemporalMarker(0.3) {
                 mech.retractShooterServos()
             }
             .build()
 
     // travel to second wobble goal
-    private var shootPowershotToWobbleBlue = drive.trajectoryBuilder(startToLowToShootPowershot.end(), true)
-            .splineToSplineHeading(Pose2d(-48.0, 35.0.y, 10.0.a.toRadians), 200.0.a.toRadians)
+    private var shootPowershotToWobble = drive.trajectoryBuilder(drive.poseEstimate, drive.poseEstimate.heading)
+            .splineToSplineHeading(Pose2d(-48.0, 35.0.y, 190.0.flip.a.toRadians), 170.0.a.toRadians)
             .addTemporalMarker(0.3) {
                 mech.retractShooterServos()
             }
             .build()
-    private var ringToWobbleBlue = drive.trajectoryBuilder(shootPowershotToRing.end(), true)
-            .splineToSplineHeading(Pose2d(-48.0, 35.0.y, 10.0.a.toRadians), 200.0.a.toRadians)
-            .addTemporalMarker(0.3) {
-                mech.retractShooterServos()
-            }
-            .build()
-
-    private var shootPowershotToWobbleRed = drive.trajectoryBuilder(startToLowToShootPowershot.end(), true)
-            .splineToSplineHeading(Pose2d(-48.0, 35.0.y, 195.0.a.toRadians), 200.0.a.toRadians)
-            .addTemporalMarker(0.3) {
-                mech.retractShooterServos()
-            }
-            .build()
-    private var ringToWobbleRed = drive.trajectoryBuilder(shootPowershotToRing.end(), true)
-            .splineToSplineHeading(Pose2d(-48.0, 35.0.y, 195.0.toRadians), 200.0.a.toRadians)
+    private var ringToWobble = drive.trajectoryBuilder(drive.poseEstimate, drive.poseEstimate.heading)
+            .splineToSplineHeading(Pose2d(-48.0, 35.0.y, 190.0.flip.toRadians), 200.0.a.toRadians)
             .addTemporalMarker(0.3) {
                 mech.retractShooterServos()
             }
             .build()
 
-    // travel to drop zone, drop wobble goal between movements, park
-    private var wobbleToLowToParkBlue = drive.trajectoryBuilder(shootPowershotToWobbleBlue.end(), shootPowershotToWobbleBlue.end().heading)
-            .splineToSplineHeading(Pose2d(8.0, 50.0.y, 140.0.a.flip.toRadians), 330.0.a.toRadians)
-            .addDisplacementMarker{ mech.dropGoal() }
-            .splineToSplineHeading(Pose2d(10.0, 28.0.y, 0.0.a.toRadians), 270.0.a.toRadians)
-            .addDisplacementMarker{ mech.alignGoal() }
-            .build()
-    private var wobbleToMidToParkBlue = drive.trajectoryBuilder(ringToWobbleBlue.end(), ringToWobbleBlue.end().heading)
-            .splineToSplineHeading(Pose2d(18.0, 38.0.y, 90.0.toRadians), 270.0.a.toRadians)
-            .addDisplacementMarker{ mech.dropGoal() }
-            .splineToSplineHeading(Pose2d(10.0, 28.0.y, 0.0.a.toRadians), 240.0.a.toRadians)
-            .addDisplacementMarker{ mech.alignGoal() }
-            .build()
-    private var wobbleToHighToParkBlue = drive.trajectoryBuilder(ringToWobbleBlue.end(), ringToWobbleBlue.end().heading)
-            .splineToSplineHeading(Pose2d(42.0, 58.0.y, 90.0.toRadians), 350.0.a.toRadians)
-            .addDisplacementMarker{ mech.dropGoal() }
-            .splineToSplineHeading(Pose2d(10.0, 28.0.y, 0.0.toRadians), 160.0.a.toRadians)
-            .addDisplacementMarker{ mech.alignGoal() }
-            .build()
-
-    private var wobbleToLowToParkRed = drive.trajectoryBuilder(shootPowershotToWobbleRed.end(), true)
-            .splineToSplineHeading(Pose2d(8.0, 50.0.y, 140.0.a.flip.toRadians), 330.0.a.toRadians)
-            .addDisplacementMarker{ mech.dropGoal() }
-            .splineToSplineHeading(Pose2d(10.0, 28.0.y, 0.0.a.toRadians), 270.0.a.toRadians)
-            .addDisplacementMarker{ mech.alignGoal() }
-            .build()
-    private var wobbleToMidToParkRed = drive.trajectoryBuilder(ringToWobbleRed.end(), true)
-            .splineToSplineHeading(Pose2d(18.0, 38.0.y, 90.0.toRadians), 270.0.a.toRadians)
-            .addDisplacementMarker{ mech.dropGoal() }
-            .splineToSplineHeading(Pose2d(10.0, 28.0.y, 0.0.a.toRadians), 240.0.a.toRadians)
-            .addDisplacementMarker{ mech.alignGoal() }
-            .build()
-    private var wobbleToHighToParkRed = drive.trajectoryBuilder(ringToWobbleRed.end(), true)
-            .splineToSplineHeading(Pose2d(42.0, 58.0.y, 90.0.toRadians), 350.0.a.toRadians)
-            .addDisplacementMarker{ mech.dropGoal() }
-            .splineToSplineHeading(Pose2d(10.0, 28.0.y, 0.0.toRadians), 160.0.a.toRadians)
-            .addDisplacementMarker{ mech.alignGoal() }
-            .build()
+    private var wobbleToLowToPark =
+            if(color == Color.BLUE)
+                drive.trajectoryBuilder(drive.poseEstimate, true)
+            else
+                {drive.trajectoryBuilder(drive.poseEstimate, drive.poseEstimate.heading)}
+                    .splineToSplineHeading(Pose2d(8.0, 50.0.y, 320.0.a.flip.toRadians), 320.0.a.toRadians)
+                    .addDisplacementMarker{ mech.dropGoal() }
+                    .splineToSplineHeading(Pose2d(10.0, 28.0.y, 180.0.a.toRadians), 270.0.a.toRadians)
+                    .addDisplacementMarker{ mech.alignGoal() }
+                    .build()
+    private var wobbleToMidToPark =
+            if(color == Color.BLUE)
+                drive.trajectoryBuilder(drive.poseEstimate, true)
+            else
+                {drive.trajectoryBuilder(drive.poseEstimate, drive.poseEstimate.heading)}
+                    .splineToSplineHeading(Pose2d(14.0, 38.0.y, 270.0.flip.a.toRadians), 220.0.a.toRadians)
+                    .addDisplacementMarker{ mech.dropGoal() }
+                    .splineToSplineHeading(Pose2d(10.0, 28.0.y, 270.0.flip.a.toRadians), 270.0.a.toRadians)
+                    .addDisplacementMarker{ mech.alignGoal() }
+                    .build()
+    private var wobbleToHighToPark =
+            if(color == Color.BLUE)
+                drive.trajectoryBuilder(drive.poseEstimate, true)
+            else
+                {drive.trajectoryBuilder(drive.poseEstimate, drive.poseEstimate.heading)}
+                    .splineToSplineHeading(Pose2d(42.0, 58.0.y, 270.0.toRadians), 350.0.a.toRadians)
+                    .addDisplacementMarker{ mech.dropGoal() }
+                    .splineToSplineHeading(Pose2d(10.0, 28.0.y, 180.0.toRadians), 160.0.a.toRadians)
+                    .addDisplacementMarker{ mech.alignGoal() }
+                    .build()
 
     fun followPath(stackSize: StackSize) {
         mech.startIntake()
@@ -141,13 +120,13 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
         shootPowershot()
 
         // travel to second wobble goal
-        drive.followTrajectory(if (color == Color.BLUE) shootPowershotToWobbleBlue else shootPowershotToWobbleRed)
+        drive.followTrajectory(shootPowershotToWobble)
 
         // pick up second wobble goal
         mech.grabGoal()
 
         // travel to drop zone, drop wobble goal between movements, park
-        drive.followTrajectory(if (color == Color.BLUE) wobbleToLowToParkBlue else wobbleToLowToParkRed)
+        drive.followTrajectory(wobbleToLowToPark)
     }
 
     private fun followPathMid() {
@@ -163,19 +142,19 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
         drive.followTrajectory(shootPowershotToRing)
 
         // turn to tower
-        drive.turn(towerAngle(Vector2d(shootPowershotToRing.end())))
+        drive.turn(towerAngle(Vector2d(drive.poseEstimate)))
 
         // shoot top goal
         mech.shootRing()
 
         // travel to second wobble goal
-        drive.followTrajectory(if (color == Color.BLUE) ringToWobbleBlue else ringToWobbleRed)
+        drive.followTrajectory(ringToWobble)
 
         // pick up second wobble goal
         mech.grabGoal()
 
         // travel to drop zone, drop wobble goal between movements, park
-        drive.followTrajectory(if (color == Color.BLUE) wobbleToMidToParkBlue else wobbleToMidToParkRed)
+        drive.followTrajectory(wobbleToMidToPark)
 
         // stop intake
         mech.stopIntake()
@@ -194,7 +173,7 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
         drive.followTrajectory(shootPowershotToRing)
 
         // turn to tower
-        drive.turn(towerAngle(Vector2d(shootPowershotToRing.end())))
+        drive.turn(towerAngle(Vector2d(drive.poseEstimate)))
 
         // shoot top goal
         mech.shootRing(true)
@@ -202,13 +181,13 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
         mech.shootRing()
 
         // travel to second wobble goal
-        drive.followTrajectory(if (color == Color.BLUE) ringToWobbleBlue else ringToWobbleRed)
+        drive.followTrajectory(ringToWobble)
 
         // pick up second wobble goal
         mech.grabGoal()
 
         // travel to drop zone, drop wobble goal between movements, park
-        drive.followTrajectory(if (color == Color.BLUE) wobbleToHighToParkBlue else wobbleToHighToParkRed)
+        drive.followTrajectory(wobbleToHighToPark)
 
         // stop intake
         mech.stopIntake()
@@ -245,11 +224,11 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
     }
 
     private fun towerAngle(position: Vector2d): Double {
-        return atan(towerPose.y - position.y / towerPose.x - position.x) - 90.0.toRadians
+        return atan(towerPose.y - position.y / towerPose.x - position.x) + 90.0.toRadians
     }
 
     private fun powerShotAngle(position: Vector2d, num: Int): Double {
-        return atan(powerShotPose[num].y - position.y / powerShotPose[num].x - position.x) - 90.0.toRadians
+        return atan(powerShotPose[num].y - position.y / powerShotPose[num].x - position.x) + 90.0.toRadians
     }
 
     val Double.a get () = (if (color == Color.BLUE) this else 360 - this)
