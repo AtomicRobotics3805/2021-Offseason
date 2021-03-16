@@ -57,18 +57,18 @@ public class ObjectDetection {
         }
 
         runtime.reset();
-        while (runtime.seconds()<5) {
+        while (runtime.seconds()<2 && !opMode.isStopRequested()) {
             recognitions = tfod.getRecognitions();
         }
 
-        if (opMode.opModeIsActive()) {
+        if (!opMode.isStopRequested()) {
             if (tfod != null) {
                 if (recognitions.size() != 0) {
                     for (Recognition new_recognition : recognitions) {
                         double screen_middle = new_recognition.getImageWidth() * screen_fraction;
                         double object_position = (new_recognition.getRight()-new_recognition.getLeft())/2 + new_recognition.getLeft();
                         String check = measure(new_recognition.getHeight(), new_recognition.getWidth());
-                        if (object_position<(screen_middle+35) && object_position>(screen_middle-35)){
+                        //if (object_position<(screen_middle+35) && object_position>(screen_middle-35)){
                             if (check.equals("Single")){
                                 quantity = StackSize.ONE;
                                 break;
@@ -78,10 +78,10 @@ public class ObjectDetection {
                                 break;
                             }
                         }
-                        else{
-                            quantity = StackSize.NONE;
-                        }
-                    }
+                        //else{
+                        //    quantity = StackSize.NONE;
+                        //}
+                    //}
                 }
                 else {
                     quantity = StackSize.NONE;
@@ -119,13 +119,11 @@ public class ObjectDetection {
 
         String answer = "Zero";
 
-        if (boxWidth < (ring_width +10) && boxWidth > (ring_width -10)){
-            if (boxHeight < (q_height +10) && boxHeight > (q_height -10)){
-                answer = "Quad";
-            }
-            else if (boxHeight < (s_height +10) && boxHeight > (s_height -10)){
-                answer = "Single";
-            }
+        if(boxWidth * 0.8 > boxHeight) {
+            answer = "Single";
+        }
+        else {
+            answer = "Quad";
         }
         return answer;
     }

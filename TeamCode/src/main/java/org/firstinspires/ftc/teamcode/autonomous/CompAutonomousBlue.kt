@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.hardware.BaseDriveConstants
 import org.firstinspires.ftc.teamcode.hardware.BaseMecanumDrive
 import org.firstinspires.ftc.teamcode.hardware.compbot.DriveConstantsComp
 import org.firstinspires.ftc.teamcode.hardware.compbot.MecanumDriveComp
+import org.firstinspires.ftc.teamcode.util.toRadians
 
 @Autonomous(name="Blue Auto")
 class CompAutonomousBlue : LinearOpMode() {
@@ -34,6 +35,8 @@ class CompAutonomousBlue : LinearOpMode() {
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
 
+        telemetry.addLine("Started Stack Size Detection")
+        telemetry.update()
         stackSize = ObjectDetection.detect(this)
 
         while(!(opModeIsActive() || isStopRequested)) {
@@ -56,6 +59,9 @@ class CompAutonomousBlue : LinearOpMode() {
                 .build()
         drive.followTrajectory(trajectory)*/
         pathManager.followPath(stackSize)
+        while(drive.isBusy) {
+            drive.update()
+        }
 
         while(opModeIsActive()) {
             telemetry.addLine("Path Complete")
