@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.autonomous
 
+import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -17,13 +19,16 @@ class CompAutonomousRed : LinearOpMode() {
     private lateinit var drive: BaseMecanumDrive
     private lateinit var mech: MechanismController
     private lateinit var pathManager: PathManager
-    private var runtime: ElapsedTime = ElapsedTime()
+    private val runtime: ElapsedTime = ElapsedTime()
+    private val packet = TelemetryPacket()
+    private val dashboard = FtcDashboard.getInstance()
 
     override fun runOpMode() {
         runtime.reset()
 
-        telemetry.addLine("Initializing")
-        telemetry.update()
+        packet.addLine("Initializing")
+        dashboard.sendTelemetryPacket(packet)
+        packet.clearLines()
 
         constants = DriveConstantsComp
         drive = MecanumDriveComp(hardwareMap, constants)
@@ -32,26 +37,33 @@ class CompAutonomousRed : LinearOpMode() {
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
 
+        packet.addLine("Started Stack Size Detection")
+        dashboard.sendTelemetryPacket(packet)
+        packet.clearLines()
+
         stackSize = ObjectDetection.detect(this)
 
         while(!(opModeIsActive() || isStopRequested)) {
-            telemetry.addLine("Ready")
-            telemetry.addData("Time Elapsed", runtime.seconds())
-            telemetry.addData("Detected Stack Size", stackSize.name)
-            telemetry.update()
+            packet.addLine("Ready")
+            packet.put("Time Elapsed", runtime.seconds())
+            packet.put("Detected Stack Size", stackSize.name)
+            dashboard.sendTelemetryPacket(packet)
+            packet.clearLines()
         }
 
         runtime.reset()
 
-        telemetry.addLine("Running Path")
-        telemetry.update()
+        packet.addLine("Following Path")
+        dashboard.sendTelemetryPacket(packet)
+        packet.clearLines()
 
         pathManager.followPath(stackSize)
 
         while(opModeIsActive()) {
-            telemetry.addLine("Path Complete")
-            telemetry.addData("Time Elapsed", runtime.seconds())
-            telemetry.update()
+            packet.addLine("Path Complete")
+            packet.put("Time Elapsed", runtime.seconds())
+            dashboard.sendTelemetryPacket(packet)
+            packet.clearLines()
         }
     }
 }

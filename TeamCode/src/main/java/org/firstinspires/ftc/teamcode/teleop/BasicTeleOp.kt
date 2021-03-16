@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.teleop
 
+import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
@@ -17,6 +19,8 @@ abstract class BasicTeleOp( vararg speeds: Double) : LinearOpMode() {
     protected lateinit var drive: BaseMecanumDrive
     protected lateinit var constants: BaseDriveConstants
 
+    protected val packet = TelemetryPacket()
+    protected val dashboard: FtcDashboard = FtcDashboard.getInstance()
     private val speedController = SpeedController(*speeds)
 
     fun driveMotors() {
@@ -26,9 +30,10 @@ abstract class BasicTeleOp( vararg speeds: Double) : LinearOpMode() {
 
     fun telemetryPosition() {
         val poseEstimate = drive.poseEstimate
-        telemetry.addData("x", poseEstimate.x)
-        telemetry.addData("y", poseEstimate.y)
-        telemetry.addData("heading", poseEstimate.heading)
-        telemetry.update()
+        packet.put("x", poseEstimate.x)
+        packet.put("y", poseEstimate.y)
+        packet.put("heading", poseEstimate.heading)
+        dashboard.sendTelemetryPacket(packet)
+        packet.clearLines()
     }
 }
