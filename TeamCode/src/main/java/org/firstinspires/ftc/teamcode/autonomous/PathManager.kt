@@ -124,7 +124,6 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
             .build()
 
     fun followPath(stackSize: StackSize) {
-        mech.startIntake()
         drive.poseEstimate = startPose
         when (stackSize) {
             StackSize.NONE -> followPathLow()
@@ -137,6 +136,7 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
     private fun followPathLow() {
         // travel to drop zone, drop wobble goal between movements, prepare to shoot rings
         drive.followTrajectory(startToLowToShootPowershot)
+        //mech.startShooter()
 
         shootPowershot()
 
@@ -153,6 +153,7 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
     private fun followPathMid() {
         // start intake
         mech.startIntake()
+        //mech.startShooter()
 
         // travel to drop zone, drop wobble goal between movements, prepare to shoot rings
         drive.followTrajectory(startToMidToShootPowershot)
@@ -166,7 +167,8 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
         drive.turn(towerAngle(Vector2d(shootPowershotToRing.end())))
 
         // shoot top goal
-        mech.shootRing()
+        //mech.shootRing()
+        mech.stopShooter()
 
         // travel to second wobble goal
         drive.followTrajectory(if (color == Color.BLUE) ringToWobbleBlue else ringToWobbleRed)
@@ -184,6 +186,7 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
     private fun followPathHigh() {
         // start intake
         mech.startIntake()
+        //mech.startShooter()
 
         // travel to drop zone, drop wobble goal between movements, prepare to shoot rings
         drive.followTrajectory(startToHighToShootPowershot)
@@ -197,9 +200,10 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
         drive.turn(towerAngle(Vector2d(shootPowershotToRing.end())))
 
         // shoot top goal
-        mech.shootRing(true)
-        mech.shootRing(true)
-        mech.shootRing()
+        //mech.shootRing(true)
+        //mech.shootRing(true)
+        //mech.shootRing()
+        mech.stopShooter()
 
         // travel to second wobble goal
         drive.followTrajectory(if (color == Color.BLUE) ringToWobbleBlue else ringToWobbleRed)
@@ -218,30 +222,33 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
         val pos = Vector2d(startToLowToShootPowershot.end())
 
         // shoot powershot 1
-        mech.shootRing()
+        //mech.shootRing()
 
         // turn to powershot 2
-        drive.turnAsync(powerShotAngle(pos, 2))
+        drive.turnAsync(1.0)
 
         runtime.reset()
         while(drive.isBusy) {
+            drive.update()
             if(runtime.seconds() > 0.3) mech.retractShooterServos()
         }
 
         // shoot powershot 2
-        mech.shootRing()
+        //mech.shootRing()
 
         // turn to powershot 3
-        drive.turnAsync(powerShotAngle(pos, 3))
+        drive.turnAsync(powerShotAngle(pos, 2))
 
         runtime.reset()
         while(drive.isBusy) {
+            drive.update()
             if(runtime.seconds() > 0.3) mech.retractShooterServos()
         }
 
         // shoot powershot 3
-        mech.shootRing()
+        //mech.shootRing()
 
+        mech.stopShooter()
     }
 
     private fun towerAngle(position: Vector2d): Double {
