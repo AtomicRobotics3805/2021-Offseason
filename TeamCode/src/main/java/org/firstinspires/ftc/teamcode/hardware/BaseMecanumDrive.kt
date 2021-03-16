@@ -32,7 +32,7 @@ abstract class BaseMecanumDrive(val constants: BaseDriveConstants, var teleOp: B
     protected abstract val velConstraint: TrajectoryVelocityConstraint
     protected abstract val accelConstraint: TrajectoryAccelerationConstraint
     protected abstract val follower: TrajectoryFollower
-    protected abstract val poseHistory: LinkedList<Pose2d>
+    abstract val poseHistory: LinkedList<Pose2d>
 
     protected abstract val leftFront: DcMotorEx
     protected abstract val leftRear: DcMotorEx
@@ -42,7 +42,7 @@ abstract class BaseMecanumDrive(val constants: BaseDriveConstants, var teleOp: B
 
     protected abstract val clock: NanoClock
     abstract var mode: Mode
-    protected abstract val turnController: PIDFController
+    abstract val turnController: PIDFController
     protected abstract val batteryVoltageSensor: VoltageSensor
     protected var turnProfile: MotionProfile? = null
     protected var turnStart = 0.0
