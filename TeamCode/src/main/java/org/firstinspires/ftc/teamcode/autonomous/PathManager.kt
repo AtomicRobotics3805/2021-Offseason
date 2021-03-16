@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.util.toRadians
 import org.firstinspires.ftc.teamcode.autonomous.ObjectDetection.*
 import org.firstinspires.ftc.teamcode.hardware.BaseMecanumDrive
 import org.firstinspires.ftc.teamcode.hardware.compbot.MecanumDriveComp
+import org.firstinspires.ftc.teamcode.teleop.CompTeleOp
 import kotlin.math.atan
 
 class PathManager(private var drive: MecanumDriveComp, private var mech: MechanismController, private val color: Color) {
@@ -110,6 +111,7 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
             StackSize.FOUR -> followPathHigh()
         }
         mech.stopIntake()
+        CompTeleOp.startingPose = drive.poseEstimate
     }
 
     private fun followPathLow() {

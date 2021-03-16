@@ -40,18 +40,11 @@ class CompTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
     private val powerShotPose = listOf(
             Vector2d(72.0, 20.0), Vector2d(72.0, 12.0), Vector2d(72.0, 4.0))
     private val towerPose = Vector2d(72.0,36.0)
-    private val startingPose = Pose2d(0.0, 0.0, 0.0)
     private lateinit var mech: MechanismController
     private var ringServoTimer = ElapsedTime()
     private var shootRingTimer = ElapsedTime()
     private val customGamepad1 = CustomGamepad()
     private val customGamepad2 = CustomGamepad()
-
-    private var poseEstimate: Pose2d
-        get() = drive.poseEstimate + startingPose
-        set(targetPose) {
-            drive.poseEstimate = targetPose - startingPose
-        }
 
     @Throws(InterruptedException::class)
     override fun runOpMode() {
@@ -59,6 +52,7 @@ class CompTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
         drive = MecanumDriveComp(hardwareMap, constants, true, gamepad1)
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
         mech = MechanismController(drive)
+        drive.poseEstimate = startingPose
         waitForStart()
 
         while (opModeIsActive()) {
@@ -66,7 +60,7 @@ class CompTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
             customGamepad2.update(gamepad1)
             // turning towards tower
             if(customGamepad1.b.pressed) {
-                drive.turnAsync(towerAngle(Vector2d(poseEstimate)))
+                drive.turnAsync(towerAngle(Vector2d(drive.poseEstimate)))
             }
 
 //            if(customGamepad2.a.pressed) {
@@ -113,5 +107,9 @@ class CompTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
 
     private fun powerShotAngle(position: Vector2d, num: Int): Double {
         return atan(powerShotPose[num].y - position.y / powerShotPose[num].x - position.x) - 90.0.toRadians
+    }
+
+    companion object {
+        var startingPose = Pose2d(0.0, 0.0, 0.0)
     }
 }
