@@ -135,9 +135,12 @@ class MecanumDriveComp(val hardwareMap: HardwareMap, constants: BaseDriveConstan
         wobbleArm.mode = RunMode.STOP_AND_RESET_ENCODER
         wobbleArm.targetPosition = 0
         wobbleArm.mode = RunMode.RUN_TO_POSITION
+        wobbleArm.power = 0.5
 
         leftShooterTrigger.position = 0.9
         rightShooterTrigger.position = 0.25
+
+        wobbleHand.power = 1.0
 
         intake.direction = DcMotorSimple.Direction.REVERSE
     }

@@ -48,6 +48,7 @@ class CompTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
 
     @Throws(InterruptedException::class)
     override fun runOpMode() {
+        dashboard.telemetryTransmissionInterval = 25
         constants = DriveConstantsComp
         drive = MecanumDriveComp(hardwareMap, constants, true, gamepad1)
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)

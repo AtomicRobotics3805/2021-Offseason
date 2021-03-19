@@ -10,7 +10,7 @@ public class MechanismController {
     private MecanumDriveComp drive;
 
     public static double INTAKE_POWER = 1.0;
-    public static double SHOOTER_POWER = 0.71;
+    public static double SHOOTER_POWER = 1.0;
 
     private boolean servosExtended;
     private boolean intakeOn;
@@ -85,14 +85,14 @@ public class MechanismController {
     }
 
     public void shootRing(boolean pause) {
-        drive.leftShooterTrigger.setPosition(0.7);
-        drive.rightShooterTrigger.setPosition(0.475);
+        drive.leftShooterTrigger.setPosition(0.6);
+        drive.rightShooterTrigger.setPosition(0.575);
         servosExtended = true;
         if(pause) {
             ElapsedTime timer = new ElapsedTime();
-            while(timer.seconds() < 0.3);
+            while(timer.seconds() < 0.75);
             retractShooterServos();
-            while(timer.seconds() < 0.6);
+            while(timer.seconds() < 1.5);
         }
     }
 

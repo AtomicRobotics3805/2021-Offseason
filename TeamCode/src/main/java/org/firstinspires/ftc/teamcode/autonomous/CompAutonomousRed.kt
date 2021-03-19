@@ -16,7 +16,7 @@ class CompAutonomousRed : LinearOpMode() {
     private var stackSize = ObjectDetection.StackSize.NONE
 
     private lateinit var constants: BaseDriveConstants
-    private lateinit var drive: BaseMecanumDrive
+    private lateinit var drive: MecanumDriveComp
     private lateinit var mech: MechanismController
     private lateinit var pathManager: PathManager
     private val runtime: ElapsedTime = ElapsedTime()
@@ -25,6 +25,7 @@ class CompAutonomousRed : LinearOpMode() {
 
     override fun runOpMode() {
         runtime.reset()
+        dashboard.telemetryTransmissionInterval = 25
 
         packet.addLine("Initializing")
         dashboard.sendTelemetryPacket(packet)
