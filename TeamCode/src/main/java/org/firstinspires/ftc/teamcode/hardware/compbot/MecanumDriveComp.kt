@@ -51,20 +51,6 @@ class MecanumDriveComp(val hardwareMap: HardwareMap, constants: BaseDriveConstan
 
     override var mode = Mode.IDLE
 
-    @JvmField
-    val intake: DcMotorEx
-    @JvmField
-    val shooter: DcMotorEx
-    @JvmField
-    val wobbleArm: DcMotorEx
-
-    @JvmField
-    val leftShooterTrigger: Servo
-    @JvmField
-    val rightShooterTrigger: Servo
-    @JvmField
-    val wobbleHand: CRServo
-
     private val imu: BNO055IMU
 
     init {
@@ -109,23 +95,6 @@ class MecanumDriveComp(val hardwareMap: HardwareMap, constants: BaseDriveConstan
         // FINISHED: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
         localizer = LocalizerComp(hardwareMap)
-
-        intake = hardwareMap.get(DcMotorEx::class.java, "Intake")
-        shooter = hardwareMap.get(DcMotorEx::class.java, "Shooter")
-        wobbleArm = hardwareMap.get(DcMotorEx::class.java, "Wobble")
-
-        leftShooterTrigger = hardwareMap.get(Servo::class.java, "LeftTrigger")
-        rightShooterTrigger = hardwareMap.get(Servo::class.java, "RightTrigger")
-        wobbleHand = hardwareMap.get(CRServo::class.java, "Hand")
-
-        wobbleArm.mode = RunMode.STOP_AND_RESET_ENCODER
-        wobbleArm.targetPosition = 0
-        wobbleArm.mode = RunMode.RUN_TO_POSITION
-
-        leftShooterTrigger.position = 0.9
-        rightShooterTrigger.position = 0.25
-
-        intake.direction = DcMotorSimple.Direction.REVERSE
     }
 
     private val lastError: Pose2d
