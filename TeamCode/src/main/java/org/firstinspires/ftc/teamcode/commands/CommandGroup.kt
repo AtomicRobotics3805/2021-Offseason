@@ -43,7 +43,7 @@ class ParallelCommandGroup: CommandGroup() {
                 }
                 command.run()
             }
-            else
+            else {
                 command.done()
                 commands.remove(command)
             }
