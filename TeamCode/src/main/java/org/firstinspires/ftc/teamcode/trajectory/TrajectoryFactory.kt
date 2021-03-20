@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.Singleton.drive
 import org.firstinspires.ftc.teamcode.Singleton.startPose
 import org.firstinspires.ftc.teamcode.Singleton.color
 import org.firstinspires.ftc.teamcode.Singleton.Color.*
-import org.firstinspires.ftc.teamcode.Singleton.mech
 import org.firstinspires.ftc.teamcode.util.toRadians
 import org.firstinspires.ftc.teamcode.util.trajectories.a
 import org.firstinspires.ftc.teamcode.util.trajectories.flip
