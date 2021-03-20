@@ -22,7 +22,7 @@ class SequentialCommandGroup: CommandGroup() {
         if (!commands[0].isDone) {
             if (!commands[0].isStarted) {
                 commands[0].start()
-                command.isStarted = true
+                commands[0].isStarted = true
             }
             commands[0].run()
         }
