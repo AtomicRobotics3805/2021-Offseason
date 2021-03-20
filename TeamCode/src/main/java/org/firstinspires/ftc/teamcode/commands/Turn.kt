@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Singleton.constants
 import org.firstinspires.ftc.teamcode.Singleton.drive
 import org.firstinspires.ftc.teamcode.util.DashboardUtil
 
-class Turn(private val angle: Double): AtomicCommand() {
+open class Turn(private val angle: Double): AtomicCommand() {
     override val _isDone: Boolean
         get() = TODO("Not yet implemented")
 
@@ -23,7 +23,7 @@ class Turn(private val angle: Double): AtomicCommand() {
     override fun start() {
         turnProfile = generateSimpleMotionProfile(
                 MotionState(drive.poseEstimate.heading, 0.0, 0.0, 0.0),
-                MotionState(drive.poseEstimate.heading + angle, 0.0, 0.0, 0.0),
+                MotionState(angle, 0.0, 0.0, 0.0),
                 constants.maxAngVel,
                 constants.maxAngAccel
         )
