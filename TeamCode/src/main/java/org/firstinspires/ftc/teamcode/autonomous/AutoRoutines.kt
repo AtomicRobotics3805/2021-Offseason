@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.util.trajectories.trajectoryBuilder
 import org.firstinspires.ftc.teamcode.util.trajectoryBuilder
 
 @Autonomous
-class ExampleAuto: LinearOpMode() {
+class AutoRoutines: LinearOpMode() {
     private val startPose = Pose2d()
 
     override fun runOpMode() {
