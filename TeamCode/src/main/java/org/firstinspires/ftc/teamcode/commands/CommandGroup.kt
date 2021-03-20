@@ -18,33 +18,35 @@ abstract class CommandGroup: AtomicCommand() {
 }
 
 class SequentialCommandGroup: CommandGroup() {
+    override fun start() {
+        if (commands.isNotEmpty())
+            commands[0].start()
+    }
+
     override fun run() {
-        if (!commands[0].isDone) {
-            if (!commands[0].isStarted) {
-                commands[0].start()
-                commands[0].isStarted = true
+        if (commands.isNotEmpty()) {
+            if (!commands[0].isDone)
+                commands[0].run()
+            else {
+                commands[0].done()
+                commands.removeAt(0)
+                if (commands.isNotEmpty())
+                    commands[0].start()
             }
-            commands[0].run()
-        }
-        else {
-            commands[0].done()
-            commands.removeAt(0)
         }
     }
 }
 
 class ParallelCommandGroup: CommandGroup() {
     override fun start() {
-        for(command in commands) {
+        for(command in commands)
             command.start()
-        }
     }
 
     override fun run() {
         for(command in commands) {
-            if (!command.isDone) {
+            if (!command.isDone)
                 command.run()
-            }
             else {
                 command.done()
                 commands.remove(command)

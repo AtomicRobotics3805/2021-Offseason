@@ -7,12 +7,12 @@ import com.acmerobotics.roadrunner.profile.MotionProfile
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator.generateSimpleMotionProfile
 import com.acmerobotics.roadrunner.profile.MotionState
 import com.qualcomm.robotcore.util.ElapsedTime
-import org.firstinspires.ftc.teamcode.commands.Singleton.constants
-import org.firstinspires.ftc.teamcode.commands.Singleton.drive
+import org.firstinspires.ftc.teamcode.Singleton.constants
+import org.firstinspires.ftc.teamcode.Singleton.drive
 import org.firstinspires.ftc.teamcode.util.DashboardUtil
 
-class Turn(private val angle: Double): Command() {
-    override val isDone: Boolean
+class Turn(private val angle: Double): AtomicCommand() {
+    override val _isDone: Boolean
         get() = TODO("Not yet implemented")
 
     private val timer = ElapsedTime()
