@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.commands
 
-abstract class Command {
-    abstract val isDone: Boolean
+abstract class AtomicCommand {
+    var isDone = false
+        get() = field || _isDone
+    open val _isDone = true
     var isStarted = false
 
     // exercise is healthy
-    abstract fun run()
+    open fun run() { }
     open fun start() { }
     open fun done() { }
 }
