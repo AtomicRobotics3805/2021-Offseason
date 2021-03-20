@@ -36,12 +36,14 @@ class SequentialCommandGroup: CommandGroup() {
 class ParallelCommandGroup: CommandGroup() {
     override fun run() {
         for(command in commands) {
-            if (!command.isStarted) {
-                command.start()
-                command.isStarted = true
+            if (!commands[0].isDone) {
+                if (!command.isStarted) {
+                    command.start()
+                    command.isStarted = true
+                }
+                command.run()
             }
-            command.run()
-            if (!command.isDone) {
+            else
                 command.done()
                 commands.remove(command)
             }
