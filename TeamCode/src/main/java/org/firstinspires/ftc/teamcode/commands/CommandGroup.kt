@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.commands
 
-fun sequential(block: SequentialCommandGroup.() -> Unit) {
-    SequentialCommandGroup().apply(block)
+fun sequential(block: SequentialCommandGroup.() -> Unit): SequentialCommandGroup {
+    return SequentialCommandGroup().apply(block)
 }
 
-fun parallel(block: ParallelCommandGroup.() -> Unit) {
-    ParallelCommandGroup().apply(block)
+fun parallel(block: ParallelCommandGroup.() -> Unit): ParallelCommandGroup {
+    return ParallelCommandGroup().apply(block)
 }
 
 abstract class CommandGroup: AtomicCommand() {
@@ -34,13 +34,15 @@ class SequentialCommandGroup: CommandGroup() {
 }
 
 class ParallelCommandGroup: CommandGroup() {
+    override fun start() {
+        for(command in commands) {
+            command.start()
+        }
+    }
+
     override fun run() {
         for(command in commands) {
-            if (!commands[0].isDone) {
-                if (!command.isStarted) {
-                    command.start()
-                    command.isStarted = true
-                }
+            if (!command.isDone) {
                 command.run()
             }
             else {
