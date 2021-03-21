@@ -2,9 +2,13 @@
 
 package org.firstinspires.ftc.teamcode.hardware.compbot
 
-import com.qualcomm.robotcore.hardware.*
+import com.qualcomm.robotcore.hardware.CRServo
+import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.hardware.DcMotorEx
+import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.Singleton.opMode
 import org.firstinspires.ftc.teamcode.commands.*
+import org.firstinspires.ftc.teamcode.hardware.compbot.MechanismConstants.RING_DELAY
 
 object Mechanisms {
     lateinit var intake: Intake
@@ -49,7 +53,7 @@ class Shooter {
     fun shootRing(): AtomicCommand {
         return sequential {
             +extendIndexerServos()
-            +Delay(1.0)
+            +Delay(RING_DELAY / 2)
             +retractIndexerServos()
         }
     }

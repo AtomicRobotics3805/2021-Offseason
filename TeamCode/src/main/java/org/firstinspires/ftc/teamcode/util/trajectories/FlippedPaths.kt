@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.util.trajectories
 
-import org.firstinspires.ftc.teamcode.Singleton.Color.*
+import org.firstinspires.ftc.teamcode.Singleton.Color.BLUE
 import org.firstinspires.ftc.teamcode.Singleton.color
 
 val Double.a get() = if (color == BLUE) this else 360 - this
