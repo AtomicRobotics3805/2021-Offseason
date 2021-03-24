@@ -10,7 +10,7 @@ public class MechanismController {
     private MecanumDriveComp drive;
 
     public static double INTAKE_POWER = 1.0;
-    public static double SHOOTER_POWER = 1.0;
+    public static double SHOOTER_POWER = 0.8;
 
     private boolean servosExtended;
     private boolean intakeOn;

@@ -35,8 +35,8 @@ import kotlin.math.atan
  *      A Button: Cycles through slow modes
  *      B Button: Causes robot to turn towards the tower goals
  */
-@TeleOp(name = "Competition OpMode")
-class CompTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
+@TeleOp(name = "One Driver TeleOp")
+class OneDriverTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
     private val powerShotPose = listOf(
             Vector2d(72.0, 20.0), Vector2d(72.0, 12.0), Vector2d(72.0, 4.0))
     private val towerPose = Vector2d(72.0,36.0)

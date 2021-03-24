@@ -2,21 +2,18 @@ package org.firstinspires.ftc.teamcode.autonomous
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
-import com.acmerobotics.roadrunner.trajectory.MarkerCallback
 import com.acmerobotics.roadrunner.trajectory.Trajectory
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.util.Vector2d
 import org.firstinspires.ftc.teamcode.util.toRadians
 import org.firstinspires.ftc.teamcode.autonomous.ObjectDetection.*
-import org.firstinspires.ftc.teamcode.hardware.BaseMecanumDrive
 import org.firstinspires.ftc.teamcode.hardware.compbot.MecanumDriveComp
-import org.firstinspires.ftc.teamcode.teleop.CompTeleOp
-import org.firstinspires.ftc.teamcode.util.toDegrees
+import org.firstinspires.ftc.teamcode.teleop.OneDriverTeleOp
 import kotlin.math.atan
 
 class PathManager(private var drive: MecanumDriveComp, private var mech: MechanismController, private val color: Color) {
 
-    private val startPose = Pose2d(-48.0, 48.0.y, 0.0.toRadians)
+    private val startPose = Pose2d(-63.0, 48.0.y, 0.0.toRadians)
 
     private val powerShotPose = listOf(Vector2d(72.0, 20.0), Vector2d(72.0, 12.0), Vector2d(72.0, 4.0))
 
@@ -39,7 +36,7 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
             .addDisplacementMarker{ mech.alignGoal() }
             .build()
     private var startToMidToShootPowershot = drive.trajectoryBuilder(startPose, startPose.heading)
-            .splineToSplineHeading(Pose2d(18.0, 28.0.y, 270.0.toRadians), 270.0.a.toRadians)
+            .splineToSplineHeading(Pose2d(18.0, 24.0.y, 270.0.toRadians), 270.0.a.toRadians)
             .addDisplacementMarker{ mech.dropGoal() }
             .splineToSplineHeading(Pose2d(-7.0, 28.0.y, powerShotAngle(Vector2d(-7.0, 28.0), 0)), 160.0.a.toRadians)
             .addDisplacementMarker{ mech.alignGoal() }
@@ -112,16 +109,18 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
             StackSize.FOUR -> followPathHigh()
         }
         mech.stopIntake()
-        CompTeleOp.startingPose = drive.poseEstimate
+        OneDriverTeleOp.startingPose = drive.poseEstimate
     }
 
     private fun followPathLow() {
+        mech.startIntake()
+        mech.startShooter()
         // travel to drop zone, drop wobble goal between movements, prepare to shoot rings
         drive.followTrajectory(startToLowToShootPowershot)
-        mech.startShooter()
 
         shootPowershot()
         mech.stopShooter()
+        mech.stopIntake()
 
         // travel to second wobble goal
         drive.followTrajectory(shootPowershotToWobble)
@@ -135,6 +134,7 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
 
     private fun followPathMid() {
         // start shooter
+        mech.startIntake()
         mech.startShooter()
 
         // travel to drop zone, drop wobble goal between movements, prepare to shoot rings
@@ -142,7 +142,6 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
 
         shootPowershot()
 
-        mech.startIntake()
 
         // travel to ring
         drive.followTrajectory(shootPowershotToRing)
@@ -168,6 +167,8 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
     }
 
     private fun followPathHigh() {
+        // start intake
+        mech.startIntake()
         // start shooter
         mech.startShooter()
 
@@ -175,9 +176,6 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
         drive.followTrajectory(startToHighToShootPowershot)
 
         shootPowershot()
-
-        // start intake
-        mech.startIntake()
 
         // travel to ring
         drive.followTrajectory(shootPowershotToRing)
@@ -217,21 +215,21 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
         drive.turnAsync(powerShotAngle(pos, 1) - startToLowToShootPowershot.end().heading)
 
         runtime.reset()
-        while(drive.isBusy || runtime.seconds() < 2.0) {
+        do {
             drive.update()
-            if(runtime.seconds() > 0.75) mech.retractShooterServos()
-            if(runtime.seconds() > 1.5) mech.shootRing()
-        }
+            if(runtime.seconds() > 0.5) mech.retractShooterServos()
+            if(!drive.isBusy && runtime.seconds() > 1.0) mech.shootRing()
+        } while(runtime.seconds() <= 1.0 || drive.isBusy)
 
         // turn to powershot 3
         drive.turnAsync(powerShotAngle(pos, 2) - startToLowToShootPowershot.end().heading)
 
         runtime.reset()
-        while(drive.isBusy || runtime.seconds() < 2.0) {
+        do {
             drive.update()
-            if(runtime.seconds() > 0.75) mech.retractShooterServos()
-            if(runtime.seconds() > 1.5) mech.shootRing()
-        }
+            if(runtime.seconds() > 0.5) mech.retractShooterServos()
+            if(!drive.isBusy && runtime.seconds() > 1.0) mech.shootRing()
+        } while(runtime.seconds() <= 1.0 || drive.isBusy)
 
         runtime.reset()
         mech.retractShooterServos()
