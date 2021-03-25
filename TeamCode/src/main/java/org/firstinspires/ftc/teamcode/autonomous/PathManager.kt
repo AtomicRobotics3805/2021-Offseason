@@ -30,9 +30,6 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
 
     private lateinit var lastPose: Pose2d
 
-    // number of degrees the shooter shoots offcenter
-    private val OFFSET = 14.3
-
     enum class Color {
         BLUE,
         RED
@@ -45,7 +42,7 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
             .addDisplacementMarker{ mech.dropGoal() }
             .build()
     private val startToMid = drive.trajectoryBuilder(startPose, startPose.heading)
-            .splineTo(Vector2d(14.0, 36.0), 270.0.toRadians)
+            .splineTo(Vector2d(14.0, 40.0), 270.0.toRadians)
             .addDisplacementMarker{ mech.dropGoal() }
             .build()
     private val startToHigh = drive.trajectoryBuilder(startPose, startPose.heading - 20.0.toRadians)
@@ -66,7 +63,7 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
     // travel to second wobble goal
     private val powershotToWobble = drive.trajectoryBuilder(Pose2d(midToPowershot.end().vec(), powerShotAngle(midToPowershot.end().vec(), 2)), powerShotAngle(midToPowershot.end().vec(), 2))
             .splineTo(Vector2d(-20.0, 34.0), 135.0.toRadians)
-            .splineTo(Vector2d(-50.0, 40.0), 180.0.toRadians)
+            .splineTo(Vector2d(-48.0, 40.0), 180.0.toRadians)
             .build()
 
     private val wobbleToShootTower =
@@ -74,12 +71,16 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
                     .splineTo(Vector2d(-10.0, 32.0), (Vector2d(-10.0, 32.0) - towerPose angleBetween Vector2d(1.0, 0.0)) + 180.0.toRadians + OFFSET.toRadians) // -10.0 inches because you are shooting
                     .build()
 
-    private val wobbleToLowToPark =
+    private val wobbleToLow =
             drive.trajectoryBuilder(powershotToWobble.end(), true)
-                    .splineToSplineHeading(Pose2d(8.0, 50.0.y, 0.0.toRadians), 320.0.a.flip.toRadians)
+                    .splineToLinearHeading(Pose2d(8.0, 48.0.y, 0.0.toRadians), 320.0.a.flip.toRadians)
                     .addDisplacementMarker{ mech.dropGoal() }
+                    .build()
+    private val lowToPark =
+            drive.trajectoryBuilder(wobbleToLow.end(), wobbleToLow.end().heading)
                     .splineTo(Vector2d(10.0, 28.0.y), 180.0.a.toRadians)
                     .build()
+
     private val towerToMidToPark =
             drive.trajectoryBuilder(wobbleToShootTower.end(), true)
                     .splineTo(Vector2d(14.0, 36.0), 90.0.toRadians)
@@ -124,7 +125,8 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
         mech.grabGoal()
 
         // travel to drop zone, drop wobble goal between movements, park
-        drive.followTrajectory(wobbleToLowToPark)
+        drive.followTrajectory(wobbleToLow)
+        drive.followTrajectory(lowToPark)
     }
 
     private fun followPathMid() {
@@ -250,4 +252,9 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
     })
 
     val Double.y get () = (if (color == Color.BLUE) this else this * -1)
+
+    companion object {
+        // number of degrees the shooter shoots offcenter
+        val OFFSET = 17.3
+    }
 }

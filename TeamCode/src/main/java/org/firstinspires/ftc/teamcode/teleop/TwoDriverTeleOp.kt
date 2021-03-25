@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.autonomous.MechanismController
+import org.firstinspires.ftc.teamcode.autonomous.PathManager
 import org.firstinspires.ftc.teamcode.hardware.compbot.DriveConstantsComp
 import org.firstinspires.ftc.teamcode.hardware.compbot.MecanumDriveComp
 import org.firstinspires.ftc.teamcode.util.CustomGamepad
@@ -41,10 +42,13 @@ class TwoDriverTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
             Vector2d(72.0, 20.0), Vector2d(72.0, 12.0), Vector2d(72.0, 4.0))
     private val towerPose = Vector2d(72.0,36.0)
     private lateinit var mech: MechanismController
-    private var ringServoTimer = ElapsedTime()
-    private var shootRingTimer = ElapsedTime()
+    private val ringServoTimer = ElapsedTime()
+    private val shootRingTimer = ElapsedTime()
+    private val raiseArmTimer = ElapsedTime()
     private val customGamepad1 = CustomGamepad()
     private val customGamepad2 = CustomGamepad()
+    private var aboutToRaiseArm = false
+    private var aboutToCloseClaw = false
 
     @Throws(InterruptedException::class)
     override fun runOpMode() {
@@ -61,7 +65,7 @@ class TwoDriverTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
             customGamepad2.update(gamepad2)
             // turning towards tower
             if(customGamepad1.b.pressed) {
-                drive.turnAsync(towerAngle(Vector2d(drive.poseEstimate)))
+                drive.turnAsync(towerAngle(Vector2d(drive.poseEstimate)) - drive.poseEstimate.heading)
             }
 
             if(customGamepad2.a.pressed) {
@@ -73,7 +77,9 @@ class TwoDriverTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
             }
 
             if(customGamepad2.dpad_up.pressed) {
-                mech.grabGoal()
+                aboutToRaiseArm = true
+                raiseArmTimer.reset()
+                mech.closeClawManually()
             }
 
             if(customGamepad2.dpad_down.pressed) {
@@ -82,6 +88,32 @@ class TwoDriverTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
 
             if(customGamepad2.dpad_left.pressed) {
                 mech.dropGoal()
+            }
+
+            if(gamepad2.left_trigger > 0.1) {
+                mech.raiseArmManually()
+            }
+
+            if(gamepad2.right_trigger > 0.1) {
+                mech.lowerArmManually()
+            }
+
+            if(customGamepad2.left_bumper.pressed) {
+                mech.openClawManually()
+            }
+
+            if(customGamepad2.left_bumper.pressed) {
+                mech.closeClawManually()
+            }
+
+            if(aboutToRaiseArm && raiseArmTimer.seconds() > 1.0) {
+                aboutToRaiseArm = false
+                mech.raiseArm()
+            }
+
+            if(aboutToCloseClaw && !(drive as MecanumDriveComp).wobbleArm.isBusy) {
+                aboutToCloseClaw = false
+                mech.closeClawManually()
             }
 
             if(customGamepad2.y.pressed && shootRingTimer.seconds() > TeleOpConstants.SHOOT_TIME) {
@@ -101,11 +133,11 @@ class TwoDriverTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
     }
 
     private fun towerAngle(position: Vector2d): Double {
-        return atan(towerPose.y - position.y / towerPose.x - position.x) - 90.0.toRadians
+        return (position - towerPose angleBetween Vector2d(1.0, 0.0)) + 5.0.toRadians + PathManager.OFFSET.toRadians
     }
 
     private fun powerShotAngle(position: Vector2d, num: Int): Double {
-        return atan(powerShotPose[num].y - position.y / powerShotPose[num].x - position.x) - 90.0.toRadians
+        return (position - powerShotPose[num] angleBetween Vector2d(1.0, 0.0)) + PathManager.OFFSET.toRadians
     }
 
     companion object {
