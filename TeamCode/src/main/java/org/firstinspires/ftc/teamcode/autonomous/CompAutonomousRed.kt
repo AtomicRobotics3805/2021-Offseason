@@ -10,6 +10,8 @@ import org.firstinspires.ftc.teamcode.hardware.BaseDriveConstants
 import org.firstinspires.ftc.teamcode.hardware.BaseMecanumDrive
 import org.firstinspires.ftc.teamcode.hardware.compbot.DriveConstantsComp
 import org.firstinspires.ftc.teamcode.hardware.compbot.MecanumDriveComp
+import org.firstinspires.ftc.teamcode.teleop.OneDriverTeleOp
+import org.firstinspires.ftc.teamcode.teleop.TwoDriverTeleOp
 
 @Autonomous(name="Red Auto")
 class CompAutonomousRed : LinearOpMode() {
@@ -59,6 +61,8 @@ class CompAutonomousRed : LinearOpMode() {
         packet.clearLines()
 
         pathManager.followPath(stackSize)
+        OneDriverTeleOp.startingPose = drive.poseEstimate
+        TwoDriverTeleOp.startingPose = drive.poseEstimate
 
         while(opModeIsActive()) {
             packet.addLine("Path Complete")
