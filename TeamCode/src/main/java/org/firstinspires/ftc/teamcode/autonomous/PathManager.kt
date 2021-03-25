@@ -14,13 +14,14 @@ import org.firstinspires.ftc.teamcode.util.toRadians
 import org.firstinspires.ftc.teamcode.autonomous.ObjectDetection.*
 import org.firstinspires.ftc.teamcode.hardware.compbot.MecanumDriveComp
 import org.firstinspires.ftc.teamcode.teleop.OneDriverTeleOp
+import org.firstinspires.ftc.teamcode.util.toDegrees
 import kotlin.math.atan
 
 class PathManager(private var drive: MecanumDriveComp, private var mech: MechanismController, private val color: Color, private val opMode: OpMode? = null) {
 
     private val startPose = Pose2d(-63.0, 48.0.y, 0.0.toRadians)
 
-    private val powerShotPose = listOf(Vector2d(72.0, 20.0), Vector2d(72.0, 12.0), Vector2d(72.0, 4.0))
+    private val powerShotPose = listOf(Vector2d(72.0, 20.0), Vector2d(72.0, 12.0), Vector2d(72.0, 1.0))
 
     private val towerPose = Vector2d(72.0, 36.0)
 
@@ -45,7 +46,7 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
             .addDisplacementMarker{ mech.raiseArm() }
             .build()
     private var startToMidToShootPowershot = drive.trajectoryBuilder(startPose, startPose.heading)
-            .addDisplacementMarker(68.0) { mech.dropGoal() }
+            .addDisplacementMarker(72.0) { mech.dropGoal() }
             .splineToSplineHeading(Pose2d(14.0, 44.0.y, 270.0.toRadians), 270.0.a.toRadians)
             .splineToSplineHeading(Pose2d(-7.0, 26.0.y, powerShotAngle(Vector2d(-7.0, 26.0), 0)), 160.0.a.toRadians,
             MinVelocityConstraint(listOf(
@@ -165,24 +166,24 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
         drive.followTrajectory(shootPowershotToRing)
 
         // turn to tower
-        drive.turn(towerAngle(Vector2d(drive.poseEstimate)) - drive.poseEstimate.heading)
+        //drive.turn(towerAngle(Vector2d(drive.poseEstimate)) - drive.poseEstimate.heading)
 
         // stop intake
-        mech.stopIntake()
+        //mech.stopIntake()
 
         // shoot top goal
-        mech.shootRing(true)
-        mech.shootRing(true)
-        mech.stopShooter()
+        //mech.shootRing(true)
+        //mech.shootRing(true)
+        //mech.stopShooter()
 
         // travel to second wobble goal
-        drive.followTrajectory(ringToWobble)
+        //drive.followTrajectory(ringToWobble)
 
         // pick up second wobble goal
-        mech.grabGoal()
+        //mech.grabGoal()
 
         // travel to drop zone, drop wobble goal between movements, park
-        drive.followTrajectory(wobbleToMidToPark)
+        //drive.followTrajectory(wobbleToMidToPark)
     }
 
     private fun followPathHigh() {
@@ -225,15 +226,15 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
     }
 
     private fun shootPowershot() {
-        val pos = Vector2d(startToLowToShootPowershot.end())
+        val pos = Vector2d(drive.poseEstimate)
 
         // shoot powershot 1
-        opMode?.telemetry?.addData("Shot Ring", 1)
-        opMode?.telemetry?.update()
         mech.shootRing()
 
         // turn to powershot 2
-        drive.turnAsync(powerShotAngle(pos, 1) - startToLowToShootPowershot.end().heading)
+        drive.turnAsync(powerShotAngle(pos, 1) - drive.poseEstimate.heading)
+        opMode?.telemetry?.addData("Turn Amount", (powerShotAngle(pos, 1) - drive.poseEstimate.heading).toDegrees)
+        opMode?.telemetry?.update()
 
         runtime.reset()
         do {
@@ -241,13 +242,13 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
             if(runtime.seconds() > 0.5) mech.retractShooterServos()
             if(!drive.isBusy && runtime.seconds() > 1.0) {
                 mech.shootRing()
-                opMode?.telemetry?.addData("Shot Ring", 2)
-                opMode?.telemetry?.update()
             }
         } while(runtime.seconds() <= 1.0 || drive.isBusy)
 
         // turn to powershot 3
-        drive.turnAsync(powerShotAngle(pos, 2) - startToLowToShootPowershot.end().heading)
+        drive.turnAsync(powerShotAngle(pos, 2) - drive.poseEstimate.heading)
+        opMode?.telemetry?.addData("Turn Amount", (powerShotAngle(pos, 2) - drive.poseEstimate.heading).toDegrees)
+        opMode?.telemetry?.update()
 
         runtime.reset()
         do {
@@ -264,11 +265,11 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
     }
 
     private fun towerAngle(position: Vector2d): Double {
-        return atan(towerPose.y - position.y / towerPose.x - position.x) + 95.0.toRadians
+        return atan(towerPose.y - position.y / towerPose.x - position.x) + 104.3.toRadians
     }
 
     private fun powerShotAngle(position: Vector2d, num: Int): Double {
-        return atan(powerShotPose[num].y - position.y / powerShotPose[num].x - position.x) + 95.0.toRadians
+        return atan(powerShotPose[num].y - position.y / powerShotPose[num].x - position.x) + 104.3.toRadians
     }
 
     val Double.a get () = (if (color == Color.BLUE) this else 360 - this)

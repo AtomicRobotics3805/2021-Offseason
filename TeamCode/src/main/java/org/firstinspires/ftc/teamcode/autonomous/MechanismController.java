@@ -28,7 +28,7 @@ public class MechanismController {
 
     public void grabGoal() {
         drive.wobbleArm.setTargetPosition(-1050);
-        drive.wobbleHand.setPower(0.5);
+        drive.wobbleHand.setPower(-1);
         while(drive.wobbleArm.isBusy())
             drive.wobbleArm.setPower(0.5);
         drive.wobbleHand.setPower(1);

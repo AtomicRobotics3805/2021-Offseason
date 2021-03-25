@@ -36,7 +36,7 @@ class CompAutonomousRed : LinearOpMode() {
         constants = DriveConstantsComp
         drive = MecanumDriveComp(hardwareMap, constants)
         mech = MechanismController(drive)
-        pathManager = PathManager(drive as MecanumDriveComp, mech, PathManager.Color.RED)
+        pathManager = PathManager(drive, mech, PathManager.Color.RED)
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
 
