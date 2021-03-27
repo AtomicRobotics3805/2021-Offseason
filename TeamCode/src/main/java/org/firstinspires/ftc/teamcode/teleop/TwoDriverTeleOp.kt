@@ -49,6 +49,7 @@ class TwoDriverTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
     private val customGamepad2 = CustomGamepad()
     private var aboutToRaiseArm = false
     private var aboutToCloseClaw = false
+    private var aboutToOpenClaw = false
 
     @Throws(InterruptedException::class)
     override fun runOpMode() {
@@ -76,6 +77,10 @@ class TwoDriverTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
                 mech.switchShooter()
             }
 
+            if(customGamepad2.x.pressed) {
+                mech.reverseIntake()
+            }
+
             if(customGamepad2.dpad_up.pressed) {
                 aboutToRaiseArm = true
                 raiseArmTimer.reset()
@@ -87,15 +92,26 @@ class TwoDriverTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
             }
 
             if(customGamepad2.dpad_left.pressed) {
-                mech.dropGoal()
+                mech.raiseArm()
+                aboutToOpenClaw = true
             }
 
             if(gamepad2.left_trigger > 0.1) {
                 mech.raiseArmManually()
+                mech.targetPos = drive.wobbleArm.currentPosition
             }
 
-            if(gamepad2.right_trigger > 0.1) {
+            else if(gamepad2.right_trigger > 0.1) {
                 mech.lowerArmManually()
+                mech.targetPos = drive.wobbleArm.currentPosition
+            }
+
+            else if(drive.wobbleArm.mode != DcMotor.RunMode.RUN_TO_POSITION) {
+                mech.stopArmManually()
+            }
+
+            else {
+                mech.targetPos = drive.wobbleArm.currentPosition
             }
 
             if(customGamepad2.left_bumper.pressed) {
@@ -108,10 +124,15 @@ class TwoDriverTeleOp : BasicTeleOp(*TeleOpConstants.speeds) {
 
             if(aboutToRaiseArm && raiseArmTimer.seconds() > 1.0) {
                 aboutToRaiseArm = false
-                mech.raiseArm()
+                mech.raiseArmHigh()
             }
 
-            if(aboutToCloseClaw && !(drive as MecanumDriveComp).wobbleArm.isBusy) {
+            if(aboutToOpenClaw && !drive.wobbleArm.isBusy) {
+                aboutToOpenClaw = false
+                mech.openClawManually()
+            }
+
+            if(aboutToCloseClaw && !drive.wobbleArm.isBusy) {
                 aboutToCloseClaw = false
                 mech.closeClawManually()
             }

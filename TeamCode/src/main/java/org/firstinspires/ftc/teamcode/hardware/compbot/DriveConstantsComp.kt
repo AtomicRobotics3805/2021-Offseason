@@ -67,7 +67,7 @@ object DriveConstantsComp : BaseDriveConstants() {
          * acceleration values are required, and the jerk values are optional (setting a jerk of 0.0
          * forces acceleration-limited profiling). All distance units are inches.
          */
-        maxVel = 35.0
+        maxVel = 40.0
         maxAccel = 45.0
         maxAngVel = Math.toRadians(60.0)
         maxAngAccel = Math.toRadians(60.0)

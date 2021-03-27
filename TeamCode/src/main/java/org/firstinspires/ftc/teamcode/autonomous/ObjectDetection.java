@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -41,27 +42,27 @@ public class ObjectDetection {
     double screen_fraction = 0.5;
 
     HardwareMap hardwareMap;
+    LinearOpMode opMode;
 
-    public static StackSize detect(LinearOpMode opMode) {
-        return new ObjectDetection().detectNonstatic(opMode);
-    }
-
-    public StackSize detectNonstatic(LinearOpMode opMode) {
+    public void init(LinearOpMode opMode) {
         hardwareMap = opMode.hardwareMap;
+        this.opMode = opMode;
 
         initVuforia();
         initTfod();
+
+
 
         if (tfod != null) {
             tfod.activate();
         }
 
         runtime.reset();
-        while (runtime.seconds()<2 && !opMode.isStopRequested()) {
-            recognitions = tfod.getRecognitions();
-        }
+    }
 
-        if (!opMode.isStopRequested()) {
+    public StackSize detect() {
+       if (!opMode.isStopRequested()) {
+            recognitions = tfod.getRecognitions();
             if (tfod != null) {
                 if (recognitions.size() != 0) {
                     for (Recognition new_recognition : recognitions) {

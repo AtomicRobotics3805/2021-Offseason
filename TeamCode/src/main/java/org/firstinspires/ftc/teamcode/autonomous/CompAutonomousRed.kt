@@ -21,6 +21,7 @@ class CompAutonomousRed : LinearOpMode() {
     private lateinit var drive: MecanumDriveComp
     private lateinit var mech: MechanismController
     private lateinit var pathManager: PathManager
+    private lateinit var detector: ObjectDetection
     private val runtime: ElapsedTime = ElapsedTime()
     private val packet = TelemetryPacket()
     private val dashboard = FtcDashboard.getInstance()
@@ -37,6 +38,8 @@ class CompAutonomousRed : LinearOpMode() {
         drive = MecanumDriveComp(hardwareMap, constants)
         mech = MechanismController(drive, false)
         pathManager = PathManager(drive, mech, PathManager.Color.RED)
+        detector = ObjectDetection()
+        detector.init(this)
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
 
@@ -44,7 +47,7 @@ class CompAutonomousRed : LinearOpMode() {
         dashboard.sendTelemetryPacket(packet)
         packet.clearLines()
 
-        stackSize = ObjectDetection.detect(this)
+        stackSize = detector.detect()
 
         while(!(opModeIsActive() || isStopRequested)) {
             packet.addLine("Ready")
@@ -52,6 +55,7 @@ class CompAutonomousRed : LinearOpMode() {
             packet.put("Detected Stack Size", stackSize.name)
             dashboard.sendTelemetryPacket(packet)
             packet.clearLines()
+            stackSize = detector.detect()
         }
 
         runtime.reset()

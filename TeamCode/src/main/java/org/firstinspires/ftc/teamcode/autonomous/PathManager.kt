@@ -37,7 +37,7 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
 
     // travel to drop zone, drop wobble goal between movements, prepare to shoot rings
     private val startToLow = drive.trajectoryBuilder(startPose, startPose.heading)
-            .splineTo(Vector2d(8.0, 50.0.y), 320.0.a.flip.toRadians)
+            .splineTo(Vector2d(3.0, 52.0.y), 320.0.a.flip.toRadians)
             .addDisplacementMarker{ mech.dropGoal() }
             .build()
     private val startToMid = drive.trajectoryBuilder(startPose, startPose.heading)
@@ -45,7 +45,7 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
             .addDisplacementMarker{ mech.dropGoal() }
             .build()
     private val startToHigh = drive.trajectoryBuilder(startPose, startPose.heading)
-            .splineToLinearHeading(Pose2d(49.0, 57.0.y, 90.0.toRadians), 0.0.toRadians)
+            .splineToConstantHeading(Vector2d(58.0, 42.0), 0.0.toRadians)
             .addDisplacementMarker{ mech.dropGoal() }
             .build()
 
@@ -59,39 +59,44 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
             .splineToLinearHeading(Pose2d(-7.0, 26.0, powerShotAngle(Vector2d(-7.0, 26.0), 0)), 90.0.toRadians)
             .build()
 
-    // travel to second wobble goal
-    private val powershotToWobble = drive.trajectoryBuilder(Pose2d(midToPowershot.end().vec(), powerShotAngle(midToPowershot.end().vec(), 2)), powerShotAngle(midToPowershot.end().vec(), 2))
+    private val powershotToRingToWobble = drive.trajectoryBuilder(Pose2d(midToPowershot.end().vec(), powerShotAngle(midToPowershot.end().vec(), 2)), powerShotAngle(midToPowershot.end().vec(), 2))
             .splineTo(Vector2d(-20.0, 34.0), 135.0.toRadians)
-            .splineTo(Vector2d(-48.0, 40.0), 180.0.toRadians)
+            .splineTo(Vector2d(-48.0, 46.0), 180.0.toRadians)
+            .splineToConstantHeading(Vector2d(-48.0, 38.0), 270.0.toRadians)
             .build()
 
-    private val wobbleToShootTower =
-            drive.trajectoryBuilder(powershotToWobble.end(), true)
+    private val powershotToWobble = drive.trajectoryBuilder(Pose2d(midToPowershot.end().vec(), powerShotAngle(midToPowershot.end().vec(), 2)), powerShotAngle(midToPowershot.end().vec(), 2))
+            .splineToSplineHeading(Pose2d(-32.0, 25.0, 270.0.toRadians), 180.0.toRadians)
+            .splineToConstantHeading(Vector2d(-38.0, 25.0), 180.0.toRadians)
+            .build()
+
+    private val wobbleSideToShootTower =
+            drive.trajectoryBuilder(powershotToRingToWobble.end(), true)
                     .splineTo(Vector2d(-10.0, 32.0), (Vector2d(-10.0, 32.0) - towerPose angleBetween Vector2d(1.0, 0.0)) + 180.0.toRadians + OFFSET.toRadians) // -10.0 inches because you are shooting
                     .build()
 
     private val wobbleToLow =
             drive.trajectoryBuilder(powershotToWobble.end(), true)
-                    .splineToLinearHeading(Pose2d(8.0, 48.0.y, 0.0.toRadians), 320.0.a.flip.toRadians)
+                    .splineToLinearHeading(Pose2d(6.0, 46.0.y, 0.0.toRadians), 320.0.a.flip.toRadians)
                     .addDisplacementMarker{ mech.dropGoal() }
                     .build()
-    private val towerToHigh =
-            drive.trajectoryBuilder(wobbleToShootTower.end(), wobbleToShootTower.end().heading + 210.0.toRadians)
-                    .splineToLinearHeading(Pose2d(49.0, 57.0.y, 90.0.toRadians), 45.0.toRadians)
+    private val wobbleToHigh =
+            drive.trajectoryBuilder(powershotToWobble.end(), powershotToWobble.end().heading + 90.0.toRadians)
+                    .splineToLinearHeading(Pose2d(60.0, 45.0.y, 0.0.toRadians), 10.0.toRadians)
                     .addDisplacementMarker{ mech.dropGoal() }
                     .build()
 
     private val lowToPark =
             drive.trajectoryBuilder(wobbleToLow.end(), wobbleToLow.end().heading - 90.0.toRadians)
-                    .splineTo(Vector2d(10.0, 28.0.y), 180.0.a.toRadians)
+                    .splineTo(Vector2d(10.0, 28.0.y), 270.0.a.toRadians)
                     .build()
     private val highToPark =
-            drive.trajectoryBuilder(towerToHigh.end(), towerToHigh.end().heading + 90.0.toRadians)
+            drive.trajectoryBuilder(wobbleToHigh.end(), wobbleToHigh.end().heading + 90.0.toRadians)
                     .splineTo(Vector2d(10.0, 28.0.y), 180.0.a.toRadians)
                     .build()
 
     private val towerToMidToPark =
-            drive.trajectoryBuilder(wobbleToShootTower.end(), true)
+            drive.trajectoryBuilder(wobbleSideToShootTower.end(), true)
                     .splineTo(Vector2d(14.0, 36.0), 90.0.toRadians)
                     .addDisplacementMarker{ mech.dropGoal() }
                     .build()
@@ -110,7 +115,7 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
     }
 
     private fun followPathLow() {
-        mech.startIntake()
+        //mech.startIntake()
         mech.startShooter()
         // travel to drop zone, drop wobble goal between movements, prepare to shoot rings
         drive.followTrajectory(startToLow)
@@ -118,7 +123,8 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
         drive.followTrajectory(lowToPowershot)
 
         shootPowershot()
-        mech.stopIntake()
+        //mech.stopIntake()
+        mech.alignGoal()
 
         // travel to second wobble goal
         drive.followTrajectory(powershotToWobble)
@@ -134,7 +140,6 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
 
     private fun followPathMid() {
         // start shooter
-        mech.startIntake()
         mech.startShooter()
 
         // travel to drop zone, drop wobble goal between movements, prepare to shoot rings
@@ -143,14 +148,18 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
         drive.followTrajectory(midToPowershot)
 
         shootPowershot()
+        mech.alignGoal()
+        mech.startIntake()
 
-        drive.followTrajectory(powershotToWobble)
+        drive.followTrajectory(powershotToRingToWobble)
 
         // pick up second wobble goal
         mech.grabGoal()
 
+        mech.stopIntake()
+
         // travel to tower
-        drive.followTrajectory(wobbleToShootTower)
+        drive.followTrajectory(wobbleSideToShootTower)
 
         // shoot top goal
         mech.shootRing(true)
@@ -166,7 +175,7 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
 
     private fun followPathHigh() {
         // start intake
-        mech.startIntake()
+        //mech.startIntake()
         // start shooter
         mech.startShooter()
 
@@ -176,25 +185,15 @@ class PathManager(private var drive: MecanumDriveComp, private var mech: Mechani
         drive.followTrajectory(highToPowershot)
 
         shootPowershot()
+        mech.alignGoal()
+        mech.stopShooter()
 
         drive.followTrajectory(powershotToWobble)
 
         mech.grabGoal()
 
         // travel to tower
-        drive.followTrajectory(wobbleToShootTower)
-
-        // shoot top goal
-        mech.shootRing(true)
-        mech.shootRing(true)
-        mech.shootRing(true)
-        mech.stopShooter()
-
-        // stop intake
-        mech.stopIntake()
-
-        // travel to drop zone, drop wobble goal, park
-        drive.followTrajectory(towerToHigh)
+        drive.followTrajectory(wobbleToHigh)
 
         drive.followTrajectory(highToPark)
 

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.Gamepad
 import org.firstinspires.ftc.teamcode.hardware.BaseDriveConstants
 import org.firstinspires.ftc.teamcode.hardware.BaseMecanumDrive
+import org.firstinspires.ftc.teamcode.hardware.compbot.MecanumDriveComp
 import org.firstinspires.ftc.teamcode.util.CustomGamepad
 
 /*
@@ -16,7 +17,7 @@ import org.firstinspires.ftc.teamcode.util.CustomGamepad
  */
 
 abstract class BasicTeleOp( vararg speeds: Double) : LinearOpMode() {
-    protected lateinit var drive: BaseMecanumDrive
+    protected lateinit var drive: MecanumDriveComp
     protected lateinit var constants: BaseDriveConstants
 
     protected val packet = TelemetryPacket()

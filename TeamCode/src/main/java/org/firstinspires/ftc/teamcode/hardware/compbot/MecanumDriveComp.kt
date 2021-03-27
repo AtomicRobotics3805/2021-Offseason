@@ -142,6 +142,8 @@ class MecanumDriveComp(val hardwareMap: HardwareMap, constants: BaseDriveConstan
 
         wobbleHand.power = 1.0
 
+        shooter.mode = RunMode.RUN_USING_ENCODER
+
         intake.direction = DcMotorSimple.Direction.REVERSE
     }
 
