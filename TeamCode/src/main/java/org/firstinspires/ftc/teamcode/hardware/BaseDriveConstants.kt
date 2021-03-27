@@ -73,6 +73,9 @@ abstract class BaseDriveConstants {
     @JvmField
     var lateralMultiplier = 0.0
 
+    @JvmField
+    var driftMultiplier = 0.0
+
     lateinit var translationalPID: PIDCoefficients
     lateinit var headingPID: PIDCoefficients
     
