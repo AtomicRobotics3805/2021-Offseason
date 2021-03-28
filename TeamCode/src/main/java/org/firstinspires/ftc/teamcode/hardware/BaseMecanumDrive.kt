@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.PIDFCoefficients
 import com.qualcomm.robotcore.hardware.VoltageSensor
+import org.firstinspires.ftc.teamcode.util.trajectories.ParallelTrajectory
 import java.util.*
 import kotlin.math.abs
 
@@ -32,7 +33,7 @@ abstract class BaseMecanumDrive(val constants: BaseDriveConstants, var teleOp: B
 
     protected abstract val velConstraint: TrajectoryVelocityConstraint
     protected abstract val accelConstraint: TrajectoryAccelerationConstraint
-    protected abstract val follower: TrajectoryFollower
+    abstract val follower: TrajectoryFollower
     abstract val poseHistory: LinkedList<Pose2d>
 
     protected abstract val leftFront: DcMotorEx
@@ -50,6 +51,8 @@ abstract class BaseMecanumDrive(val constants: BaseDriveConstants, var teleOp: B
     protected val dashboard: FtcDashboard = FtcDashboard.getInstance()
 
     protected var lastPoseOnTurn: Pose2d? = null
+
+    var trajectory: ParallelTrajectory? = null
 
     val lateralMultiplier = constants.lateralMultiplier
     

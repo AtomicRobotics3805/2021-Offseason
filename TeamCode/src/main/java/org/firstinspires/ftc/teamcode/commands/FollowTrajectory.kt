@@ -11,17 +11,14 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil
 
 class FollowTrajectory(private val trajectory: Trajectory): AtomicCommand() {
     override val _isDone: Boolean
-        get() = follower.isFollowing()
-
-    private val follower = HolonomicPIDVAFollower(constants.translationalPID, constants.translationalPID, constants.headingPID,
-            Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5)
+        get() = drive.follower.isFollowing()
 
     override fun run() {
         val packet = TelemetryPacket()
         val fieldOverlay = packet.fieldOverlay()
-        val t = follower.elapsedTime()
+        val t = drive.follower.elapsedTime()
 
-        drive.setDriveSignal(follower.update(drive.poseEstimate))
+        drive.setDriveSignal(drive.follower.update(drive.poseEstimate))
 
         packet.addLine("following trajectory")
         packet.put("x", drive.poseEstimate.x)
