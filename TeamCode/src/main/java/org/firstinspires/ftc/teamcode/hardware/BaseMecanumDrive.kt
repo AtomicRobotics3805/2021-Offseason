@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.util.kinematics.AtomicMecanumKinematics
 import java.util.*
 import kotlin.math.abs
 
-abstract class BaseMecanumDrive(val constants: BaseDriveConstants, var teleOp: Boolean = false, val op: OpMode? = null):
+abstract class BaseMecanumDrive(val constants: BaseDriveConstants, var teleOp: Boolean = false):
         MecanumDrive(constants.kV, constants.kA, constants.kStatic, constants.trackWidth, constants.trackWidth, constants.lateralMultiplier) {
     var TRANSLATIONAL_PID = constants.translationalPID
     var HEADING_PID = constants.headingPID
@@ -182,23 +182,6 @@ abstract class BaseMecanumDrive(val constants: BaseDriveConstants, var teleOp: B
                 constants.driftTurnMultiplier
         )
         val powers = Kinematics.calculateMotorFeedforward(velocities, accelerations, constants.kV, constants.kA, constants.kStatic)
-        val regVelocities = MecanumKinematics.robotToWheelVelocities(
-                driveSignal.vel,
-                constants.trackWidth,
-                constants.trackWidth,
-                constants.lateralMultiplier
-        )
-        val regAccelerations = MecanumKinematics.robotToWheelAccelerations(
-                driveSignal.accel,
-                constants.trackWidth,
-                constants.trackWidth,
-                constants.lateralMultiplier
-        )
-        val regPowers = Kinematics.calculateMotorFeedforward(regVelocities, regAccelerations, constants.kV, constants.kA, constants.kStatic)
-        op?.telemetry?.addData("driftMultiplier", constants.driftMultiplier)
-        op?.telemetry?.addData("driftTurnMultiplier", constants.driftTurnMultiplier)
-        op?.telemetry?.addData("Powers", powers.toString())
-        op?.telemetry?.update()
         setMotorPowers(powers[0], powers[1], powers[2], powers[3])
     }
 

@@ -38,7 +38,7 @@ import kotlin.math.abs
 */
 @Config
 
-class SampleMecanumDrive @JvmOverloads constructor(val hardwareMap: HardwareMap, constants: BaseDriveConstants, op: OpMode? = null) : BaseMecanumDrive(constants, false, op) {
+class SampleMecanumDrive @JvmOverloads constructor(val hardwareMap: HardwareMap, constants: BaseDriveConstants) : BaseMecanumDrive(constants, false) {
     override var VX_WEIGHT = 1.0
     override var VY_WEIGHT = 1.0
     override var OMEGA_WEIGHT = 1.0
