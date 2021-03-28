@@ -18,6 +18,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.*
 import com.acmerobotics.roadrunner.util.NanoClock
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.hardware.lynx.LynxModule
+import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.*
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior
@@ -36,7 +37,8 @@ import kotlin.math.abs
 * Simple mecanum drive hardware implementation for REV hardware.
 */
 @Config
-class SampleMecanumDrive(val hardwareMap: HardwareMap, constants: BaseDriveConstants) : BaseMecanumDrive(constants) {
+
+class SampleMecanumDrive @JvmOverloads constructor(val hardwareMap: HardwareMap, constants: BaseDriveConstants, op: OpMode? = null) : BaseMecanumDrive(constants, false, op) {
     override var VX_WEIGHT = 1.0
     override var VY_WEIGHT = 1.0
     override var OMEGA_WEIGHT = 1.0
@@ -78,16 +80,15 @@ class SampleMecanumDrive(val hardwareMap: HardwareMap, constants: BaseDriveConst
             module.bulkCachingMode = LynxModule.BulkCachingMode.AUTO
         }
 
-        //TODO: adjust the names of the following hardware devices to match your configuration
+        // FINISHED: adjust the names of the following hardware devices to match your configuration
         imu = hardwareMap.get(BNO055IMU::class.java, "imu")
         val parameters = BNO055IMU.Parameters()
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS
         imu.initialize(parameters)
 
-        //TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
-        //        upward (normal to the floor) using a command like the following:
-        BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN)
-
+        // FINISHED: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
+        // upward (normal to the floor) using a command like the following:
+        // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
         for (motor in motors) {
             val motorConfigurationType = motor.motorType.clone()
             motorConfigurationType.achieveableMaxRPMFraction = 1.0
@@ -103,12 +104,12 @@ class SampleMecanumDrive(val hardwareMap: HardwareMap, constants: BaseDriveConst
             setPIDFCoefficients(RunMode.RUN_USING_ENCODER, constants.motorVeloPID)
         }
 
-        //TODO: reverse any motors using DcMotor.setDirection()
-        leftRear.direction = DcMotorSimple.Direction.REVERSE
-        leftFront.direction = DcMotorSimple.Direction.REVERSE
+        // FINISHED: reverse any motors using DcMotor.setDirection()
+        rightRear.direction = DcMotorSimple.Direction.REVERSE
+        rightFront.direction = DcMotorSimple.Direction.REVERSE
 
-        //TODO: if desired, use setLocalizer() to change the localization method
-        //      for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...))
+        // FINISHED: if desired, use setLocalizer() to change the localization method
+        // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
     }
 
     private val lastError: Pose2d

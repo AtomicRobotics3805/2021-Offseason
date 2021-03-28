@@ -45,8 +45,8 @@ object DriveConstants : BaseDriveConstants() {
          * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from gearRatio.
          */
         wheelRadius = 2.0 // in
-        gearRatio = 0.5 // output (wheel) speed / input (motor) speed
-        trackWidth = 23.0 // in
+        gearRatio = 1.053 // output (wheel) speed / input (motor) speed
+        trackWidth = 7.81 // in
 
         /*
          * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -55,9 +55,9 @@ object DriveConstants : BaseDriveConstants() {
          * empirically tuned.
          */
 
-        kV = 0.0245
-        kA = 0.0035
-        kStatic = 0.01
+        kV = 1.0 / rpmToVelocity(maxRPM)
+        kA = 0.0
+        kStatic = 0.0
 
         /*
          * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -67,14 +67,17 @@ object DriveConstants : BaseDriveConstants() {
          * acceleration values are required, and the jerk values are optional (setting a jerk of 0.0
          * forces acceleration-limited profiling). All distance units are inches.
          */
-        maxVel = 35.0
-        maxAccel = 45.0
+        maxVel = 10.0
+        maxAccel = 30.0
         maxAngVel = Math.toRadians(60.0)
         maxAngAccel = Math.toRadians(60.0)
 
-        lateralMultiplier = 1.0
+        lateralMultiplier = 1.23
 
-        translationalPID = PIDCoefficients(8.0, 0.0, 0.0)
-        headingPID = PIDCoefficients(8.0, 0.0, 0.0)
+        driftMultiplier = 1.0
+        driftTurnMultiplier = 0.9
+
+        translationalPID = PIDCoefficients(0.0, 0.0, 0.0)
+        headingPID = PIDCoefficients(0.0, 0.0, 0.0)
     }
 }

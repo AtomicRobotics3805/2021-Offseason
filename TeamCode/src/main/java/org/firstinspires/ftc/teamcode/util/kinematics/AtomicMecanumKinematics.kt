@@ -9,14 +9,15 @@ object AtomicMecanumKinematics {
             trackWidth: Double,
             wheelBase: Double = trackWidth,
             lateralMultiplier: Double = 1.0,
-            driftMultiplier: Double = 1.0
+            driftMultiplier: Double = 1.0,
+            driftTurnMultiplier: Double = 1.0
     ): List<Double> {
         val k = (trackWidth + wheelBase) / 2.0
         return listOf(
-                robotVel.x - lateralMultiplier * robotVel.y / driftMultiplier - k * robotVel.heading,
-                robotVel.x + lateralMultiplier * robotVel.y * driftMultiplier - k * robotVel.heading,
-                robotVel.x - lateralMultiplier * robotVel.y / driftMultiplier + k * robotVel.heading,
-                robotVel.x + lateralMultiplier * robotVel.y * driftMultiplier + k * robotVel.heading
+                robotVel.x - ((lateralMultiplier * robotVel.y) * driftMultiplier) * driftTurnMultiplier - k * robotVel.heading, // left front
+                robotVel.x + ((lateralMultiplier * robotVel.y) / driftMultiplier) / driftTurnMultiplier - k * robotVel.heading, // left back
+                robotVel.x - ((lateralMultiplier * robotVel.y) * driftMultiplier) / driftTurnMultiplier + k * robotVel.heading, // right back
+                robotVel.x + ((lateralMultiplier * robotVel.y) / driftMultiplier) * driftTurnMultiplier + k * robotVel.heading // right front
         )
     }
 
@@ -26,14 +27,16 @@ object AtomicMecanumKinematics {
             trackWidth: Double,
             wheelBase: Double = trackWidth,
             lateralMultiplier: Double = 1.0,
-            driftMultiplier: Double = 1.0
+            driftMultiplier: Double = 1.0,
+            driftTurnMultiplier: Double = 1.0
     ) =
             robotToWheelVelocities(
                     robotAccel,
                     trackWidth,
                     wheelBase,
                     lateralMultiplier,
-                    driftMultiplier
+                    driftMultiplier,
+                    driftTurnMultiplier
             )
 
     @JvmStatic

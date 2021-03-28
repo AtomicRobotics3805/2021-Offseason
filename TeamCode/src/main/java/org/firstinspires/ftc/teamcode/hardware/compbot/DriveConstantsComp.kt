@@ -75,6 +75,7 @@ object DriveConstantsComp : BaseDriveConstants() {
         lateralMultiplier = 1.0
 
         driftMultiplier = 1.0
+        driftTurnMultiplier = 1.0
 
         translationalPID = PIDCoefficients(8.0, 0.0, 0.0)
         headingPID = PIDCoefficients(8.0, 0.0, 0.0)
