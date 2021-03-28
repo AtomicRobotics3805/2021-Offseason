@@ -2,13 +2,19 @@ package org.firstinspires.ftc.teamcode.tuning.opmode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.kinematics.Kinematics;
+import com.acmerobotics.roadrunner.kinematics.MecanumKinematics;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.hardware.BaseDriveConstants;
 import org.firstinspires.ftc.teamcode.tuning.DriveConstants;
 import org.firstinspires.ftc.teamcode.tuning.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.util.kinematics.AtomicMecanumKinematics;
+
+import java.util.List;
 
 /*
  * This is a simple routine to test translational drive capabilities.

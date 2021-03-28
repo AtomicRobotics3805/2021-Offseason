@@ -74,6 +74,9 @@ object DriveConstants2020 : BaseDriveConstants() {
 
         lateralMultiplier = 1.23
 
+        driftMultiplier = 1.0
+        driftTurnMultiplier = 1.0
+
         translationalPID = PIDCoefficients(10.0, 0.0, 0.0)
         headingPID = PIDCoefficients(8.0, 0.0, 0.0)
     }
