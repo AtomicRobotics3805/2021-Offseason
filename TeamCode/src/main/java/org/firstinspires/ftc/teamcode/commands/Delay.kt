@@ -7,6 +7,4 @@ class Delay(private val time: Double): AtomicCommand() {
         get() = timer.seconds() > time
 
     private val timer = ElapsedTime()
-
-    override fun run() { }
 }
