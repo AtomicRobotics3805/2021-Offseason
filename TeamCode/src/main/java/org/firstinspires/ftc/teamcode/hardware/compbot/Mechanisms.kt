@@ -8,7 +8,14 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.Singleton.opMode
 import org.firstinspires.ftc.teamcode.commands.*
+import org.firstinspires.ftc.teamcode.commands.delays.Delay
+import org.firstinspires.ftc.teamcode.hardware.compbot.MechanismConstants.INTAKE_NAME
+import org.firstinspires.ftc.teamcode.hardware.compbot.MechanismConstants.LEFT_INDEXER_NAME
+import org.firstinspires.ftc.teamcode.hardware.compbot.MechanismConstants.RIGHT_INDEXER_NAME
 import org.firstinspires.ftc.teamcode.hardware.compbot.MechanismConstants.RING_DELAY
+import org.firstinspires.ftc.teamcode.hardware.compbot.MechanismConstants.SHOOTER_NAME
+import org.firstinspires.ftc.teamcode.hardware.compbot.MechanismConstants.WOBBLE_ARM_NAME
+import org.firstinspires.ftc.teamcode.hardware.compbot.MechanismConstants.WOBBLE_CLAW_NAME
 
 object Mechanisms {
     lateinit var intake: Intake
@@ -17,7 +24,7 @@ object Mechanisms {
 }
 
 class Intake {
-    private val motor: DcMotorEx = opMode.hardwareMap.get(DcMotorEx::class.java, "Intake")
+    private val motor: DcMotorEx = opMode.hardwareMap.get(DcMotorEx::class.java, INTAKE_NAME)
 
     init {
         motor.mode = DcMotor.RunMode.RUN_USING_ENCODER
@@ -33,9 +40,9 @@ class Intake {
 }
 
 class Shooter {
-    private val shooterMotor: DcMotorEx = opMode.hardwareMap.get(DcMotorEx::class.java, "Shooter")
-    private val leftIndexerServo: Servo = opMode.hardwareMap.get(Servo::class.java, "LeftTrigger")
-    private val rightIndexerServo: Servo = opMode.hardwareMap.get(Servo::class.java, "RightTrigger")
+    private val shooterMotor: DcMotorEx = opMode.hardwareMap.get(DcMotorEx::class.java, SHOOTER_NAME)
+    private val leftIndexerServo: Servo = opMode.hardwareMap.get(Servo::class.java, LEFT_INDEXER_NAME)
+    private val rightIndexerServo: Servo = opMode.hardwareMap.get(Servo::class.java, RIGHT_INDEXER_NAME)
 
 
     init {
@@ -74,8 +81,8 @@ class Shooter {
 }
 
 class Wobble {
-    private val arm: DcMotorEx = opMode.hardwareMap.get(DcMotorEx::class.java, "Wobble")
-    private val hand: CRServo = opMode.hardwareMap.get(CRServo::class.java, "Hand")
+    private val arm: DcMotorEx = opMode.hardwareMap.get(DcMotorEx::class.java, WOBBLE_ARM_NAME)
+    private val claw: CRServo = opMode.hardwareMap.get(CRServo::class.java, WOBBLE_CLAW_NAME)
 
     init {
         arm.mode = DcMotor.RunMode.RUN_TO_POSITION
@@ -121,19 +128,19 @@ class Wobble {
 
     fun closeClaw(): AtomicCommand {
         return TimedCustomCommand(_start = {
-            hand.power = 1.0
+            claw.power = 1.0
         }, time = 0.8)
     }
 
     fun openClaw(): AtomicCommand {
         return TimedCustomCommand(_start = {
-            hand.power = -1.0
+            claw.power = -1.0
         }, time = 0.8)
     }
 
     fun idleClaw(): AtomicCommand {
         return TimedCustomCommand(_start = {
-            hand.power = 0.0
+            claw.power = 0.0
         }, time = 0.8)
     }
 }

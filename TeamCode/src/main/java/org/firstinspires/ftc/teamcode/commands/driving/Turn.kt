@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.commands
+package org.firstinspires.ftc.teamcode.commands.driving
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.drive.DriveSignal
@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.profile.MotionState
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.Singleton.constants
 import org.firstinspires.ftc.teamcode.Singleton.drive
+import org.firstinspires.ftc.teamcode.commands.AtomicCommand
 import org.firstinspires.ftc.teamcode.util.DashboardUtil
 
 open class Turn(private val angle: Double): AtomicCommand() {

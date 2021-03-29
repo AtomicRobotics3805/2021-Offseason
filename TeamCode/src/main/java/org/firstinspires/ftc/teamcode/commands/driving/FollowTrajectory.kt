@@ -1,12 +1,10 @@
-package org.firstinspires.ftc.teamcode.commands
+package org.firstinspires.ftc.teamcode.commands.driving
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.drive.DriveSignal
-import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower
-import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.trajectory.Trajectory
-import org.firstinspires.ftc.teamcode.Singleton.constants
 import org.firstinspires.ftc.teamcode.Singleton.drive
+import org.firstinspires.ftc.teamcode.commands.AtomicCommand
 import org.firstinspires.ftc.teamcode.util.DashboardUtil
 
 class FollowTrajectory(private val trajectory: Trajectory): AtomicCommand() {

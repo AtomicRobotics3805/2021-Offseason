@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.control.PIDCoefficients
 import com.qualcomm.robotcore.hardware.PIDFCoefficients
 import java.lang.reflect.Field
 
+@Suppress("Unused", "MemberVisibilityCanBePrivate")
 abstract class BaseDriveConstants {
     /*
      * These are motor constants that should be listed online for your motors.
