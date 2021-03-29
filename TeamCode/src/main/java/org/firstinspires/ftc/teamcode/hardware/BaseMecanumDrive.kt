@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode.hardware
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.roadrunner.control.PIDFController
+import com.acmerobotics.roadrunner.drive.DriveSignal
 import com.acmerobotics.roadrunner.drive.MecanumDrive
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower
 import com.acmerobotics.roadrunner.geometry.Pose2d
+import com.acmerobotics.roadrunner.kinematics.Kinematics
 import com.acmerobotics.roadrunner.profile.MotionProfile
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator
 import com.acmerobotics.roadrunner.profile.MotionState
@@ -19,6 +21,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.PIDFCoefficients
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.firstinspires.ftc.teamcode.util.trajectories.ParallelTrajectory
+import org.firstinspires.ftc.teamcode.util.kinematics.AtomicMecanumKinematics
 import java.util.*
 import kotlin.math.abs
 
@@ -162,6 +165,39 @@ abstract class BaseMecanumDrive(val constants: BaseDriveConstants, var teleOp: B
         leftRear.power = rearLeft
         rightRear.power = rearRight
         rightFront.power = frontRight
+    }
+
+    override fun setDriveSignal(driveSignal: DriveSignal) {
+        val velocities = AtomicMecanumKinematics.robotToWheelVelocities(
+                driveSignal.vel,
+                constants.trackWidth,
+                constants.trackWidth,
+                constants.lateralMultiplier,
+                constants.driftMultiplier,
+                constants.driftTurnMultiplier
+        )
+        val accelerations = AtomicMecanumKinematics.robotToWheelAccelerations(
+                driveSignal.accel,
+                constants.trackWidth,
+                constants.trackWidth,
+                constants.lateralMultiplier,
+                constants.driftMultiplier,
+                constants.driftTurnMultiplier
+        )
+        val powers = Kinematics.calculateMotorFeedforward(velocities, accelerations, constants.kV, constants.kA, constants.kStatic)
+        setMotorPowers(powers[0], powers[1], powers[2], powers[3])
+    }
+
+    override fun setDrivePower(drivePower: Pose2d) {
+        val powers = AtomicMecanumKinematics.robotToWheelVelocities(
+                drivePower,
+                1.0,
+                1.0,
+                constants.lateralMultiplier,
+                constants.driftMultiplier,
+                constants.driftTurnMultiplier
+        )
+        setMotorPowers(powers[0], powers[1], powers[2], powers[3])
     }
 
     abstract fun update()
