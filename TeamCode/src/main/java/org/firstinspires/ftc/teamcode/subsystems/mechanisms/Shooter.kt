@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems.mechanisms
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.Servo
-import org.firstinspires.ftc.teamcode.Singleton
+import org.firstinspires.ftc.teamcode.Constants
 import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
 import org.firstinspires.ftc.teamcode.util.commands.CustomCommand
 import org.firstinspires.ftc.teamcode.util.commands.delays.Delay
@@ -17,9 +17,9 @@ class Shooter {
 
 
     fun initialize() {
-        shooterMotor = Singleton.opMode.hardwareMap.get(DcMotorEx::class.java, MechanismConstants.SHOOTER_NAME)
-        leftIndexerServo = Singleton.opMode.hardwareMap.get(Servo::class.java, MechanismConstants.LEFT_INDEXER_NAME)
-        rightIndexerServo = Singleton.opMode.hardwareMap.get(Servo::class.java, MechanismConstants.RIGHT_INDEXER_NAME)
+        shooterMotor = Constants.opMode.hardwareMap.get(DcMotorEx::class.java, MechanismConstants.SHOOTER_NAME)
+        leftIndexerServo = Constants.opMode.hardwareMap.get(Servo::class.java, MechanismConstants.LEFT_INDEXER_NAME)
+        rightIndexerServo = Constants.opMode.hardwareMap.get(Servo::class.java, MechanismConstants.RIGHT_INDEXER_NAME)
 
         shooterMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
     }

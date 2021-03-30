@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.util.commands.delays
 
 import com.acmerobotics.roadrunner.profile.MotionProfile
 import com.acmerobotics.roadrunner.util.epsilonEquals
-import org.firstinspires.ftc.teamcode.Singleton.drive
+import org.firstinspires.ftc.teamcode.Constants.drive
 import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
 
 @Suppress("Unused")

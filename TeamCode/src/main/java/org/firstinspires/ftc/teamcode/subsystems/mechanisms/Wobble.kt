@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems.mechanisms
 import com.qualcomm.robotcore.hardware.CRServo
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
-import org.firstinspires.ftc.teamcode.Singleton
+import org.firstinspires.ftc.teamcode.Constants
 import org.firstinspires.ftc.teamcode.util.commands.*
 import org.firstinspires.ftc.teamcode.util.commands.delays.Delay
 
@@ -13,8 +13,8 @@ class Wobble {
     private lateinit var claw: CRServo
 
     fun initialize() {
-        arm = Singleton.opMode.hardwareMap.get(DcMotorEx::class.java, MechanismConstants.WOBBLE_ARM_NAME)
-        claw = Singleton.opMode.hardwareMap.get(CRServo::class.java, MechanismConstants.WOBBLE_CLAW_NAME)
+        arm = Constants.opMode.hardwareMap.get(DcMotorEx::class.java, MechanismConstants.WOBBLE_ARM_NAME)
+        claw = Constants.opMode.hardwareMap.get(CRServo::class.java, MechanismConstants.WOBBLE_CLAW_NAME)
 
         arm.mode = DcMotor.RunMode.RUN_TO_POSITION
     }

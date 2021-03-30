@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems.driving
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.drive.DriveSignal
 import com.acmerobotics.roadrunner.trajectory.Trajectory
-import org.firstinspires.ftc.teamcode.Singleton.drive
+import org.firstinspires.ftc.teamcode.Constants.drive
 import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
 import org.firstinspires.ftc.teamcode.util.DashboardUtil
 

@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Intake
 import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Shooter
 import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Wobble
 
-object Singleton {
+object Constants {
     enum class Color {
         BLUE,
         RED

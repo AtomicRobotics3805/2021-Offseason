@@ -6,7 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstra
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint
 import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint
 import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint
-import org.firstinspires.ftc.teamcode.Singleton.constants
+import org.firstinspires.ftc.teamcode.Constants.constants
 
 fun trajectoryBuilder(startPose: Pose2d): TrajectoryBuilder {
     val velConstraint = MinVelocityConstraint(listOf(

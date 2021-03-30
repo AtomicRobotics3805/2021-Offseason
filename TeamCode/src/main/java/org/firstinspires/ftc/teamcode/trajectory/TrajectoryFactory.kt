@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode.trajectory
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.trajectory.Trajectory
-import org.firstinspires.ftc.teamcode.Singleton.Color.BLUE
-import org.firstinspires.ftc.teamcode.Singleton.color
-import org.firstinspires.ftc.teamcode.Singleton.drive
+import org.firstinspires.ftc.teamcode.Constants.Color.BLUE
+import org.firstinspires.ftc.teamcode.Constants.color
+import org.firstinspires.ftc.teamcode.Constants.drive
 import org.firstinspires.ftc.teamcode.util.toRadians
 import org.firstinspires.ftc.teamcode.util.trajectories.a
 import org.firstinspires.ftc.teamcode.util.trajectories.flip
