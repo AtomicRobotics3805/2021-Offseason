@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.commands
+package org.firstinspires.ftc.teamcode.util.commands
 
 abstract class AtomicCommand {
     var isDone = false

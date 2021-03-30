@@ -5,7 +5,6 @@ import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint
-import org.firstinspires.ftc.teamcode.commands.AtomicCommand
 
 class ParallelTrajectoryBuilder(val builder: TrajectoryBuilder) {
     private val segmentLengths = mutableListOf<Double>()

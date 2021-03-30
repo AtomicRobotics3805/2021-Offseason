@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.hardware.compbot
 import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.control.PIDCoefficients
 import com.qualcomm.robotcore.hardware.PIDFCoefficients
-import org.firstinspires.ftc.teamcode.hardware.BaseDriveConstants
+import org.firstinspires.ftc.teamcode.util.hardware.BaseDriveConstants
 
 /*
 * Constants shared between multiple drive types.

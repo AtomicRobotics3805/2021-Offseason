@@ -15,8 +15,8 @@ import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.*
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior
-import org.firstinspires.ftc.teamcode.hardware.BaseDriveConstants
-import org.firstinspires.ftc.teamcode.hardware.BaseMecanumDrive
+import org.firstinspires.ftc.teamcode.util.hardware.BaseDriveConstants
+import org.firstinspires.ftc.teamcode.util.hardware.BaseMecanumDrive
 import org.firstinspires.ftc.teamcode.util.DashboardUtil
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil
 import java.util.*
@@ -25,7 +25,7 @@ import java.util.*
 * Simple mecanum drive hardware implementation for REV hardware.
 */
 @Config
-class MecanumDriveComp(val hardwareMap: HardwareMap, constants: BaseDriveConstants, teleOp: Boolean = false, var gamepad: Gamepad? = null) : BaseMecanumDrive(constants, teleOp) {
+class MecanumDriveComp(hardwareMap: HardwareMap, constants: BaseDriveConstants) : BaseMecanumDrive(constants) {
     override var VX_WEIGHT = 1.0
     override var VY_WEIGHT = 1.0
     override var OMEGA_WEIGHT = 1.0
@@ -51,8 +51,6 @@ class MecanumDriveComp(val hardwareMap: HardwareMap, constants: BaseDriveConstan
     override val rightRear: DcMotorEx = hardwareMap.get(DcMotorEx::class.java, "RB")
     override val rightFront: DcMotorEx = hardwareMap.get(DcMotorEx::class.java, "RF")
     override val motors = listOf(leftFront, leftRear, rightRear, rightFront)
-
-    override var mode = Mode.IDLE
 
     private val imu: BNO055IMU
 
@@ -100,58 +98,21 @@ class MecanumDriveComp(val hardwareMap: HardwareMap, constants: BaseDriveConstan
         localizer = LocalizerComp(hardwareMap)
     }
 
-    private val lastError: Pose2d
-        get() {
-            return when (mode) {
-                Mode.FOLLOW_TRAJECTORY -> follower.lastError
-                Mode.TURN -> Pose2d(0.0, 0.0, turnController.lastError)
-                else -> Pose2d()
-            }
-        }
-
     override fun update() {
         updatePoseEstimate()
         val currentPose = poseEstimate
-        val lastError = lastError
         poseHistory.add(currentPose)
         if (POSE_HISTORY_LIMIT > -1 && poseHistory.size > POSE_HISTORY_LIMIT) {
             poseHistory.removeFirst()
         }
         val packet = TelemetryPacket()
         val fieldOverlay = packet.fieldOverlay()
-        packet.put("mode", mode)
         packet.put("x", currentPose.x)
         packet.put("y", currentPose.y)
         packet.put("heading", currentPose.heading)
-        packet.put("xError", lastError.x)
-        packet.put("yError", lastError.y)
-        packet.put("headingError", lastError.heading)
         fieldOverlay.setStroke("#3F51B5")
         DashboardUtil.drawRobot(fieldOverlay, currentPose)
         dashboard.sendTelemetryPacket(packet)
-    }
-
-    override fun getWheelPositions(): List<Double> {
-        val wheelPositions: MutableList<Double> = ArrayList()
-        for (motor in motors) {
-            wheelPositions.add(constants.encoderTicksToInches(motor.currentPosition.toDouble()))
-        }
-        return wheelPositions
-    }
-
-    override fun getWheelVelocities(): List<Double> {
-        val wheelVelocities: MutableList<Double> = ArrayList()
-        for (motor in motors) {
-            wheelVelocities.add(constants.encoderTicksToInches(motor.velocity))
-        }
-        return wheelVelocities
-    }
-
-    override fun setMotorPowers(frontLeft: Double, rearLeft: Double, rearRight: Double, frontRight: Double) {
-        leftFront.power = frontLeft
-        leftRear.power = rearLeft
-        rightRear.power = rearRight
-        rightFront.power = frontRight
     }
 
     override val rawExternalHeading: Double

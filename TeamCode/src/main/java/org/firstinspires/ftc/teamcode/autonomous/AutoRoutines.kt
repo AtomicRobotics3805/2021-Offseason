@@ -2,17 +2,18 @@ package org.firstinspires.ftc.teamcode.autonomous
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
-import org.firstinspires.ftc.teamcode.commands.*
-import org.firstinspires.ftc.teamcode.commands.delays.Delay
-import org.firstinspires.ftc.teamcode.commands.driving.FollowTrajectory
-import org.firstinspires.ftc.teamcode.commands.driving.Turn
-import org.firstinspires.ftc.teamcode.hardware.compbot.MechanismConstants.RING_DELAY
-import org.firstinspires.ftc.teamcode.hardware.compbot.Mechanisms.shooter
-import org.firstinspires.ftc.teamcode.hardware.compbot.Mechanisms.wobble
+import org.firstinspires.ftc.teamcode.util.commands.*
+import org.firstinspires.ftc.teamcode.util.commands.delays.Delay
+import org.firstinspires.ftc.teamcode.subsystems.driving.FollowTrajectory
+import org.firstinspires.ftc.teamcode.subsystems.driving.Turn
+import org.firstinspires.ftc.teamcode.subsystems.mechanisms.MechanismConstants.RING_DELAY
+import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Mechanisms.shooter
+import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Mechanisms.wobble
 import org.firstinspires.ftc.teamcode.trajectory.TrajectoryFactory
 import org.firstinspires.ftc.teamcode.util.Vector2d
 
 @Autonomous
+@Suppress("Unused")
 class AutoRoutines {
     private val startPose = Pose2d()
 

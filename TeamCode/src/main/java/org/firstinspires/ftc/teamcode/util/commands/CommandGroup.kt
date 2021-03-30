@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.commands
+package org.firstinspires.ftc.teamcode.util.commands
 
 fun sequential(block: SequentialCommandGroup.() -> Unit): SequentialCommandGroup {
     return SequentialCommandGroup().apply(block)

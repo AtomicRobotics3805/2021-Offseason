@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.commands.driving
+package org.firstinspires.ftc.teamcode.subsystems.driving
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.drive.DriveSignal
@@ -9,12 +9,13 @@ import com.acmerobotics.roadrunner.profile.MotionState
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.Singleton.constants
 import org.firstinspires.ftc.teamcode.Singleton.drive
-import org.firstinspires.ftc.teamcode.commands.AtomicCommand
+import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
 import org.firstinspires.ftc.teamcode.util.DashboardUtil
 
+@Suppress("unused")
 open class Turn(private val angle: Double): AtomicCommand() {
     override val _isDone: Boolean
-        get() = TODO("Not yet implemented")
+        get() = turnProfile.duration() > timer.seconds()
 
     private val timer = ElapsedTime()
 

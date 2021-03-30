@@ -1,12 +1,13 @@
-package org.firstinspires.ftc.teamcode.commands.driving
+package org.firstinspires.ftc.teamcode.subsystems.driving
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.drive.DriveSignal
 import com.acmerobotics.roadrunner.trajectory.Trajectory
 import org.firstinspires.ftc.teamcode.Singleton.drive
-import org.firstinspires.ftc.teamcode.commands.AtomicCommand
+import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
 import org.firstinspires.ftc.teamcode.util.DashboardUtil
 
+@Suppress("unused")
 class FollowTrajectory(private val trajectory: Trajectory): AtomicCommand() {
     override val _isDone: Boolean
         get() = drive.follower.isFollowing()
