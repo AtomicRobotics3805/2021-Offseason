@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
 import org.firstinspires.ftc.teamcode.util.commands.CustomCommand
 
 @Suppress("Unused", "MemberVisibilityCanBePrivate")
-class Intake {
+object Intake {
     private lateinit var motor: DcMotorEx
 
     fun initialize() {

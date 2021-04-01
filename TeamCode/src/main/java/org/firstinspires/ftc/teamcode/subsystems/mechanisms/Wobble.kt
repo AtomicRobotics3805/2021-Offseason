@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.util.commands.*
 import org.firstinspires.ftc.teamcode.util.commands.delays.Delay
 
 @Suppress("Unused", "MemberVisibilityCanBePrivate")
-class Wobble {
+object Wobble {
     private lateinit var arm: DcMotorEx
     private lateinit var claw: CRServo
 

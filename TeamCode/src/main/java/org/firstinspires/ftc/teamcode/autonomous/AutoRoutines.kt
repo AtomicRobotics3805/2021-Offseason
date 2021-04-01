@@ -6,9 +6,10 @@ import org.firstinspires.ftc.teamcode.util.commands.*
 import org.firstinspires.ftc.teamcode.util.commands.delays.Delay
 import org.firstinspires.ftc.teamcode.subsystems.driving.FollowTrajectory
 import org.firstinspires.ftc.teamcode.subsystems.driving.Turn
+import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Intake
 import org.firstinspires.ftc.teamcode.subsystems.mechanisms.MechanismConstants.RING_DELAY
-import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Mechanisms.shooter
-import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Mechanisms.wobble
+import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Shooter
+import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Wobble
 import org.firstinspires.ftc.teamcode.trajectory.TrajectoryFactory
 import org.firstinspires.ftc.teamcode.util.Vector2d
 
@@ -20,28 +21,29 @@ class AutoRoutines {
     val initRoutine: AtomicCommand
         get() = sequential {
             +parallel {
-                +wobble.raiseArm()
-                +wobble.closeClaw()
+                +Wobble.raiseArm()
+                +Wobble.closeClaw()
+                +Intake.start()
             }
         }
 
     val lowRoutine: AtomicCommand
         get() = sequential {
             +parallel {
-                +shooter.startMotor()
+                +Shooter.startMotor()
                 +FollowTrajectory(TrajectoryFactory.startToLowToShootPowershot)
                 +sequential {
                     +Delay(0.8)
-                    +wobble.openClaw()
+                    +Wobble.openClaw()
                 }
             }
             +shootPowershotRoutine
             +parallel {
-                +shooter.stopMotor()
+                +Shooter.stopMotor()
                 +FollowTrajectory(TrajectoryFactory.shootPowershotToWobble)
-                +wobble.lowerArm()
+                +Wobble.lowerArm()
             }
-            +wobble.closeClaw()
+            +Wobble.closeClaw()
             +parallel {
                 +FollowTrajectory(TrajectoryFactory.wobbleToLowToPark)
             }
@@ -50,7 +52,7 @@ class AutoRoutines {
     private val shootPowershotRoutine: AtomicCommand
         get() = sequential {
             +parallel {
-                +shooter.shootRing()
+                +Shooter.shootRing()
                 +sequential {
                     +Delay(RING_DELAY / 2)
                     +Turn(TrajectoryFactory.powerShotAngle(
@@ -58,13 +60,13 @@ class AutoRoutines {
                 }
             }
             +parallel {
-                +shooter.shootRing()
+                +Shooter.shootRing()
                 +sequential {
                     +Delay(RING_DELAY / 2)
                     +Turn(TrajectoryFactory.powerShotAngle(
                             Vector2d(TrajectoryFactory.startToLowToShootPowershot.end()), 2))
                 }
             }
-            +shooter.shootRing()
+            +Shooter.shootRing()
         }
 }

@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.util.commands.delays.Delay
 import org.firstinspires.ftc.teamcode.util.commands.sequential
 
 @Suppress("Unused", "MemberVisibilityCanBePrivate")
-class Shooter {
+object Shooter {
     private lateinit var shooterMotor: DcMotorEx
     private lateinit var leftIndexerServo: Servo
     private lateinit var rightIndexerServo: Servo

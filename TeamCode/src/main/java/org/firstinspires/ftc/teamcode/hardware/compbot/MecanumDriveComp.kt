@@ -15,7 +15,7 @@ import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.*
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior
-import org.firstinspires.ftc.teamcode.util.hardware.BaseDriveConstants
+import org.firstinspires.ftc.teamcode.Constants.constants
 import org.firstinspires.ftc.teamcode.util.hardware.BaseMecanumDrive
 import org.firstinspires.ftc.teamcode.util.DashboardUtil
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil
@@ -24,8 +24,9 @@ import java.util.*
 /*
 * Simple mecanum drive hardware implementation for REV hardware.
 */
+@Suppress("unused")
 @Config
-class MecanumDriveComp(hardwareMap: HardwareMap, constants: BaseDriveConstants) : BaseMecanumDrive(constants) {
+object MecanumDriveComp : BaseMecanumDrive(constants) {
     override var VX_WEIGHT = 1.0
     override var VY_WEIGHT = 1.0
     override var OMEGA_WEIGHT = 1.0
@@ -44,17 +45,21 @@ class MecanumDriveComp(hardwareMap: HardwareMap, constants: BaseDriveConstants) 
 
     override val poseHistory: LinkedList<Pose2d> = LinkedList()
 
-    override val batteryVoltageSensor: VoltageSensor = hardwareMap.voltageSensor.iterator().next()
+    override lateinit var batteryVoltageSensor: VoltageSensor
 
-    override val leftFront: DcMotorEx = hardwareMap.get(DcMotorEx::class.java, "LF")
-    override val leftRear: DcMotorEx = hardwareMap.get(DcMotorEx::class.java, "LB")
-    override val rightRear: DcMotorEx = hardwareMap.get(DcMotorEx::class.java, "RB")
-    override val rightFront: DcMotorEx = hardwareMap.get(DcMotorEx::class.java, "RF")
-    override val motors = listOf(leftFront, leftRear, rightRear, rightFront)
+    override lateinit var leftFront: DcMotorEx
+    override lateinit var leftRear: DcMotorEx
+    override lateinit var rightRear: DcMotorEx
+    override lateinit var rightFront: DcMotorEx
+    override lateinit var motors: List<DcMotorEx>
 
-    private val imu: BNO055IMU
+    private lateinit var imu: BNO055IMU
 
-    init {
+    private lateinit var hardwareMap: HardwareMap
+
+    fun initialize() {
+        batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next()
+
         dashboard.telemetryTransmissionInterval = 25
 
         turnController.setInputBounds(0.0, 2 * Math.PI)
@@ -70,6 +75,13 @@ class MecanumDriveComp(hardwareMap: HardwareMap, constants: BaseDriveConstants) 
         val parameters = BNO055IMU.Parameters()
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS
         imu.initialize(parameters)
+
+        leftFront = hardwareMap.get(DcMotorEx::class.java, "LF")
+        leftRear = hardwareMap.get(DcMotorEx::class.java, "LB")
+        rightRear = hardwareMap.get(DcMotorEx::class.java, "RB")
+        rightFront = hardwareMap.get(DcMotorEx::class.java, "RF")
+
+        motors = listOf(leftFront, leftRear, rightRear, rightFront)
 
         // FINISHED: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:

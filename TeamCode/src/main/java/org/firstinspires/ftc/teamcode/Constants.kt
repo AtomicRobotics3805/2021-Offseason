@@ -19,8 +19,4 @@ object Constants {
     var color = Color.BLUE
     val constants: BaseDriveConstants = DriveConstantsComp
     lateinit var opMode: OpMode
-    lateinit var drive: BaseMecanumDrive
-    lateinit var intake: Intake
-    lateinit var shooter: Shooter
-    lateinit var wobble: Wobble
 }
