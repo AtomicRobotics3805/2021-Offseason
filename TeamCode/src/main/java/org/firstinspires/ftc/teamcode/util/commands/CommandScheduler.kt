@@ -83,7 +83,7 @@ object CommandScheduler {
             this.subsystems += subsystem
     }
 
-    fun addGamepads(vararg gamepads: CommandGamepad) {
+    fun registerGamepads(vararg gamepads: CommandGamepad) {
         for (gamepad in gamepads)
             this.gamepads += gamepad
     }
