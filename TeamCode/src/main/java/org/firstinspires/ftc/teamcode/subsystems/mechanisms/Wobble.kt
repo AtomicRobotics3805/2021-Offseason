@@ -8,67 +8,63 @@ import org.firstinspires.ftc.teamcode.util.commands.*
 import org.firstinspires.ftc.teamcode.util.commands.delays.Delay
 
 @Suppress("Unused", "MemberVisibilityCanBePrivate")
-object Wobble {
+object Wobble : Subsystem {
+    @JvmField
+    var WOBBLE_ARM_NAME = "Wobble"
+    @JvmField
+    var WOBBLE_CLAW_NAME = "Hand"
+    @JvmField
+    var CLAW_SPEED = 1.0
+    @JvmField
+    var ARM_HIGH_ENCODER_POSITION = -300
+    @JvmField
+    var ARM_MIDDLE_ENCODER_POSITION = -800
+    @JvmField
+    var ARM_LOW_ENCODER_POSITION = -1050
+
+    val openClaw: AtomicCommand
+        get() = moveClaw(-CLAW_SPEED, 0.8)
+    val closeClaw: AtomicCommand
+        get() = moveClaw(CLAW_SPEED, 0.8)
+    val idleClaw: AtomicCommand
+        get() = moveClaw(0.0, 0.0)
+
+    val raiseArmHigh: AtomicCommand
+        get() = moveArm(-ARM_HIGH_ENCODER_POSITION)
+    val raiseArm: AtomicCommand
+        get() = moveArm(-ARM_MIDDLE_ENCODER_POSITION)
+    val lowerArm: AtomicCommand
+        get() = moveArm(-ARM_LOW_ENCODER_POSITION)
+
+    val grab: AtomicCommand
+        get() = parallel {
+            +closeClaw
+            +sequential {
+                +Delay(0.8)
+                +raiseArm
+            }
+        }
+
     private lateinit var arm: DcMotorEx
     private lateinit var claw: CRServo
 
     fun initialize() {
-        arm = Constants.opMode.hardwareMap.get(DcMotorEx::class.java, MechanismConstants.WOBBLE_ARM_NAME)
-        claw = Constants.opMode.hardwareMap.get(CRServo::class.java, MechanismConstants.WOBBLE_CLAW_NAME)
+        arm = Constants.opMode.hardwareMap.get(DcMotorEx::class.java, WOBBLE_ARM_NAME)
+        claw = Constants.opMode.hardwareMap.get(CRServo::class.java, WOBBLE_CLAW_NAME)
 
         arm.mode = DcMotor.RunMode.RUN_TO_POSITION
     }
 
-    fun grab(): AtomicCommand {
-        return parallel {
-            +closeClaw()
-            +sequential {
-                Delay(0.8)
-                raiseArm()
-            }
-        }
-    }
-
-    fun drop(): AtomicCommand {
-        return openClaw()
-    }
-
-    fun raiseArmHigh(): AtomicCommand = CustomCommand(
+    fun moveArm(position: Int) = CustomCommand(
             _start = {
-                arm.targetPosition = -300
+                arm.targetPosition = position
             },
             getDone = {
                 !arm.isBusy
             })
 
-    fun raiseArm(): AtomicCommand = CustomCommand(
+    fun moveClaw(power: Double, time: Double) = TimedCustomCommand(
             _start = {
-                arm.targetPosition = -800
-            },
-            getDone = {
-                !arm.isBusy
-            })
-
-    fun lowerArm(): AtomicCommand = CustomCommand(
-            _start = {
-                arm.targetPosition = -1050
-            },
-            getDone = {
-                !arm.isBusy
-            })
-
-    fun closeClaw(): AtomicCommand = TimedCustomCommand(
-            _start = {
-                claw.power = 1.0
-            }, time = 0.8)
-
-    fun openClaw(): AtomicCommand = TimedCustomCommand(
-            _start = {
-                claw.power = -1.0
-            }, time = 0.8)
-
-    fun idleClaw(): AtomicCommand = TimedCustomCommand(
-            _start = {
-                claw.power = 0.0
-            }, time = 0.8)
+                claw.power = power
+            }, time = time)
 }

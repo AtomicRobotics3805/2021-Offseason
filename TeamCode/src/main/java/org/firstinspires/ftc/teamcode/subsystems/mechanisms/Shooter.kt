@@ -6,47 +6,69 @@ import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.Constants
 import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
 import org.firstinspires.ftc.teamcode.util.commands.CustomCommand
+import org.firstinspires.ftc.teamcode.util.commands.Subsystem
 import org.firstinspires.ftc.teamcode.util.commands.delays.Delay
 import org.firstinspires.ftc.teamcode.util.commands.sequential
 
 @Suppress("Unused", "MemberVisibilityCanBePrivate")
-object Shooter {
+object Shooter : Subsystem {
+    @JvmField
+    var SHOOTER_NAME = "Shooter"
+    @JvmField
+    var LEFT_INDEXER_NAME = "LeftTrigger"
+    @JvmField
+    var RIGHT_INDEXER_NAME = "RightTrigger"
+    @JvmField
+    var LEFT_INDEXER_RETRACTED_POSITION = 0.925
+    @JvmField
+    var RIGHT_INDEXER_RETRACTED_POSITION = 0.25
+    @JvmField
+    var LEFT_INDEXER_EXTENDED_POSITION = 0.6
+    @JvmField
+    var RIGHT_INDEXER_EXTENDED_POSITION = 0.575
+    @JvmField
+    var SHOOTER_SPEED = 1.0
+    @JvmField
+    var RING_DELAY = 0.8
+
+    val startMotor: AtomicCommand
+        get() = powerMotor(SHOOTER_SPEED)
+    val stopMotor: AtomicCommand
+        get() = powerMotor(0.0)
+
+    val extendIndexerServos: AtomicCommand
+        get() = moveIndexerServos(LEFT_INDEXER_EXTENDED_POSITION, RIGHT_INDEXER_EXTENDED_POSITION)
+    val retractIndexerServos: AtomicCommand
+        get() = moveIndexerServos(LEFT_INDEXER_RETRACTED_POSITION, RIGHT_INDEXER_RETRACTED_POSITION)
+
+    val shootRing: AtomicCommand
+        get() = sequential {
+            +extendIndexerServos
+            +Delay(RING_DELAY / 2)
+            +retractIndexerServos
+            +Delay(RING_DELAY / 2)
+        }
+
     private lateinit var shooterMotor: DcMotorEx
     private lateinit var leftIndexerServo: Servo
     private lateinit var rightIndexerServo: Servo
 
 
     fun initialize() {
-        shooterMotor = Constants.opMode.hardwareMap.get(DcMotorEx::class.java, MechanismConstants.SHOOTER_NAME)
-        leftIndexerServo = Constants.opMode.hardwareMap.get(Servo::class.java, MechanismConstants.LEFT_INDEXER_NAME)
-        rightIndexerServo = Constants.opMode.hardwareMap.get(Servo::class.java, MechanismConstants.RIGHT_INDEXER_NAME)
+        shooterMotor = Constants.opMode.hardwareMap.get(DcMotorEx::class.java, SHOOTER_NAME)
+        leftIndexerServo = Constants.opMode.hardwareMap.get(Servo::class.java, LEFT_INDEXER_NAME)
+        rightIndexerServo = Constants.opMode.hardwareMap.get(Servo::class.java, RIGHT_INDEXER_NAME)
 
         shooterMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
     }
 
-    fun startMotor(): AtomicCommand = CustomCommand(
-            _start = { shooterMotor.power = 1.0 })
+    fun powerMotor(power: Double): AtomicCommand = CustomCommand(
+            _start = { shooterMotor.power = power })
 
-    fun stopMotor(): AtomicCommand = CustomCommand(
-            _start = { shooterMotor.power = MechanismConstants.SHOOTER_SPEED })
-
-    fun extendIndexerServos(): AtomicCommand = CustomCommand(
+    fun moveIndexerServos(leftIndexerServoPosition: Double, rightIndexerServoPosition: Double):
+            AtomicCommand = CustomCommand(
             _start = {
-                leftIndexerServo.position = 0.6
-                rightIndexerServo.position = 0.575
+                leftIndexerServo.position = leftIndexerServoPosition
+                rightIndexerServo.position = rightIndexerServoPosition
             })
-
-    fun retractIndexerServos(): AtomicCommand = CustomCommand(
-            _start = {
-                leftIndexerServo.position = 0.925
-                rightIndexerServo.position = 0.25
-            })
-
-    fun shootRing(): AtomicCommand {
-        return sequential {
-            +extendIndexerServos()
-            +Delay(MechanismConstants.RING_DELAY / 2)
-            +retractIndexerServos()
-        }
-    }
 }
