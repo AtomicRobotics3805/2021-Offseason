@@ -12,9 +12,19 @@ abstract class CommandGroup: AtomicCommand() {
     override val _isDone: Boolean
         get() = commands.isEmpty()
 
-    protected val commands: MutableList<AtomicCommand> = mutableListOf()
+    val commands: MutableList<AtomicCommand> = mutableListOf()
+
+    operator fun plusAssign(command: AtomicCommand) {
+        commands += command
+    }
 
     operator fun AtomicCommand.unaryPlus() = commands.add(this)
+
+    override fun done(interrupted: Boolean) {
+        for (command in commands) {
+            command.done(interrupted)
+        }
+    }
 }
 
 class SequentialCommandGroup: CommandGroup() {
@@ -23,12 +33,12 @@ class SequentialCommandGroup: CommandGroup() {
             commands[0].start()
     }
 
-    override fun run() {
+    override fun execute() {
         if (commands.isNotEmpty()) {
             if (!commands[0].isDone)
-                commands[0].run()
+                commands[0].execute()
             else {
-                commands[0].done()
+                commands[0].done(false)
                 commands.removeAt(0)
                 if (commands.isNotEmpty())
                     commands[0].start()
@@ -39,16 +49,22 @@ class SequentialCommandGroup: CommandGroup() {
 
 class ParallelCommandGroup: CommandGroup() {
     override fun start() {
-        for(command in commands)
+        for (command in commands) {
             command.start()
+            command.isStarted = true
+        }
     }
 
-    override fun run() {
-        for(command in commands) {
+    override fun execute() {
+        for (command in commands) {
+            if (!command.isStarted) {
+                command.start()
+                command.isStarted = true
+            }
             if (!command.isDone)
-                command.run()
+                command.execute()
             else {
-                command.done()
+                command.done(false)
                 commands.remove(command)
             }
         }
