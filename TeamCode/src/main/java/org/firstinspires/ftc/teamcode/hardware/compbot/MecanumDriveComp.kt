@@ -17,8 +17,8 @@ import com.qualcomm.robotcore.hardware.DcMotor.RunMode
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior
 import org.firstinspires.ftc.teamcode.Constants.constants
 import org.firstinspires.ftc.teamcode.util.hardware.BaseMecanumDrive
-import org.firstinspires.ftc.teamcode.util.DashboardUtil
-import org.firstinspires.ftc.teamcode.util.LynxModuleUtil
+import org.firstinspires.ftc.teamcode.util.roadrunner.DashboardUtil
+import org.firstinspires.ftc.teamcode.util.roadrunner.LynxModuleUtil
 import java.util.*
 
 /*

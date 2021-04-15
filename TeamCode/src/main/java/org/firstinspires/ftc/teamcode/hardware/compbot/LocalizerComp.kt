@@ -5,8 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
-import org.firstinspires.ftc.teamcode.util.Encoder
-import java.util.*
+import org.firstinspires.ftc.teamcode.util.roadrunner.Encoder
 
 /*
 * Sample tracking wheel localizer implementation assuming the standard configuration:

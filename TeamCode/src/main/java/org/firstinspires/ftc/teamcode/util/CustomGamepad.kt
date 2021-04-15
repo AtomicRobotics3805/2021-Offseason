@@ -10,99 +10,134 @@ import com.qualcomm.robotcore.hardware.Gamepad
     Check whether it's just been released this frame using button.released
  */
 
-class CustomGamepad() {
-    var a = Button()
-    var b = Button()
-    var x = Button()
-    var y = Button()
 
-    var dpad_up = Button()
-    var dpad_down = Button()
-    var dpad_left = Button()
-    var dpad_right = Button()
+@Suppress("MemberVisibilityCanBePrivate")
+class CustomGamepad(private val gamepad: Gamepad) {
+    val a = Button("A")
+    val b = Button("B")
+    val x = Button("X")
+    val y = Button("Y")
 
-    var left_bumper = Button()
-    var right_bumper = Button()
+    val dpad_up = Button("D-Pad Up")
+    val dpad_down = Button("D-Pad Down")
+    val dpad_left = Button("D-Pad Left")
+    val dpad_right = Button("D-Pad Right")
 
-    val left_stick_button = Button()
-    val right_stick_button = Button()
+    val left_bumper = Button("Left Bumper")
+    val right_bumper = Button("Right Bumper")
 
-    fun update(gamepad : Gamepad) {
-        a.pressed = gamepad.a && !a.down
-        b.pressed = gamepad.b && !b.down
-        x.pressed = gamepad.x && !x.down
-        y.pressed = gamepad.y && !y.down
+    val left_trigger = Trigger("Left Trigger")
+    val right_trigger = Trigger("Right Trigger")
+    
+    val left_stick = JoyStick("Left Stick")
+    val right_stick = JoyStick("Right Stick")
 
-        dpad_up.pressed = gamepad.dpad_up && !dpad_up.down
-        dpad_down.pressed = gamepad.dpad_down && !dpad_down.down
-        dpad_left.pressed = gamepad.dpad_left && !dpad_left.down
-        dpad_right.pressed = gamepad.dpad_right && !dpad_right.down
+    val controls = listOf(a, b, x, y, dpad_up, dpad_down, dpad_left, dpad_right,
+            left_bumper, right_bumper, left_trigger, right_trigger, left_stick, right_stick)
 
-        left_bumper.pressed = gamepad.left_bumper && !left_bumper.down
-        right_bumper.pressed = gamepad.right_bumper && !right_bumper.down
+    fun update(gamepad: Gamepad = this.gamepad) {
+        a.update(gamepad.a)
+        b.update(gamepad.b)
+        x.update(gamepad.x)
+        y.update(gamepad.y)
 
-        left_stick_button.pressed = gamepad.left_stick_button && !left_stick_button.down
-        right_stick_button.pressed = gamepad.right_stick_button && !right_stick_button.down
+        dpad_up.update(gamepad.dpad_up)
+        dpad_down.update(gamepad.dpad_down)
+        dpad_left.update(gamepad.dpad_left)
+        dpad_right.update(gamepad.dpad_right)
 
+        left_bumper.update(gamepad.left_bumper)
+        right_bumper.update(gamepad.right_bumper)
+        
+        left_trigger.update(gamepad.left_trigger)
+        right_trigger.update(gamepad.right_trigger)
 
-        a.released = !gamepad.a && a.down
-        b.pressed = !gamepad.b && b.down
-        x.pressed = !gamepad.x && x.down
-        y.pressed = !gamepad.y && y.down
-
-        dpad_up.pressed = !gamepad.dpad_up && dpad_up.down
-        dpad_down.pressed = !gamepad.dpad_down && dpad_down.down
-        dpad_left.pressed = !gamepad.dpad_left && dpad_left.down
-        dpad_right.pressed = !gamepad.dpad_right && dpad_right.down
-
-        left_bumper.pressed = !gamepad.left_bumper && left_bumper.down
-        right_bumper.pressed = !gamepad.right_bumper && right_bumper.down
-
-        left_stick_button.pressed = !gamepad.left_stick_button && left_stick_button.down
-        right_stick_button.pressed = !gamepad.right_stick_button && right_stick_button.down
-
-
-        a.down = gamepad.a
-        b.down = gamepad.b
-        x.down = gamepad.x
-        y.down = gamepad.y
-
-        dpad_up.down = gamepad.dpad_up
-        dpad_down.down = gamepad.dpad_down
-        dpad_left.down = gamepad.dpad_left
-        dpad_right.down = gamepad.dpad_right
-
-        left_bumper.down = gamepad.left_bumper
-        right_bumper.down = gamepad.right_bumper
-
-        left_stick_button.down = gamepad.left_stick_button
-        right_stick_button.down = gamepad.right_stick_button
+        left_stick.update(gamepad.left_stick_x, gamepad.left_stick_y, gamepad.left_stick_button)
+        right_stick.update(gamepad.right_stick_x, gamepad.right_stick_y, gamepad.right_stick_button)
     }
 
-    fun getString() : String {
-        var set = mutableSetOf<String>()
-        if (a.down) set.add("a")
-        if (b.down) set.add("b")
-        if (x.down) set.add("x")
-        if (y.down) set.add("y")
+    override fun toString(): String {
+        val set = mutableSetOf<String>()
 
-        if (dpad_up.down) set.add("dpad up")
-        if (dpad_down.down) set.add("dpad down")
-        if (dpad_left.down) set.add("dpad left")
-        if (dpad_right.down) set.add("dpad right")
+        controls.forEach {
+            if(it.toString() != "")
+                set.add(it.toString())
+        }
 
-        if (left_bumper.down) set.add("left bumper")
-        if (right_bumper.down) set.add("right bumper")
-
-        if (left_stick_button.down) set.add("left stick button")
-        if (right_stick_button.down) set.add("right stick button")
-
-        return set.joinToString(", ")
+        return set.joinToString("\n")
     }
-}
 
-class Button {
-    var down = false
-    var pressed = false
-    var released = false
+    class Button(private val name: String = "Unknown Button") {
+        var down = false
+        var pressed = false
+        var released = false
+
+        fun update(value: Boolean) {
+            pressed = value && !down
+            released = !value && down
+            down = value
+        }
+
+        override fun toString(): String {
+            val set = mutableSetOf<String>()
+            if (down) set.add("Down")
+            if (pressed) set.add("Just Pressed")
+            if (released) set.add("Just Released")
+            return if (set.isNotEmpty()) "$name: ${set.joinToString(", ")}" else ""
+        }
+    }
+
+    class Trigger(private val name: String = "Unknown Trigger") {
+        val down: Boolean
+            get() = amount != 0.0f
+        var pressed = false
+        var released = false
+        var amount = 0.0f
+
+        fun update(value: Float) {
+            pressed = value != 0.0f && !down
+            released = value == 0.0f && down
+            amount = value
+        }
+
+        override fun toString(): String {
+            val set = mutableSetOf<String>()
+            if (pressed) set.add("Just Pressed")
+            if (released) set.add("Just Released")
+            if (amount != 0.0f) set.add("Amount Pressed: $amount")
+            return if (set.isNotEmpty()) "$name: ${set.joinToString(", ")}" else ""
+        }
+    }
+
+    class JoyStick(private val name: String = "Unknown Joystick") {
+        val moved: Boolean
+            get() = x != 0.0f || y != 0.0f
+        var justMoved = false
+        var justStopped = false
+        var x = 0.0f
+        var y = 0.0f
+        val button = Button()
+        
+        fun update(x: Float, y: Float, buttonValue: Boolean) {
+            justMoved = x != 0.0f || y != 0.0f && !moved
+            justStopped = x == 0.0f && y == 0.0f && moved
+            this.x = x
+            this.y = y
+            button.update(buttonValue)
+        }
+
+        override fun toString(): String {
+            val set = mutableSetOf<String>()
+            if (button.down) set.add("Button Down")
+            if (button.pressed) set.add("Button Just Pressed")
+            if (button.released) set.add("Button Just Released")
+            if (justMoved) set.add("Just Started Moving")
+            if (justStopped) set.add("Just Stopped Moving")
+            if (set.isNotEmpty() || x != 0.0f || y != 0.0f) {
+                set.add("X: $x")
+                set.add("Y: $y")
+            }
+            return if (set.isNotEmpty()) "$name: ${set.joinToString(", ")}" else ""
+        }
+    }
 }
