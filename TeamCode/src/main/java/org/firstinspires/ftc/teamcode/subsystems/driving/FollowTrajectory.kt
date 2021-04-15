@@ -5,14 +5,14 @@ import com.acmerobotics.roadrunner.drive.DriveSignal
 import com.acmerobotics.roadrunner.trajectory.Trajectory
 import org.firstinspires.ftc.teamcode.Constants.drive
 import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
-import org.firstinspires.ftc.teamcode.util.DashboardUtil
+import org.firstinspires.ftc.teamcode.util.roadrunner.DashboardUtil
 
 @Suppress("unused")
 class FollowTrajectory(private val trajectory: Trajectory): AtomicCommand() {
     override val _isDone: Boolean
         get() = drive.follower.isFollowing()
 
-    override fun run() {
+    override fun execute() {
         val packet = TelemetryPacket()
         val fieldOverlay = packet.fieldOverlay()
         val t = drive.follower.elapsedTime()
@@ -34,7 +34,7 @@ class FollowTrajectory(private val trajectory: Trajectory): AtomicCommand() {
         DashboardUtil.drawPoseHistory(fieldOverlay, drive.poseHistory)
     }
 
-    override fun done() {
+    override fun done(interrupted: Boolean) {
         drive.setDriveSignal(DriveSignal())
     }
 }

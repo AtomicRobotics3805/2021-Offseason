@@ -7,7 +7,7 @@ class TimedCustomCommand(
         getDone: () -> Boolean = { true },
         _run: () -> Unit = { },
         _start: () -> Unit = { },
-        _done: () -> Unit = { }
+        _done: (interrupted: Boolean) -> Unit = { }
 ): CustomCommand(getDone, _run, _start, _done) {
 
     override val _isDone: Boolean

@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.Constants.constants
 import org.firstinspires.ftc.teamcode.Constants.drive
 import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
-import org.firstinspires.ftc.teamcode.util.DashboardUtil
+import org.firstinspires.ftc.teamcode.util.roadrunner.DashboardUtil
 
 @Suppress("unused")
 open class Turn(private val angle: Double): AtomicCommand() {
@@ -31,7 +31,7 @@ open class Turn(private val angle: Double): AtomicCommand() {
         )
     }
 
-    override fun run() {
+    override fun execute() {
         val packet = TelemetryPacket()
         val fieldOverlay = packet.fieldOverlay()
         val t = timer.seconds()
@@ -51,7 +51,7 @@ open class Turn(private val angle: Double): AtomicCommand() {
         DashboardUtil.drawRobot(fieldOverlay, newPose)
     }
 
-    override fun done() {
+    override fun done(interrupted: Boolean) {
         drive.setDriveSignal(DriveSignal())
     }
 
