@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.hardware.compbot
+package org.firstinspires.ftc.teamcode.subsystems.driving
 
 import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.*
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior
 import org.firstinspires.ftc.teamcode.Constants.constants
+import org.firstinspires.ftc.teamcode.hardware.compbot.LocalizerComp
 import org.firstinspires.ftc.teamcode.util.hardware.BaseMecanumDrive
 import org.firstinspires.ftc.teamcode.util.roadrunner.DashboardUtil
 import org.firstinspires.ftc.teamcode.util.roadrunner.LynxModuleUtil
@@ -57,7 +58,12 @@ object MecanumDriveComp : BaseMecanumDrive(constants) {
 
     private lateinit var hardwareMap: HardwareMap
 
-    fun initialize() {
+    override val driverSpeeds = listOf(0.1, 0.4, 1.0)
+    override var driverSpeedIndex = 0
+    override val driverSpeed: Double
+        get() = driverSpeeds[driverSpeedIndex]
+
+    override fun initialize() {
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next()
 
         dashboard.telemetryTransmissionInterval = 25
@@ -110,7 +116,7 @@ object MecanumDriveComp : BaseMecanumDrive(constants) {
         localizer = LocalizerComp(hardwareMap)
     }
 
-    override fun update() {
+    override fun periodic() {
         updatePoseEstimate()
         val currentPose = poseEstimate
         poseHistory.add(currentPose)

@@ -14,6 +14,10 @@ object Intake : Subsystem {
     @JvmField
     var INTAKE_SPEED = 1.0
 
+    var on = false
+
+    val switch: AtomicCommand
+        get() = if (on) start else stop
     val start: AtomicCommand
         get() = powerIntake(INTAKE_SPEED)
     val stop: AtomicCommand
@@ -26,5 +30,8 @@ object Intake : Subsystem {
         motor.mode = DcMotor.RunMode.RUN_USING_ENCODER
     }
 
-    fun powerIntake(power: Double) = CustomCommand(_start = { motor.power = power })
+    fun powerIntake(power: Double) = CustomCommand(_start = {
+        motor.power = power
+        on = power != 0.0
+    })
 }

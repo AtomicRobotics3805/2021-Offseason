@@ -31,9 +31,13 @@ object Shooter : Subsystem {
     @JvmField
     var RING_DELAY = 0.8
 
-    val startMotor: AtomicCommand
+    private var on = false
+
+    val switch: AtomicCommand
+        get() = if (on) start else stop
+    val start: AtomicCommand
         get() = powerMotor(SHOOTER_SPEED)
-    val stopMotor: AtomicCommand
+    val stop: AtomicCommand
         get() = powerMotor(0.0)
 
     val extendIndexerServos: AtomicCommand
@@ -63,7 +67,10 @@ object Shooter : Subsystem {
     }
 
     fun powerMotor(power: Double): AtomicCommand = CustomCommand(
-            _start = { shooterMotor.power = power })
+            _start = {
+                shooterMotor.power = power
+                on = power != 0.0
+            })
 
     fun moveIndexerServos(leftIndexerServoPosition: Double, rightIndexerServoPosition: Double):
             AtomicCommand = CustomCommand(

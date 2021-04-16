@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.autonomous
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import org.firstinspires.ftc.teamcode.Constants.drive
 import org.firstinspires.ftc.teamcode.util.commands.*
 import org.firstinspires.ftc.teamcode.util.commands.delays.Delay
 import org.firstinspires.ftc.teamcode.subsystems.driving.FollowTrajectory
@@ -30,8 +31,8 @@ class AutoRoutines {
     val lowRoutine: AtomicCommand
         get() = sequential {
             +parallel {
-                +Shooter.startMotor
-                +FollowTrajectory(TrajectoryFactory.startToLowToShootPowershot)
+                +Shooter.start
+                +drive.followTrajectory(TrajectoryFactory.startToLowToShootPowershot)
                 +sequential {
                     +Delay(0.8)
                     +Wobble.openClaw
@@ -39,13 +40,13 @@ class AutoRoutines {
             }
             +shootPowershotRoutine
             +parallel {
-                +Shooter.stopMotor
-                +FollowTrajectory(TrajectoryFactory.shootPowershotToWobble)
+                +Shooter.stop
+                +drive.followTrajectory(TrajectoryFactory.shootPowershotToWobble)
                 +Wobble.lowerArm
             }
             +Wobble.closeClaw
             +parallel {
-                +FollowTrajectory(TrajectoryFactory.wobbleToLowToPark)
+                +drive.followTrajectory(TrajectoryFactory.wobbleToLowToPark)
             }
         }
 
@@ -55,7 +56,7 @@ class AutoRoutines {
                 +Shooter.shootRing
                 +sequential {
                     +Delay(RING_DELAY / 2)
-                    +Turn(TrajectoryFactory.powerShotAngle(
+                    +drive.turn(TrajectoryFactory.powerShotAngle(
                             Vector2d(TrajectoryFactory.startToLowToShootPowershot.end()), 1))
                 }
             }
@@ -63,7 +64,7 @@ class AutoRoutines {
                 +Shooter.shootRing
                 +sequential {
                     +Delay(RING_DELAY / 2)
-                    +Turn(TrajectoryFactory.powerShotAngle(
+                    +drive.turn(TrajectoryFactory.powerShotAngle(
                             Vector2d(TrajectoryFactory.startToLowToShootPowershot.end()), 2))
                 }
             }

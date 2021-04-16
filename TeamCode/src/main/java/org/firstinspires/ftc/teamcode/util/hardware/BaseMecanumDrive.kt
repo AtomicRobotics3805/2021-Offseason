@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.followers.TrajectoryFollower
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.kinematics.Kinematics
 import com.acmerobotics.roadrunner.profile.MotionProfile
+import com.acmerobotics.roadrunner.trajectory.Trajectory
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint
@@ -15,15 +16,24 @@ import com.acmerobotics.roadrunner.util.NanoClock
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior
 import com.qualcomm.robotcore.hardware.DcMotorEx
+import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.PIDFCoefficients
 import com.qualcomm.robotcore.hardware.VoltageSensor
+import org.firstinspires.ftc.teamcode.subsystems.driving.DriverControlled
+import org.firstinspires.ftc.teamcode.subsystems.driving.FollowTrajectory
+import org.firstinspires.ftc.teamcode.subsystems.driving.Turn
+import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
+import org.firstinspires.ftc.teamcode.util.commands.CustomCommand
+import org.firstinspires.ftc.teamcode.util.commands.Subsystem
 import org.firstinspires.ftc.teamcode.util.trajectories.ParallelTrajectory
 import org.firstinspires.ftc.teamcode.util.kinematics.AtomicMecanumKinematics
+import java.sql.Driver
 import java.util.*
 import kotlin.math.abs
 
-abstract class BaseMecanumDrive(val constants: BaseDriveConstants):
-        MecanumDrive(constants.kV, constants.kA, constants.kStatic, constants.trackWidth, constants.trackWidth, constants.lateralMultiplier) {
+abstract class BaseMecanumDrive(val constants: BaseDriveConstants) :
+        MecanumDrive(constants.kV, constants.kA, constants.kStatic, constants.trackWidth, constants.trackWidth, constants.lateralMultiplier),
+        Subsystem {
     var TRANSLATIONAL_PID = constants.translationalPID
     var HEADING_PID = constants.headingPID
     abstract val VX_WEIGHT: Double
@@ -52,7 +62,24 @@ abstract class BaseMecanumDrive(val constants: BaseDriveConstants):
     protected var lastPoseOnTurn: Pose2d? = null
 
     var trajectory: ParallelTrajectory? = null
-    
+
+    abstract val driverSpeeds: List<Double>
+    abstract var driverSpeedIndex: Int
+    abstract val driverSpeed: Double
+
+    val switchSpeed: AtomicCommand
+        get() = CustomCommand(_start = {
+            driverSpeedIndex++
+            if (driverSpeedIndex >= driverSpeeds.size)
+                driverSpeedIndex = 0
+        })
+
+
+    fun driverControlled(gamepad: Gamepad): AtomicCommand = DriverControlled(gamepad)
+    fun followTrajectory(trajectory: Trajectory): AtomicCommand = FollowTrajectory(trajectory)
+    fun turn(angle: Double): AtomicCommand = Turn(angle)
+    fun turnRelative(angle: Double): AtomicCommand = Turn(angle + poseEstimate.heading)
+
     fun trajectoryBuilder(startPose: Pose2d): TrajectoryBuilder {
         return TrajectoryBuilder(startPose, false, velConstraint, accelConstraint)
     }
@@ -158,5 +185,5 @@ abstract class BaseMecanumDrive(val constants: BaseDriveConstants):
         setMotorPowers(powers[0], powers[1], powers[2], powers[3])
     }
 
-    abstract fun update()
+    abstract fun initialize()
 }

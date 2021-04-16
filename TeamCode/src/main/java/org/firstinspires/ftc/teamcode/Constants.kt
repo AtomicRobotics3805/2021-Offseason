@@ -5,10 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.util.hardware.BaseDriveConstants
 import org.firstinspires.ftc.teamcode.util.hardware.BaseMecanumDrive
 import org.firstinspires.ftc.teamcode.hardware.compbot.DriveConstantsComp
-import org.firstinspires.ftc.teamcode.hardware.compbot.MecanumDriveComp
-import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Intake
-import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Shooter
-import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Wobble
+import org.firstinspires.ftc.teamcode.subsystems.driving.MecanumDriveComp
 
 object Constants {
     enum class Color {
