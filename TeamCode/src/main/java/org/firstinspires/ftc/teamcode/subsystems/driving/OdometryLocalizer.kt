@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
+import org.firstinspires.ftc.teamcode.Constants.opMode
 import org.firstinspires.ftc.teamcode.util.roadrunner.Encoder
 
 /*
@@ -21,14 +22,39 @@ import org.firstinspires.ftc.teamcode.util.roadrunner.Encoder
 *
 */
 @Config
-class OdometryLocalizerComp(hardwareMap: HardwareMap) : ThreeTrackingWheelLocalizer(listOf(
+object OdometryLocalizer : ThreeTrackingWheelLocalizer(listOf(
         Pose2d(0.0, LATERAL_DISTANCE / 2, 0.0),  // left
         Pose2d(0.0, -LATERAL_DISTANCE / 2, 0.0),  // right
         Pose2d(FORWARD_OFFSET, 0.0, Math.toRadians(90.0)) // front
 )) {
-    private val leftEncoder: Encoder = Encoder(hardwareMap.get(DcMotorEx::class.java, "LF"))
-    private val rightEncoder: Encoder = Encoder(hardwareMap.get(DcMotorEx::class.java, "RF"))
-    private val frontEncoder: Encoder = Encoder(hardwareMap.get(DcMotorEx::class.java, "LB"))
+    @JvmField
+    var ticksPerRev = 2400.0
+    @JvmField
+    var wheelRadius = 1.5 // in
+    @JvmField
+    var gearRatio = 1.0 // output (wheel) speed / input (encoder) speed
+    @JvmField
+    var LATERAL_DISTANCE = 17.3 // in; distance between the left and right wheels
+    @JvmField
+    var FORWARD_OFFSET = -3.6 // in; offset of the lateral wheel
+    @JvmField
+    var LEFT_REVERSED = true
+    @JvmField
+    var RIGHT_REVERSED = true
+    @JvmField
+    var FRONT_REVERSED = true
+    @JvmField
+    var X_MULTIPLIER = 1.04
+    @JvmField
+    var Y_MULTIPLIER = 1.04
+
+    fun encoderTicksToInches(ticks: Double): Double {
+        return wheelRadius * 2 * Math.PI * gearRatio * ticks / ticksPerRev
+    }
+
+    private val leftEncoder: Encoder = Encoder(opMode.hardwareMap.get(DcMotorEx::class.java, "LF"))
+    private val rightEncoder: Encoder = Encoder(opMode.hardwareMap.get(DcMotorEx::class.java, "RF"))
+    private val frontEncoder: Encoder = Encoder(opMode.hardwareMap.get(DcMotorEx::class.java, "LB"))
 
     init {
         // FINISHED: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
@@ -56,30 +82,4 @@ class OdometryLocalizerComp(hardwareMap: HardwareMap) : ThreeTrackingWheelLocali
         )
     }
 
-    companion object {
-        @JvmField
-        var ticksPerRev = 2400.0
-        @JvmField
-        var wheelRadius = 1.5 // in
-        @JvmField
-        var gearRatio = 1.0 // output (wheel) speed / input (encoder) speed
-        @JvmField
-        var LATERAL_DISTANCE = 17.3 // in; distance between the left and right wheels
-        @JvmField
-        var FORWARD_OFFSET = -3.6 // in; offset of the lateral wheel
-        @JvmField
-        var LEFT_REVERSED = true
-        @JvmField
-        var RIGHT_REVERSED = true
-        @JvmField
-        var FRONT_REVERSED = true
-        @JvmField
-        var X_MULTIPLIER = 1.04
-        @JvmField
-        var Y_MULTIPLIER = 1.04
-
-        fun encoderTicksToInches(ticks: Double): Double {
-            return wheelRadius * 2 * Math.PI * gearRatio * ticks / ticksPerRev
-        }
-    }
 }
