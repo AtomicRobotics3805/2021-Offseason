@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.hardware.compbot
+package org.firstinspires.ftc.teamcode.subsystems.driving
 
 import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.geometry.Pose2d
@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.util.roadrunner.Encoder
 *
 */
 @Config
-class LocalizerComp(hardwareMap: HardwareMap) : ThreeTrackingWheelLocalizer(listOf(
+class OdometryLocalizerComp(hardwareMap: HardwareMap) : ThreeTrackingWheelLocalizer(listOf(
         Pose2d(0.0, LATERAL_DISTANCE / 2, 0.0),  // left
         Pose2d(0.0, -LATERAL_DISTANCE / 2, 0.0),  // right
         Pose2d(FORWARD_OFFSET, 0.0, Math.toRadians(90.0)) // front
