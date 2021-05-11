@@ -1,13 +1,10 @@
 package org.firstinspires.ftc.teamcode.teleop
 
-import org.firstinspires.ftc.teamcode.Constants.drive
 import org.firstinspires.ftc.teamcode.Constants.opMode
-import org.firstinspires.ftc.teamcode.subsystems.driving.DriverControlled
+import org.firstinspires.ftc.teamcode.subsystems.driving.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.mechanisms.*
 import org.firstinspires.ftc.teamcode.util.CommandGamepad
-import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
 import org.firstinspires.ftc.teamcode.util.commands.CommandScheduler
-import org.firstinspires.ftc.teamcode.util.commands.CustomCommand
 
 object Controls {
     private val gamepad1 = CommandGamepad(opMode.gamepad1)
@@ -18,10 +15,10 @@ object Controls {
     }
 
     fun registerCommands() {
-        CommandScheduler.commands += drive.driverControlled(opMode.gamepad1)
+        CommandScheduler.commands += MecanumDrive.driverControlled(opMode.gamepad1)
 
-        gamepad1.a.pressed.command = drive.switchSpeed
-        gamepad2.a.pressed.command = Intake.switch
-        gamepad2.b.pressed.command = Shooter.switch
+        gamepad1.a.pressed.command = { MecanumDrive.switchSpeed }
+        gamepad2.a.pressed.command = { Intake.switch }
+        gamepad2.b.pressed.command = { Shooter.switch }
     }
 }
