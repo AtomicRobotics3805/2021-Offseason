@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.util.kinematics
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 
+@Suppress("unused")
 object AtomicMecanumKinematics {
     @JvmStatic
     fun robotToWheelVelocities(
