@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.util.CommandGamepad
 object CommandScheduler {
     val commands = mutableListOf<AtomicCommand>()
 
-    // these actions run whenever a command is inititialized, executed, interrupted, or finished
+    // these actions run whenever a command is initialized, executed, interrupted, or finished
     val initActions = mutableListOf<(AtomicCommand) -> Unit>()
     val executeActions = mutableListOf<(AtomicCommand) -> Unit>()
     val interruptActions = mutableListOf<(AtomicCommand) -> Unit>()
@@ -42,7 +42,7 @@ object CommandScheduler {
         for (requirement in command.requirements) {
             val conflicts = findCommands({ it.requirements.contains(requirement) })
             for (conflict in conflicts)
-                if (!conflict.interruptable) {
+                if (!conflict.interruptible) {
                     doActions(interruptActions, conflict)
                     throw SubsystemBusyException(requirement)
                 }
