@@ -13,122 +13,135 @@ class ParallelTrajectoryBuilder(val builder: TrajectoryBuilder) {
 
     fun lineTo(
             endPosition: Vector2d,
-            velConstraintOverride: TrajectoryVelocityConstraint?,
-            accelConstraintOverride: TrajectoryAccelerationConstraint?
-    ) {
+            velConstraintOverride: TrajectoryVelocityConstraint? = null,
+            accelConstraintOverride: TrajectoryAccelerationConstraint? = null
+    ): ParallelTrajectoryBuilder {
         builder.lineTo(endPosition, velConstraintOverride, accelConstraintOverride)
         segmentLengths.add(builder.build().path.length())
+        return this
     }
 
     fun lineToConstantHeading(
             endPosition: Vector2d,
-            velConstraintOverride: TrajectoryVelocityConstraint?,
-            accelConstraintOverride: TrajectoryAccelerationConstraint?
-    ) {
+            velConstraintOverride: TrajectoryVelocityConstraint? = null,
+            accelConstraintOverride: TrajectoryAccelerationConstraint? = null
+    ): ParallelTrajectoryBuilder {
         builder.lineToConstantHeading(endPosition, velConstraintOverride, accelConstraintOverride)
         segmentLengths.add(builder.build().path.length())
+        return this
     }
 
     fun lineToLinearHeading(
             endPose: Pose2d,
-            velConstraintOverride: TrajectoryVelocityConstraint?,
-            accelConstraintOverride: TrajectoryAccelerationConstraint?
-    ) {
+            velConstraintOverride: TrajectoryVelocityConstraint? = null,
+            accelConstraintOverride: TrajectoryAccelerationConstraint? = null
+    ): ParallelTrajectoryBuilder {
         builder.lineToLinearHeading(endPose, velConstraintOverride, accelConstraintOverride)
         segmentLengths.add(builder.build().path.length())
+        return this
     }
 
     fun lineToSplineHeading(
             endPose: Pose2d,
-            velConstraintOverride: TrajectoryVelocityConstraint?,
-            accelConstraintOverride: TrajectoryAccelerationConstraint?
-    ) {
+            velConstraintOverride: TrajectoryVelocityConstraint? = null,
+            accelConstraintOverride: TrajectoryAccelerationConstraint? = null
+    ): ParallelTrajectoryBuilder {
         builder.lineToSplineHeading(endPose, velConstraintOverride, accelConstraintOverride)
         segmentLengths.add(builder.build().path.length())
+        return this
     }
 
     fun strafeTo(
             endPosition: Vector2d,
-            velConstraintOverride: TrajectoryVelocityConstraint?,
-            accelConstraintOverride: TrajectoryAccelerationConstraint?
-    ) {
+            velConstraintOverride: TrajectoryVelocityConstraint? = null,
+            accelConstraintOverride: TrajectoryAccelerationConstraint? = null
+    ): ParallelTrajectoryBuilder {
         builder.strafeTo(endPosition, velConstraintOverride, accelConstraintOverride)
         segmentLengths.add(builder.build().path.length())
+        return this
     }
 
     fun forward(
             distance: Double,
-            velConstraintOverride: TrajectoryVelocityConstraint?,
-            accelConstraintOverride: TrajectoryAccelerationConstraint?
-    ) {
+            velConstraintOverride: TrajectoryVelocityConstraint? = null,
+            accelConstraintOverride: TrajectoryAccelerationConstraint? = null
+    ): ParallelTrajectoryBuilder {
         builder.forward(distance, velConstraintOverride, accelConstraintOverride)
         segmentLengths.add(builder.build().path.length())
+        return this
     }
 
     fun back(
             distance: Double,
-            velConstraintOverride: TrajectoryVelocityConstraint?,
-            accelConstraintOverride: TrajectoryAccelerationConstraint?
-    ) {
+            velConstraintOverride: TrajectoryVelocityConstraint? = null,
+            accelConstraintOverride: TrajectoryAccelerationConstraint? = null
+    ): ParallelTrajectoryBuilder {
         builder.back(distance, velConstraintOverride, accelConstraintOverride)
         segmentLengths.add(builder.build().path.length())
+        return this
     }
 
     fun strafeLeft(
             distance: Double,
-            velConstraintOverride: TrajectoryVelocityConstraint?,
-            accelConstraintOverride: TrajectoryAccelerationConstraint?
-    ) {
+            velConstraintOverride: TrajectoryVelocityConstraint? = null,
+            accelConstraintOverride: TrajectoryAccelerationConstraint? = null
+    ): ParallelTrajectoryBuilder {
         builder.strafeLeft(distance, velConstraintOverride, accelConstraintOverride)
         segmentLengths.add(builder.build().path.length())
+        return this
     }
 
     fun strafeRight(
             distance: Double,
-            velConstraintOverride: TrajectoryVelocityConstraint?,
-            accelConstraintOverride: TrajectoryAccelerationConstraint?
-    ) {
+            velConstraintOverride: TrajectoryVelocityConstraint? = null,
+            accelConstraintOverride: TrajectoryAccelerationConstraint? = null
+    ): ParallelTrajectoryBuilder {
         builder.strafeRight(distance, velConstraintOverride, accelConstraintOverride)
         segmentLengths.add(builder.build().path.length())
+        return this
     }
 
     fun splineTo(
             endPosition: Vector2d,
             endTangent: Double,
-            velConstraintOverride: TrajectoryVelocityConstraint?,
-            accelConstraintOverride: TrajectoryAccelerationConstraint?
-    ) {
+            velConstraintOverride: TrajectoryVelocityConstraint? = null,
+            accelConstraintOverride: TrajectoryAccelerationConstraint? = null
+    ): ParallelTrajectoryBuilder {
         builder.splineTo(endPosition, endTangent, velConstraintOverride, accelConstraintOverride)
         segmentLengths.add(builder.build().path.length())
+        return this
     }
 
     fun splineToConstantHeading(
             endPosition: Vector2d,
             endTangent: Double,
-            velConstraintOverride: TrajectoryVelocityConstraint?,
-            accelConstraintOverride: TrajectoryAccelerationConstraint?
-    ) {
+            velConstraintOverride: TrajectoryVelocityConstraint? = null,
+            accelConstraintOverride: TrajectoryAccelerationConstraint? = null
+    ): ParallelTrajectoryBuilder {
         builder.splineToConstantHeading(endPosition, endTangent, velConstraintOverride, accelConstraintOverride)
         segmentLengths.add(builder.build().path.length())
+        return this
     }
 
     fun splineToLinearHeading(
             endPose: Pose2d,
             endTangent: Double,
-            velConstraintOverride: TrajectoryVelocityConstraint?,
-            accelConstraintOverride: TrajectoryAccelerationConstraint?
-    ) {
+            velConstraintOverride: TrajectoryVelocityConstraint? = null,
+            accelConstraintOverride: TrajectoryAccelerationConstraint? = null
+    ): ParallelTrajectoryBuilder {
         builder.splineToLinearHeading(endPose, endTangent, velConstraintOverride, accelConstraintOverride)
         segmentLengths.add(builder.build().path.length())
+        return this
     }
 
     fun splineToSplineHeading(
             endPose: Pose2d,
             endTangent: Double,
-            velConstraintOverride: TrajectoryVelocityConstraint?,
-            accelConstraintOverride: TrajectoryAccelerationConstraint?
-    ) {
+            velConstraintOverride: TrajectoryVelocityConstraint? = null,
+            accelConstraintOverride: TrajectoryAccelerationConstraint? = null
+    ): ParallelTrajectoryBuilder {
         builder.splineToSplineHeading(endPose, endTangent, velConstraintOverride, accelConstraintOverride)
         segmentLengths.add(builder.build().path.length())
+        return this
     }
 }
