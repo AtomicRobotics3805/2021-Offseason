@@ -7,7 +7,6 @@ import com.acmerobotics.roadrunner.profile.MotionProfile
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator.generateSimpleMotionProfile
 import com.acmerobotics.roadrunner.profile.MotionState
 import com.qualcomm.robotcore.util.ElapsedTime
-import org.firstinspires.ftc.teamcode.Constants.constants
 import org.firstinspires.ftc.teamcode.Constants.drive
 import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
 import org.firstinspires.ftc.teamcode.util.roadrunner.DashboardUtil
@@ -26,8 +25,8 @@ open class Turn(private val angle: Double): AtomicCommand() {
         turnProfile = generateSimpleMotionProfile(
                 MotionState(drive.poseEstimate.heading, 0.0, 0.0, 0.0),
                 MotionState(angle, 0.0, 0.0, 0.0),
-                constants.maxAngVel,
-                constants.maxAngAccel
+                MecanumDrive.Constants.MAX_ANG_VEL,
+                MecanumDrive.Constants.MAX_ANG_ACCEL
         )
     }
 

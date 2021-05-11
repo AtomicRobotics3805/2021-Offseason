@@ -20,16 +20,16 @@ class CommandGamepad(qualcommGamepad: Gamepad) {
     val x = CommandButton(gamepad.x)
     val y = CommandButton(gamepad.y)
 
-    val dpad_up = CommandButton(gamepad.dpad_up)
-    val dpad_down = CommandButton(gamepad.dpad_down)
-    val dpad_left = CommandButton(gamepad.dpad_left)
-    val dpad_right = CommandButton(gamepad.dpad_right)
+    val dpadUp = CommandButton(gamepad.dpadUp)
+    val dpadDown = CommandButton(gamepad.dpadDown)
+    val dpadLeft = CommandButton(gamepad.dpadLeft)
+    val dpadRight = CommandButton(gamepad.dpadRight)
 
-    val left_bumper = CommandButton(gamepad.left_bumper)
-    val right_bumper = CommandButton(gamepad.right_bumper)
+    val leftBumper = CommandButton(gamepad.leftBumper)
+    val rightBumper = CommandButton(gamepad.rightBumper)
 
-    private val controls = listOf(a, b, x, y, dpad_up, dpad_down, dpad_left, dpad_right,
-            left_bumper, right_bumper)
+    private val controls = listOf(a, b, x, y, dpadUp, dpadDown, dpadLeft, dpadRight,
+            leftBumper, rightBumper)
 
     fun update() {
         gamepad.update()
@@ -49,19 +49,15 @@ class CommandGamepad(qualcommGamepad: Gamepad) {
 
         class CommandButtonTrigger(private val button: CustomGamepad.Button,
                                    private val triggerType: TriggerType) {
-            var command: AtomicCommand? = null
+            var command: (() -> AtomicCommand)? = null
 
             fun update() {
                 if(command != null && ((triggerType == TriggerType.DOWN && button.down) ||
                                 (triggerType == TriggerType.PRESSED && button.pressed) || 
                                 (triggerType == TriggerType.RELEASED && button.released))) {
-                    CommandScheduler.commands += command!!
+                    CommandScheduler.commands += command!!.invoke()
                 }
             }
         }
-    }
-
-    class CommandTrigger(trigger: CustomGamepad.Trigger) {
-
     }
 }

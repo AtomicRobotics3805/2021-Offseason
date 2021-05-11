@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.subsystems.driving
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.qualcomm.robotcore.hardware.Gamepad
-import edu.wpi.first.wpilibj.geometry.Rotation2d
 import org.firstinspires.ftc.teamcode.Constants.drive
 import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
 

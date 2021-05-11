@@ -21,32 +21,34 @@ import org.firstinspires.ftc.teamcode.util.roadrunner.Encoder
 *    \--------------/
 *
 */
+
+@JvmField
+var ticksPerRev = 2400.0
+@JvmField
+var wheelRadius = 1.5 // in
+@JvmField
+var gearRatio = 1.0 // output (wheel) speed / input (encoder) speed
+@JvmField
+var LATERAL_DISTANCE = 17.3 // in; distance between the left and right wheels
+@JvmField
+var FORWARD_OFFSET = -3.6 // in; offset of the lateral wheel
+@JvmField
+var LEFT_REVERSED = true
+@JvmField
+var RIGHT_REVERSED = true
+@JvmField
+var FRONT_REVERSED = true
+@JvmField
+var X_MULTIPLIER = 1.04
+@JvmField
+var Y_MULTIPLIER = 1.04
+
 @Config
 object OdometryLocalizer : ThreeTrackingWheelLocalizer(listOf(
         Pose2d(0.0, LATERAL_DISTANCE / 2, 0.0),  // left
         Pose2d(0.0, -LATERAL_DISTANCE / 2, 0.0),  // right
         Pose2d(FORWARD_OFFSET, 0.0, Math.toRadians(90.0)) // front
 )) {
-    @JvmField
-    var ticksPerRev = 2400.0
-    @JvmField
-    var wheelRadius = 1.5 // in
-    @JvmField
-    var gearRatio = 1.0 // output (wheel) speed / input (encoder) speed
-    @JvmField
-    var LATERAL_DISTANCE = 17.3 // in; distance between the left and right wheels
-    @JvmField
-    var FORWARD_OFFSET = -3.6 // in; offset of the lateral wheel
-    @JvmField
-    var LEFT_REVERSED = true
-    @JvmField
-    var RIGHT_REVERSED = true
-    @JvmField
-    var FRONT_REVERSED = true
-    @JvmField
-    var X_MULTIPLIER = 1.04
-    @JvmField
-    var Y_MULTIPLIER = 1.04
 
     fun encoderTicksToInches(ticks: Double): Double {
         return wheelRadius * 2 * Math.PI * gearRatio * ticks / ticksPerRev

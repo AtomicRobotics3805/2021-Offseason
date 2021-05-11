@@ -52,7 +52,7 @@ object VuforiaLocalizer : Localizer {
         val cameraMonitorViewId: Int = hardwareMap.appContext.resources.getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.packageName)
         val parameters = VuforiaLocalizer.Parameters(cameraMonitorViewId)
 
-        parameters.vuforiaLicenseKey = drive.VUFORIA_KEY
+        parameters.vuforiaLicenseKey = VUFORIA_KEY
 
         /*
          * We also indicate which camera on the RC we wish to use.

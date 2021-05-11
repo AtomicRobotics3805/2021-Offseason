@@ -18,22 +18,22 @@ class CustomGamepad(private val gamepad: Gamepad) {
     val x = Button("X")
     val y = Button("Y")
 
-    val dpad_up = Button("D-Pad Up")
-    val dpad_down = Button("D-Pad Down")
-    val dpad_left = Button("D-Pad Left")
-    val dpad_right = Button("D-Pad Right")
+    val dpadUp = Button("D-Pad Up")
+    val dpadDown = Button("D-Pad Down")
+    val dpadLeft = Button("D-Pad Left")
+    val dpadRight = Button("D-Pad Right")
 
-    val left_bumper = Button("Left Bumper")
-    val right_bumper = Button("Right Bumper")
+    val leftBumper = Button("Left Bumper")
+    val rightBumper = Button("Right Bumper")
 
-    val left_trigger = Trigger("Left Trigger")
-    val right_trigger = Trigger("Right Trigger")
+    val leftTrigger = Trigger("Left Trigger")
+    val rightTrigger = Trigger("Right Trigger")
     
-    val left_stick = JoyStick("Left Stick")
-    val right_stick = JoyStick("Right Stick")
+    val leftStick = JoyStick("Left Stick")
+    val rightStick = JoyStick("Right Stick")
 
-    val controls = listOf(a, b, x, y, dpad_up, dpad_down, dpad_left, dpad_right,
-            left_bumper, right_bumper, left_trigger, right_trigger, left_stick, right_stick)
+    val controls = listOf(a, b, x, y, dpadUp, dpadDown, dpadLeft, dpadRight,
+            leftBumper, rightBumper, leftTrigger, rightTrigger, leftStick, rightStick)
 
     fun update(gamepad: Gamepad = this.gamepad) {
         a.update(gamepad.a)
@@ -41,19 +41,19 @@ class CustomGamepad(private val gamepad: Gamepad) {
         x.update(gamepad.x)
         y.update(gamepad.y)
 
-        dpad_up.update(gamepad.dpad_up)
-        dpad_down.update(gamepad.dpad_down)
-        dpad_left.update(gamepad.dpad_left)
-        dpad_right.update(gamepad.dpad_right)
+        dpadUp.update(gamepad.dpad_up)
+        dpadDown.update(gamepad.dpad_down)
+        dpadLeft.update(gamepad.dpad_left)
+        dpadRight.update(gamepad.dpad_right)
 
-        left_bumper.update(gamepad.left_bumper)
-        right_bumper.update(gamepad.right_bumper)
+        leftBumper.update(gamepad.left_bumper)
+        rightBumper.update(gamepad.right_bumper)
         
-        left_trigger.update(gamepad.left_trigger)
-        right_trigger.update(gamepad.right_trigger)
+        leftTrigger.update(gamepad.left_trigger)
+        rightTrigger.update(gamepad.right_trigger)
 
-        left_stick.update(gamepad.left_stick_x, gamepad.left_stick_y, gamepad.left_stick_button)
-        right_stick.update(gamepad.right_stick_x, gamepad.right_stick_y, gamepad.right_stick_button)
+        leftStick.update(gamepad.left_stick_x, gamepad.left_stick_y, gamepad.left_stick_button)
+        rightStick.update(gamepad.right_stick_x, gamepad.right_stick_y, gamepad.right_stick_button)
     }
 
     override fun toString(): String {
