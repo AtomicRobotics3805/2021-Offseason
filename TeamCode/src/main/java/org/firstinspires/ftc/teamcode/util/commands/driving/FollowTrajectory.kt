@@ -1,23 +1,25 @@
-package org.firstinspires.ftc.teamcode.subsystems.driving
+package org.firstinspires.ftc.teamcode.util.commands.driving
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.drive.DriveSignal
 import com.acmerobotics.roadrunner.trajectory.Trajectory
 import org.firstinspires.ftc.teamcode.Constants.drive
+import org.firstinspires.ftc.teamcode.subsystems.driving.MecanumDrive
 import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
 import org.firstinspires.ftc.teamcode.util.roadrunner.DashboardUtil
+import org.firstinspires.ftc.teamcode.util.trajectories.ParallelTrajectory
 
 @Suppress("unused")
-class FollowTrajectory(private val trajectory: Trajectory): AtomicCommand() {
+class FollowTrajectory(private val trajectory: ParallelTrajectory): AtomicCommand() {
     override val _isDone: Boolean
-        get() = drive.follower.isFollowing()
+        get() = MecanumDrive.follower.isFollowing()
 
     override fun execute() {
         val packet = TelemetryPacket()
         val fieldOverlay = packet.fieldOverlay()
-        val t = drive.follower.elapsedTime()
+        val t = MecanumDrive.follower.elapsedTime()
 
-        drive.setDriveSignal(drive.follower.update(drive.poseEstimate))
+        MecanumDrive.setDriveSignal(MecanumDrive.follower.update(drive.poseEstimate))
 
         packet.addLine("following trajectory")
         packet.put("x", drive.poseEstimate.x)
@@ -27,14 +29,14 @@ class FollowTrajectory(private val trajectory: Trajectory): AtomicCommand() {
 
         fieldOverlay.setStrokeWidth(1)
         fieldOverlay.setStroke("#4CAF50")
-        DashboardUtil.drawSampledPath(fieldOverlay, trajectory.path)
-        DashboardUtil.drawRobot(fieldOverlay, trajectory[t])
+        DashboardUtil.drawSampledPath(fieldOverlay, trajectory.trajectory.path)
+        DashboardUtil.drawRobot(fieldOverlay, trajectory.trajectory[t])
         fieldOverlay.setStroke("#3F51B5")
 
-        DashboardUtil.drawPoseHistory(fieldOverlay, drive.poseHistory)
+        DashboardUtil.drawPoseHistory(fieldOverlay, MecanumDrive.poseHistory)
     }
 
     override fun done(interrupted: Boolean) {
-        drive.setDriveSignal(DriveSignal())
+        MecanumDrive.setDriveSignal(DriveSignal())
     }
 }

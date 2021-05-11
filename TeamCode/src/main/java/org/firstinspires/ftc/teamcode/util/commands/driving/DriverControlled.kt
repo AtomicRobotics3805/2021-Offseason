@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.subsystems.driving
+package org.firstinspires.ftc.teamcode.util.commands.driving
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.qualcomm.robotcore.hardware.Gamepad
-import org.firstinspires.ftc.teamcode.Constants.drive
+import org.firstinspires.ftc.teamcode.subsystems.driving.MecanumDrive
 import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
 
 class DriverControlled(private val gamepad: Gamepad,
@@ -18,6 +18,6 @@ class DriverControlled(private val gamepad: Gamepad,
                 if (reverseTurn) {-1} else {1} * (gamepad.right_stick_x).toDouble()
         )
 
-        drive.setWeightedDrivePower(drivePower * drive.driverSpeed)
+        MecanumDrive.setWeightedDrivePower(drivePower * MecanumDrive.driverSpeed)
     }
 }

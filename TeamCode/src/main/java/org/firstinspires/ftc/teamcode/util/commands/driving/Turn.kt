@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems.driving
+package org.firstinspires.ftc.teamcode.util.commands.driving
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.drive.DriveSignal
@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.profile.MotionProfileGenerator.generateSimple
 import com.acmerobotics.roadrunner.profile.MotionState
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.Constants.drive
+import org.firstinspires.ftc.teamcode.subsystems.driving.MecanumDrive
 import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
 import org.firstinspires.ftc.teamcode.util.roadrunner.DashboardUtil
 
@@ -36,12 +37,12 @@ open class Turn(private val angle: Double): AtomicCommand() {
         val t = timer.seconds()
 
         val targetState = turnProfile[t]
-        drive.turnController.targetPosition = targetState.x
-        val correction = drive.turnController.update(drive.poseEstimate.heading)
+        MecanumDrive.turnController.targetPosition = targetState.x
+        val correction = MecanumDrive.turnController.update(drive.poseEstimate.heading)
         val targetOmega = targetState.v
         val targetAlpha = targetState.a
 
-        drive.setDriveSignal(DriveSignal(
+        MecanumDrive.setDriveSignal(DriveSignal(
                 Pose2d(0.0, 0.0, targetOmega + correction),
                 Pose2d(0.0, 0.0, targetAlpha)))
 
@@ -51,7 +52,7 @@ open class Turn(private val angle: Double): AtomicCommand() {
     }
 
     override fun done(interrupted: Boolean) {
-        drive.setDriveSignal(DriveSignal())
+        MecanumDrive.setDriveSignal(DriveSignal())
     }
 
 }
