@@ -2,11 +2,9 @@ package org.firstinspires.ftc.teamcode.autonomous
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
-import org.firstinspires.ftc.teamcode.Constants.drive
+import org.firstinspires.ftc.teamcode.subsystems.driving.MecanumDrive
 import org.firstinspires.ftc.teamcode.util.commands.*
 import org.firstinspires.ftc.teamcode.util.commands.delays.Delay
-import org.firstinspires.ftc.teamcode.subsystems.driving.FollowTrajectory
-import org.firstinspires.ftc.teamcode.subsystems.driving.Turn
 import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Intake
 import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Shooter
 import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Shooter.RING_DELAY
@@ -32,7 +30,7 @@ class AutoRoutines {
         get() = sequential {
             +parallel {
                 +Shooter.start
-                +drive.followTrajectory(TrajectoryFactory.startToLowToShootPowershot)
+                +MecanumDrive.followTrajectory(TrajectoryFactory.startToLowToShootPowershot)
                 +sequential {
                     +Delay(0.8)
                     +Wobble.openClaw
@@ -41,12 +39,12 @@ class AutoRoutines {
             +shootPowershotRoutine
             +parallel {
                 +Shooter.stop
-                +drive.followTrajectory(TrajectoryFactory.shootPowershotToWobble)
+                +MecanumDrive.followTrajectory(TrajectoryFactory.shootPowershotToWobble)
                 +Wobble.lowerArm
             }
             +Wobble.closeClaw
             +parallel {
-                +drive.followTrajectory(TrajectoryFactory.wobbleToLowToPark)
+                +MecanumDrive.followTrajectory(TrajectoryFactory.wobbleToLowToPark)
             }
         }
 
@@ -56,16 +54,16 @@ class AutoRoutines {
                 +Shooter.shootRing
                 +sequential {
                     +Delay(RING_DELAY / 2)
-                    +drive.turn(TrajectoryFactory.powerShotAngle(
-                            Vector2d(TrajectoryFactory.startToLowToShootPowershot.end()), 1))
+                    +MecanumDrive.turn(TrajectoryFactory.powerShotAngle(
+                            Vector2d(TrajectoryFactory.startToLowToShootPowershot.trajectory.end()), 1))
                 }
             }
             +parallel {
                 +Shooter.shootRing
                 +sequential {
                     +Delay(RING_DELAY / 2)
-                    +drive.turn(TrajectoryFactory.powerShotAngle(
-                            Vector2d(TrajectoryFactory.startToLowToShootPowershot.end()), 2))
+                    +MecanumDrive.turn(TrajectoryFactory.powerShotAngle(
+                            Vector2d(TrajectoryFactory.startToLowToShootPowershot.trajectory.end()), 2))
                 }
             }
             +Shooter.shootRing
