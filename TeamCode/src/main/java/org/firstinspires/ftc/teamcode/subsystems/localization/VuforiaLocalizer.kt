@@ -1,19 +1,19 @@
-package org.firstinspires.ftc.teamcode.subsystems.driving
+package org.firstinspires.ftc.teamcode.subsystems.localization
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.localization.Localizer
-import org.firstinspires.ftc.robotcontroller.external.samples.ConceptVuforiaUltimateGoalNavigationWebcam
 import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap
 import org.firstinspires.ftc.robotcore.external.ClassFactory
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix
 import org.firstinspires.ftc.robotcore.external.navigation.*
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer
-import org.firstinspires.ftc.teamcode.Constants.drive
+import org.firstinspires.ftc.teamcode.subsystems.driving.MecanumDrive
 import org.firstinspires.ftc.teamcode.util.Pose2d
 import org.firstinspires.ftc.teamcode.util.inchesToMm
 import java.util.*
 
+@Suppress("Unused", "MemberVisibilityCanBePrivate")
 object VuforiaLocalizer : Localizer {
     override var poseEstimate: Pose2d
         get() = Pose2d(lastLocation) + offset
@@ -52,7 +52,7 @@ object VuforiaLocalizer : Localizer {
         val cameraMonitorViewId: Int = hardwareMap.appContext.resources.getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.packageName)
         val parameters = VuforiaLocalizer.Parameters(cameraMonitorViewId)
 
-        parameters.vuforiaLicenseKey = VUFORIA_KEY
+        parameters.vuforiaLicenseKey = MecanumDrive.Constants.VUFORIA_KEY
 
         /*
          * We also indicate which camera on the RC we wish to use.
@@ -142,7 +142,7 @@ object VuforiaLocalizer : Localizer {
 
         /* Let all the trackable listeners know where the phone is.  */
         for (trackable in allTrackables) {
-            (trackable.listener as VuforiaTrackableDefaultListener).setCameraLocationOnRobot(parameters.cameraName!!, drive.cameraLocationOnRobot)
+            (trackable.listener as VuforiaTrackableDefaultListener).setCameraLocationOnRobot(parameters.cameraName!!, MecanumDrive.cameraLocationOnRobot)
         }
 
         // Note: To use the remote camera preview:
@@ -156,7 +156,7 @@ object VuforiaLocalizer : Localizer {
         targetVisible = false
         for (trackable in allTrackables) {
             if ((trackable.listener as VuforiaTrackableDefaultListener).isVisible) {
-                drive.telemetry.addData("Visible Target", trackable.name)
+                MecanumDrive.telemetry.addData("Visible Target", trackable.name)
                 targetVisible = true
 
                 // getUpdatedRobotLocation() will return null if no new information is available since
