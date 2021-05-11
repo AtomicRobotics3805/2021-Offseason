@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.util.commands
 
 import org.firstinspires.ftc.teamcode.Constants.opMode
+import org.firstinspires.ftc.teamcode.util.commands.subsystems.Subsystem
 import org.firstinspires.ftc.teamcode.util.isStopRequested
 
 @Suppress("PropertyName")

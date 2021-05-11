@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.firstinspires.ftc.teamcode.Constants
 import org.firstinspires.ftc.teamcode.util.commands.*
 import org.firstinspires.ftc.teamcode.util.commands.delays.Delay
+import org.firstinspires.ftc.teamcode.util.commands.subsystems.Subsystem
 
 @Suppress("Unused", "MemberVisibilityCanBePrivate")
 object Wobble : Subsystem {

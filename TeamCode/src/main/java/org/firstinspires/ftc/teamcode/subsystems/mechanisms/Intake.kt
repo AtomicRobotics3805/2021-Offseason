@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.firstinspires.ftc.teamcode.Constants.opMode
 import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
 import org.firstinspires.ftc.teamcode.util.commands.CustomCommand
-import org.firstinspires.ftc.teamcode.util.commands.Subsystem
+import org.firstinspires.ftc.teamcode.util.commands.subsystems.Subsystem
 
 @Suppress("Unused", "MemberVisibilityCanBePrivate")
 object Intake : Subsystem {
