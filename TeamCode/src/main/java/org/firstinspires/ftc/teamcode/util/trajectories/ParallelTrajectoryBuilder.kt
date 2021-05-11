@@ -6,6 +6,8 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint
 
+
+@Suppress("unused")
 class ParallelTrajectoryBuilder(val builder: TrajectoryBuilder) {
     private val segmentLengths = mutableListOf<Double>()
 
