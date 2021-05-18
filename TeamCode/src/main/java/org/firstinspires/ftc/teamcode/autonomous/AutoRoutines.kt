@@ -30,42 +30,32 @@ class AutoRoutines {
         get() = sequential {
             +parallel {
                 +Shooter.start
-                +MecanumDrive.followTrajectory(TrajectoryFactory.startToLowToShootPowershot)
                 +sequential {
-                    +Delay(0.8)
+                    +MecanumDrive.followTrajectory(TrajectoryFactory.startToLow)
                     +Wobble.openClaw
+                    +MecanumDrive.followTrajectory(TrajectoryFactory.lowToPowershot)
+                    +shootTowerRoutine
+                    +Intake.stop
+                    +Wobble.lowerArm
+                    +MecanumDrive.followTrajectory(TrajectoryFactory.powershotToWobble)
+                    +Shooter.stop
+                    +Wobble.grab
+                    parallel {
+                        +Wobble.raiseArm
+                        sequential {
+                            +MecanumDrive.followTrajectory(TrajectoryFactory.wobbleToLow)
+                            +Wobble.openClaw
+                            +MecanumDrive.followTrajectory(TrajectoryFactory.lowToPark)
+                        }
+                    }
                 }
-            }
-            +shootPowershotRoutine
-            +parallel {
-                +Shooter.stop
-                +MecanumDrive.followTrajectory(TrajectoryFactory.shootPowershotToWobble)
-                +Wobble.lowerArm
-            }
-            +Wobble.closeClaw
-            +parallel {
-                +MecanumDrive.followTrajectory(TrajectoryFactory.wobbleToLowToPark)
             }
         }
 
-    private val shootPowershotRoutine: AtomicCommand
+    private val shootTowerRoutine: AtomicCommand
         get() = sequential {
-            +parallel {
-                +Shooter.shootRing
-                +sequential {
-                    +Delay(RING_DELAY / 2)
-                    +MecanumDrive.turn(TrajectoryFactory.powerShotAngle(
-                            Vector2d(TrajectoryFactory.startToLowToShootPowershot.trajectory.end()), 1))
-                }
-            }
-            +parallel {
-                +Shooter.shootRing
-                +sequential {
-                    +Delay(RING_DELAY / 2)
-                    +MecanumDrive.turn(TrajectoryFactory.powerShotAngle(
-                            Vector2d(TrajectoryFactory.startToLowToShootPowershot.trajectory.end()), 2))
-                }
-            }
-            +Shooter.shootRing
+            Shooter.shootRing
+            Shooter.shootRing
+            Shooter.shootRing
         }
 }

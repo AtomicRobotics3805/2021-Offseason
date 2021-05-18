@@ -71,7 +71,7 @@ object MecanumDrive : MecanumDrive(Constants.kA, Constants.kStatic, Constants.kV
     lateinit var rightFront: DcMotorEx
     lateinit var motors: List<DcMotorEx>
     lateinit var batteryVoltageSensor: VoltageSensor
-    private lateinit var imu: BNO055IMU
+    lateinit var imu: BNO055IMU
 
     private val dashboard = FtcDashboard.getInstance()
     lateinit var telemetry: MultipleTelemetry
@@ -167,7 +167,7 @@ object MecanumDrive : MecanumDrive(Constants.kA, Constants.kStatic, Constants.kV
         dashboard.sendTelemetryPacket(packet)
     }
 
-    override val rawExternalHeading: Double
+    public override val rawExternalHeading: Double
         get() = imu.angularOrientation.firstAngle.toDouble()
 
     fun driverControlled(gamepad: Gamepad): AtomicCommand = DriverControlled(gamepad)

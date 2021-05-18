@@ -1,81 +1,101 @@
 package org.firstinspires.ftc.teamcode.trajectory
 
+import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
-import org.firstinspires.ftc.teamcode.Constants.Color.BLUE
-import org.firstinspires.ftc.teamcode.Constants.color
 import org.firstinspires.ftc.teamcode.subsystems.driving.MecanumDrive
 import org.firstinspires.ftc.teamcode.util.toRadians
 import org.firstinspires.ftc.teamcode.util.trajectories.a
 import org.firstinspires.ftc.teamcode.util.trajectories.flip
 import org.firstinspires.ftc.teamcode.util.trajectories.y
-import kotlin.math.atan
 
-@Suppress("unused")
+@Suppress("unused", "MemberVisibilityCanBePrivate")
+@Config
 object TrajectoryFactory {
-    private val startPose = Pose2d(-48.0, 48.0.y, 0.0.toRadians)
+    private val startPose = Pose2d(-63.0, 48.0.y, 0.0.toRadians)
 
-    private val powerShotPose = listOf(Vector2d(72.0, 20.0), Vector2d(72.0, 12.0.y), Vector2d(72.0, 4.0.y))
+    @JvmField
+    var powerShotPose = listOf(Vector2d(72.0, 18.0), Vector2d(72.0, 12.0), Vector2d(72.0, 0.0))
 
-    private val towerPose = Vector2d(72.0, 36.0.y)
+    @JvmField
+    var towerPose = Vector2d(72.0, 30.0)
+    
+    @JvmField
+    var OFFSET = 18.3
 
     // travel to drop zone, drop wobble goal between movements, prepare to shoot rings
-    val startToLowToShootPowershot = MecanumDrive.trajectoryBuilder(startPose, startPose.heading)
-            .splineToSplineHeading(Pose2d(8.0, 50.0.y, 320.0.a.flip.toRadians), 320.0.a.toRadians)
-            .splineToSplineHeading(Pose2d(-7.0, 28.0.y, powerShotAngle(Vector2d(-7.0, 28.0), 0)), 200.0.a.toRadians)
+    val startToLow = MecanumDrive.trajectoryBuilder(startPose, startPose.heading)
+            .splineTo(Vector2d(3.0, 52.0.y), 320.0.a.flip.toRadians)
             .build()
-    val startToMidToShootPowershot = MecanumDrive.trajectoryBuilder(startPose, startPose.heading)
-            .splineToSplineHeading(Pose2d(18.0, 28.0.y, 270.0.toRadians), 270.0.a.toRadians)
-            .splineToSplineHeading(Pose2d(-7.0, 28.0.y, powerShotAngle(Vector2d(-7.0, 28.0), 0)), 160.0.a.toRadians)
+    val startToMid = MecanumDrive.trajectoryBuilder(startPose, startPose.heading)
+            .splineTo(Vector2d(17.0, 40.0), 270.0.toRadians)
             .build()
-    val startToHighToShootPowershot = MecanumDrive.trajectoryBuilder(startPose, startPose.heading)
-            .splineToSplineHeading(Pose2d(42.0, 58.0.y, 270.0.toRadians), 0.0.a.toRadians)
-            .splineToSplineHeading(Pose2d(-7.0, 28.0.y, powerShotAngle(Vector2d(-7.0, 28.0), 0)), 160.0.a.toRadians)
+    val startToHigh = MecanumDrive.trajectoryBuilder(startPose, startPose.heading + 20.0.toRadians)
+            .splineToConstantHeading(Vector2d(58.0, 44.0), 0.0.toRadians)
             .build()
 
-    // travel to ring(s)
-    val shootPowershotToRing = MecanumDrive.trajectoryBuilder(MecanumDrive.poseEstimate, MecanumDrive.poseEstimate.heading)
-            .lineToLinearHeading(Pose2d(-24.0, 36.0.y, 140.0.a.toRadians))
+    val lowToPowershot = MecanumDrive.trajectoryBuilder(startToLow.trajectory.end(), startToLow.trajectory.end().heading - 90.0.toRadians)
+            .splineToLinearHeading(Pose2d(-7.0, 26.0, towerAngle(Vector2d(-7.0, 26.0)) + 2.0.toRadians), 270.0.toRadians)
+            .build()
+    val midToPowershot = MecanumDrive.trajectoryBuilder(startToMid.trajectory.end(), startToMid.trajectory.end().heading - 90.0.toRadians)
+            .splineToLinearHeading(Pose2d(-7.0, 26.0,  towerAngle(Vector2d(-7.0, 26.0)) + 4.0.toRadians), 270.0.toRadians)
+            .build()
+    val highToPowershot = MecanumDrive.trajectoryBuilder(startToHigh.trajectory.end(), startToHigh.trajectory.end().heading - 135.0.toRadians)
+            .splineToLinearHeading(Pose2d(-7.0, 26.0, towerAngle(Vector2d(-7.0, 26.0))), 90.0.toRadians)
             .build()
 
-    // travel to second wobble goal
-    val shootPowershotToWobble = MecanumDrive.trajectoryBuilder(MecanumDrive.poseEstimate, MecanumDrive.poseEstimate.heading)
-            .splineToSplineHeading(Pose2d(-48.0, 43.0.y, 190.0.flip.a.toRadians), 170.0.a.toRadians)
+    val powershotToWobble = MecanumDrive.trajectoryBuilder(lowToPowershot.trajectory.end(), lowToPowershot.trajectory.end().heading)
+            .splineTo(Vector2d(-20.0, 34.0), 135.0.toRadians)
+            .splineTo(Vector2d(-50.0, 41.5), 180.0.toRadians)
             .build()
-    val ringToWobble = MecanumDrive.trajectoryBuilder(MecanumDrive.poseEstimate, MecanumDrive.poseEstimate.heading)
-            .splineToSplineHeading(Pose2d(-48.0, 43.0.y, 190.0.flip.toRadians), 200.0.a.toRadians)
+    val powershotToRingToWobble = MecanumDrive.trajectoryBuilder(midToPowershot.trajectory.end(), midToPowershot.trajectory.end().heading)
+            .splineTo(Vector2d(-20.0, 34.0), 135.0.toRadians)
+            .splineTo(Vector2d(-48.0, 41.5), 180.0.toRadians)
             .build()
 
-    val wobbleToLowToPark =
-            if(color == BLUE)
-                MecanumDrive.trajectoryBuilder(MecanumDrive.poseEstimate, true)
-            else
-            {MecanumDrive.trajectoryBuilder(MecanumDrive.poseEstimate, MecanumDrive.poseEstimate.heading)}
-                    .splineToSplineHeading(Pose2d(8.0, 50.0.y, 320.0.a.flip.toRadians), 320.0.a.toRadians)
-                    .splineToSplineHeading(Pose2d(10.0, 28.0.y, 180.0.a.toRadians), 270.0.a.toRadians)
-                    .build()
-    val wobbleToMidToPark =
-            if(color == BLUE)
-                MecanumDrive.trajectoryBuilder(MecanumDrive.poseEstimate, true)
-            else
-            {MecanumDrive.trajectoryBuilder(MecanumDrive.poseEstimate, MecanumDrive.poseEstimate.heading)}
-                    .splineToSplineHeading(Pose2d(14.0, 38.0.y, 270.0.flip.a.toRadians), 220.0.a.toRadians)
-                    .splineToSplineHeading(Pose2d(10.0, 28.0.y, 270.0.flip.a.toRadians), 270.0.a.toRadians)
-                    .build()
-    val wobbleToHighToPark =
-            if(color == BLUE)
-                MecanumDrive.trajectoryBuilder(MecanumDrive.poseEstimate, true)
-            else
-            {MecanumDrive.trajectoryBuilder(MecanumDrive.poseEstimate, MecanumDrive.poseEstimate.heading)}
-                    .splineToSplineHeading(Pose2d(42.0, 58.0.y, 270.0.toRadians), 350.0.a.toRadians)
-                    .splineToSplineHeading(Pose2d(10.0, 28.0.y, 180.0.toRadians), 160.0.a.toRadians)
+    val powershotToAboveRings = MecanumDrive.trajectoryBuilder(highToPowershot.trajectory.end(), highToPowershot.trajectory.end().heading - 90.0.toRadians)
+            .splineTo(Vector2d(-7.0, 39.5), 90.0.toRadians)
+            .build()
+    val aboveRingsToRings = MecanumDrive.trajectoryBuilder(powershotToAboveRings.trajectory.end(), powershotToAboveRings.trajectory.end().heading)
+            .lineToConstantHeading(Vector2d(-34.0, 39.5))
+            .build()
+    val ringsToRingsFurther = MecanumDrive.trajectoryBuilder(aboveRingsToRings.trajectory.end(), aboveRingsToRings.trajectory.end().heading)
+            .splineToConstantHeading(Vector2d(-44.0, 39.5), 180.0.toRadians)
+            .build()
+
+    val wobbleToShootTower =
+            MecanumDrive.trajectoryBuilder(powershotToWobble.trajectory.end(), true)
+                    .splineTo(Vector2d(-10.0, 32.0), towerAngle(Vector2d(-10.0, 32.0)) + 180.0.toRadians)
                     .build()
 
-    fun towerAngle(x: Double, y: Double): Double {
-        return (atan(towerPose.y - y / towerPose.x - x) - 90.0.toRadians).a
+    val wobbleToLow =
+            MecanumDrive.trajectoryBuilder(powershotToWobble.trajectory.end(), true)
+                    .splineToLinearHeading(Pose2d(10.0, 46.0.y, 0.0.toRadians), 320.0.a.flip.toRadians)
+                    .build()
+
+    val lowToPark =
+            MecanumDrive.trajectoryBuilder(wobbleToLow.trajectory.end(), wobbleToLow.trajectory.end().heading - 90.0.toRadians)
+                    .splineTo(Vector2d(10.0, 28.0.y), 270.0.a.toRadians)
+                    .build()
+    val ringsToPark =
+            MecanumDrive.trajectoryBuilder(Pose2d(ringsToRingsFurther.trajectory.end().vec(), towerAngle(ringsToRingsFurther.trajectory.end().vec())), true)
+                    .splineTo(Vector2d(10.0, 39.5.y), 0.0.a.toRadians)
+                    .build()
+
+    val towerToMid =
+            MecanumDrive.trajectoryBuilder(wobbleToShootTower.trajectory.end(), true)
+                    .splineTo(Vector2d(18.0, 38.0), 90.0.toRadians)
+                    .build()
+    val midToPark =
+            MecanumDrive.trajectoryBuilder(towerToMid.trajectory.end(), towerToMid.trajectory.end().heading - 90.0.toRadians)
+                    .splineTo(Vector2d(14.0, 38.0), 0.0.toRadians)
+                    .build()
+
+    fun towerAngle(position: Vector2d): Double {
+        return (position - towerPose angleBetween Vector2d(1.0, 0.0)) + 5.0.toRadians + OFFSET.toRadians
     }
-
+    
     fun powerShotAngle(position: Vector2d, num: Int): Double {
-        return Math.toRadians(Math.toDegrees(atan(powerShotPose[num].y - position.y / powerShotPose[num].x - position.x) + 90.0.toRadians).a)
+        return (position - powerShotPose[num] angleBetween Vector2d(1.0, 0.0)) + OFFSET.toRadians
     }
 }

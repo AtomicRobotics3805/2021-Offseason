@@ -17,11 +17,11 @@ object Wobble : Subsystem {
     @JvmField
     var CLAW_SPEED = 1.0
     @JvmField
-    var ARM_HIGH_ENCODER_POSITION = -300
+    var PICK_UP_ENCODER_POSITION = -1000
     @JvmField
-    var ARM_MIDDLE_ENCODER_POSITION = -800
+    var DROP_ENCODER_POSITION = -950
     @JvmField
-    var ARM_LOW_ENCODER_POSITION = -1050
+    var HIGH_ENCODER_POSITION = -300
 
     val openClaw: AtomicCommand
         get() = moveClaw(-CLAW_SPEED, 0.8)
@@ -31,11 +31,11 @@ object Wobble : Subsystem {
         get() = moveClaw(0.0, 0.0)
 
     val raiseArmHigh: AtomicCommand
-        get() = moveArm(-ARM_HIGH_ENCODER_POSITION)
+        get() = moveArm(HIGH_ENCODER_POSITION)
     val raiseArm: AtomicCommand
-        get() = moveArm(-ARM_MIDDLE_ENCODER_POSITION)
+        get() = moveArm(DROP_ENCODER_POSITION)
     val lowerArm: AtomicCommand
-        get() = moveArm(-ARM_LOW_ENCODER_POSITION)
+        get() = moveArm(PICK_UP_ENCODER_POSITION)
 
     val grab: AtomicCommand
         get() = parallel {

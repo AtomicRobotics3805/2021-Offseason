@@ -21,6 +21,7 @@ object LocalizationEstimator : Localizer {
         set(value) {}
     override val poseVelocity: Pose2d?
         get() = TODO("Not yet implemented")
+    /*
 
     private lateinit var observer: ExtendedKalmanFilter<N5, N3, N6>
     private lateinit var visionCorrect: BiConsumer<Matrix<N3, N1>, Matrix<N3, N1>>
@@ -102,6 +103,7 @@ object LocalizationEstimator : Localizer {
             }
         }
     }
+     */
 
     override fun update() {
         TODO("Not yet implemented")
