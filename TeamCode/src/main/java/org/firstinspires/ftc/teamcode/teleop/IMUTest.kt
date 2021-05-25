@@ -9,11 +9,19 @@ import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Intake
 import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Shooter
 import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Wobble
 import org.firstinspires.ftc.teamcode.util.commands.CommandScheduler
+import org.firstinspires.ftc.teamcode.util.toDegrees
 import kotlin.math.abs
 import kotlin.math.round
 
 @TeleOp(name="IMU Test")
 class IMUTest : LinearOpMode() {
+    val imuHeading: Double
+        get() {
+            var heading = MecanumDrive.rawExternalHeading.toDegrees
+            if (heading < 0) heading += 360
+            return heading
+        }
+
     override fun runOpMode() {
 
         Constants.opMode = this
@@ -37,19 +45,22 @@ class IMUTest : LinearOpMode() {
         while (opModeIsActive()) {
             CommandScheduler.run()
 
-            if (abs(lastAngleReachedWheels - MecanumDrive.poseEstimate.heading) >= 90) {
-                lastAngleReachedWheels = round(MecanumDrive.poseEstimate.heading / 90.0) * 90.0
+            if (abs(lastAngleReachedWheels - MecanumDrive.poseEstimate.heading.toDegrees) >= 90) {
+                lastAngleReachedWheels = round(MecanumDrive.poseEstimate.heading.toDegrees / 90.0) * 90.0
                 timer.reset()
             }
-            if (abs(lastAngleReachedIMU - MecanumDrive.rawExternalHeading) >= 90) {
-                lastAngleReachedIMU = round(MecanumDrive.rawExternalHeading / 90.0) * 90.0
+            if (abs(lastAngleReachedIMU - imuHeading) >= 90) {
+                lastAngleReachedIMU = round(imuHeading / 90.0) * 90.0
                 if (lastAngleReachedIMU == lastAngleReachedWheels)
                     delay = timer.seconds()
             }
 
-            MecanumDrive.telemetry.addData("IMU Angle", MecanumDrive.rawExternalHeading)
-            MecanumDrive.telemetry.addData("Dead Wheel Angle", MecanumDrive.poseEstimate.heading)
+            MecanumDrive.telemetry.addData("Gamepad Left Stick X", gamepad1.left_stick_x)
+            MecanumDrive.telemetry.addData("Gamepad Left Stick Y", gamepad1.left_stick_y)
+            MecanumDrive.telemetry.addData("IMU Angle", imuHeading)
+            MecanumDrive.telemetry.addData("Dead Wheel Angle", MecanumDrive.poseEstimate.heading.toDegrees)
             MecanumDrive.telemetry.addData("Delay", delay)
+            MecanumDrive.telemetry.update()
         }
     }
 }

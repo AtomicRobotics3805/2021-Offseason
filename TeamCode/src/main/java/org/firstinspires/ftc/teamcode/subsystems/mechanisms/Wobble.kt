@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode.subsystems.mechanisms
 import com.qualcomm.robotcore.hardware.CRServo
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
+import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.Constants
+import org.firstinspires.ftc.teamcode.subsystems.driving.MecanumDrive
 import org.firstinspires.ftc.teamcode.util.commands.*
 import org.firstinspires.ftc.teamcode.util.commands.delays.Delay
 import org.firstinspires.ftc.teamcode.util.commands.subsystems.Subsystem
@@ -15,7 +17,9 @@ object Wobble : Subsystem {
     @JvmField
     var WOBBLE_CLAW_NAME = "Hand"
     @JvmField
-    var CLAW_SPEED = 1.0
+    var CLAW_OPEN_POSITION = 0.3
+    @JvmField
+    var CLAW_CLOSED_POSITION = 0.7
     @JvmField
     var PICK_UP_ENCODER_POSITION = -1000
     @JvmField
@@ -24,11 +28,9 @@ object Wobble : Subsystem {
     var HIGH_ENCODER_POSITION = -300
 
     val openClaw: AtomicCommand
-        get() = moveClaw(-CLAW_SPEED, 0.8)
+        get() = moveClaw(CLAW_OPEN_POSITION, 0.8)
     val closeClaw: AtomicCommand
-        get() = moveClaw(CLAW_SPEED, 0.8)
-    val idleClaw: AtomicCommand
-        get() = moveClaw(0.0, 0.0)
+        get() = moveClaw(CLAW_CLOSED_POSITION, 0.8)
 
     val raiseArmHigh: AtomicCommand
         get() = moveArm(HIGH_ENCODER_POSITION)
@@ -47,25 +49,27 @@ object Wobble : Subsystem {
         }
 
     private lateinit var arm: DcMotorEx
-    private lateinit var claw: CRServo
+    private lateinit var claw: Servo
 
     fun initialize() {
         arm = Constants.opMode.hardwareMap.get(DcMotorEx::class.java, WOBBLE_ARM_NAME)
-        claw = Constants.opMode.hardwareMap.get(CRServo::class.java, WOBBLE_CLAW_NAME)
+        claw = Constants.opMode.hardwareMap.get(Servo::class.java, WOBBLE_CLAW_NAME)
 
+        arm.targetPosition = 0
         arm.mode = DcMotor.RunMode.RUN_TO_POSITION
     }
 
     fun moveArm(position: Int) = CustomCommand(
             _start = {
                 arm.targetPosition = position
+                arm.power = 1.0
             },
             getDone = {
                 !arm.isBusy
             })
 
-    fun moveClaw(power: Double, time: Double) = TimedCustomCommand(
+    fun moveClaw(position: Double, time: Double) = TimedCustomCommand(
             _start = {
-                claw.power = power
+                claw.position = position
             }, time = time)
 }

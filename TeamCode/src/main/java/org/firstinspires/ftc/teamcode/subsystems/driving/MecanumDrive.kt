@@ -29,6 +29,7 @@ import org.firstinspires.ftc.teamcode.Constants.opMode
 import org.firstinspires.ftc.teamcode.Constants.startPose
 import org.firstinspires.ftc.teamcode.subsystems.localization.OdometryLocalizer
 import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
+import org.firstinspires.ftc.teamcode.util.commands.CommandScheduler
 import org.firstinspires.ftc.teamcode.util.commands.CustomCommand
 import org.firstinspires.ftc.teamcode.util.commands.subsystems.Subsystem
 import org.firstinspires.ftc.teamcode.util.commands.driving.DriverControlled
@@ -73,7 +74,7 @@ object MecanumDrive : MecanumDrive(Constants.kA, Constants.kStatic, Constants.kV
     lateinit var batteryVoltageSensor: VoltageSensor
     lateinit var imu: BNO055IMU
 
-    private val dashboard = FtcDashboard.getInstance()
+    private lateinit var dashboard: FtcDashboard
     lateinit var telemetry: MultipleTelemetry
 
     private lateinit var hardwareMap: HardwareMap
@@ -93,10 +94,19 @@ object MecanumDrive : MecanumDrive(Constants.kA, Constants.kStatic, Constants.kV
         })
 
     fun initialize() {
+        hardwareMap = opMode.hardwareMap
+
+        // FINISHED: adjust the names of the following hardware devices to match your configuration
+        imu = hardwareMap.get(BNO055IMU::class.java, "imu")
+        val parameters = BNO055IMU.Parameters()
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS
+        imu.initialize(parameters)
+
         poseEstimate = startPose
 
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next()
 
+        dashboard = FtcDashboard.getInstance()
         dashboard.telemetryTransmissionInterval = 25
         telemetry = MultipleTelemetry(opMode.telemetry, dashboard.telemetry)
 
@@ -107,12 +117,6 @@ object MecanumDrive : MecanumDrive(Constants.kA, Constants.kStatic, Constants.kV
         for (module in hardwareMap.getAll(LynxModule::class.java)) {
             module.bulkCachingMode = LynxModule.BulkCachingMode.AUTO
         }
-
-        // FINISHED: adjust the names of the following hardware devices to match your configuration
-        imu = hardwareMap.get(BNO055IMU::class.java, "imu")
-        val parameters = BNO055IMU.Parameters()
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS
-        imu.initialize(parameters)
 
         leftFront = hardwareMap.get(DcMotorEx::class.java, "LF")
         leftRear = hardwareMap.get(DcMotorEx::class.java, "LB")
@@ -147,6 +151,8 @@ object MecanumDrive : MecanumDrive(Constants.kA, Constants.kStatic, Constants.kV
         // FINISHED: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
         localizer = OdometryLocalizer
+
+        CommandScheduler.registerSubsystems(this)
     }
 
     override fun periodic() {
@@ -156,6 +162,7 @@ object MecanumDrive : MecanumDrive(Constants.kA, Constants.kStatic, Constants.kV
         if (Constants.POSE_HISTORY_LIMIT > -1 && poseHistory.size > Constants.POSE_HISTORY_LIMIT) {
             poseHistory.removeFirst()
         }
+        /*
         val packet = TelemetryPacket()
         val fieldOverlay = packet.fieldOverlay()
         telemetry.addData("x", currentPose.x)
@@ -165,6 +172,7 @@ object MecanumDrive : MecanumDrive(Constants.kA, Constants.kStatic, Constants.kV
         fieldOverlay.setStroke("#3F51B5")
         DashboardUtil.drawRobot(fieldOverlay, currentPose)
         dashboard.sendTelemetryPacket(packet)
+         */
     }
 
     public override val rawExternalHeading: Double
@@ -299,7 +307,7 @@ object MecanumDrive : MecanumDrive(Constants.kA, Constants.kStatic, Constants.kV
         var TICKS_PER_REV = 560.0
 
         @JvmField
-        var MAX_RPM = 315.0
+        var MAX_RPM = 435.0
 
         /*
          * Set runUsingEncoder to true to enable built-in hub velocity control using drive encoders.
@@ -360,16 +368,16 @@ object MecanumDrive : MecanumDrive(Constants.kA, Constants.kStatic, Constants.kV
          */
 
         @JvmField
-        var MAX_VEL = 40.0
+        var MAX_VEL = 36.5
 
         @JvmField
-        var MAX_ACCEL = 45.0
+        var MAX_ACCEL = 36.5
 
         @JvmField
-        var MAX_ANG_VEL = Math.toRadians(60.0)
+        var MAX_ANG_VEL = Math.toRadians(40.0)
 
         @JvmField
-        var MAX_ANG_ACCEL = Math.toRadians(60.0)
+        var MAX_ANG_ACCEL = Math.toRadians(40.0)
 
         /*
          * These values are used solely with Mecanum Drives to adjust the kinematics functions that
@@ -396,7 +404,7 @@ object MecanumDrive : MecanumDrive(Constants.kA, Constants.kStatic, Constants.kV
         var TRANSLATIONAL_PID = PIDCoefficients(8.0, 0.0, 0.0)
 
         @JvmField
-        var HEADING_PID = PIDCoefficients(8.0, 0.0, 0.0)
+        var HEADING_PID = PIDCoefficients(5.0, 0.0, 0.0)
 
         @JvmField
         var VX_WEIGHT = 1.0

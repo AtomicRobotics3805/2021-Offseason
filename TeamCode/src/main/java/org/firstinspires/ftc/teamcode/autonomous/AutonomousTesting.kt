@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Intake
 import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Shooter
 import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Wobble
 import org.firstinspires.ftc.teamcode.util.commands.CommandScheduler
+import org.firstinspires.ftc.teamcode.util.commands.sequential
 
 @Autonomous(name = "Command Testing")
 class AutonomousTesting : LinearOpMode() {
@@ -18,6 +19,10 @@ class AutonomousTesting : LinearOpMode() {
         Intake.initialize()
         Shooter.initialize()
         Wobble.initialize()
+        CommandScheduler.commands += sequential {
+            +AutoRoutines.initRoutine
+            +AutoRoutines.lowRoutine
+        }
 
         waitForStart()
 

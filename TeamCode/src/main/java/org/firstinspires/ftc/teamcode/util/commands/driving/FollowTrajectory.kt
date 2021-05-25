@@ -20,6 +20,8 @@ class FollowTrajectory(private val trajectory: ParallelTrajectory): AtomicComman
 
         MecanumDrive.setDriveSignal(MecanumDrive.follower.update(drive.poseEstimate))
 
+        MecanumDrive.telemetry.addLine("Following Trajectory")
+
         packet.addLine("following trajectory")
         packet.put("x", drive.poseEstimate.x)
         packet.put("y", drive.poseEstimate.y)

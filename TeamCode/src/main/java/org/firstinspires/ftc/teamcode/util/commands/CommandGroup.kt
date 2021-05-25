@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.util.commands
 
+import org.firstinspires.ftc.teamcode.subsystems.driving.MecanumDrive
+
 fun sequential(block: SequentialCommandGroup.() -> Unit): SequentialCommandGroup {
     return SequentialCommandGroup().apply(block)
 }
@@ -35,6 +37,9 @@ class SequentialCommandGroup: CommandGroup() {
 
     override fun execute() {
         if (commands.isNotEmpty()) {
+            MecanumDrive.telemetry.addData("Command 0", commands[0])
+            MecanumDrive.telemetry.addData("Command 0 _isDone", commands[0]._isDone)
+            MecanumDrive.telemetry.addData("Command 0 isDone", commands[0].isDone)
             if (!commands[0].isDone)
                 commands[0].execute()
             else {
@@ -48,6 +53,8 @@ class SequentialCommandGroup: CommandGroup() {
 }
 
 class ParallelCommandGroup: CommandGroup() {
+    val toCancel: MutableList<AtomicCommand> = mutableListOf()
+
     override fun start() {
         for (command in commands) {
             command.start()
@@ -65,9 +72,19 @@ class ParallelCommandGroup: CommandGroup() {
                 command.execute()
             else {
                 command.done(false)
-                commands.remove(command)
+                toCancel += commands
             }
         }
+        for (command in toCancel) {
+            commands -= command
+        }
+        toCancel.clear()
+        MecanumDrive.telemetry.addData("This", this)
+        MecanumDrive.telemetry.addData("Commands", commands)
+        MecanumDrive.telemetry.addData("_isDone", _isDone)
+        MecanumDrive.telemetry.addData("isDone", isDone)
+        MecanumDrive.telemetry.addData("Commands Empty", commands.isEmpty())
+        MecanumDrive.telemetry.update()
     }
 }
 

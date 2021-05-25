@@ -4,14 +4,14 @@ import com.qualcomm.robotcore.util.ElapsedTime
 
 class TimedCustomCommand(
         private val time: Double,
-        getDone: () -> Boolean = { true },
+        private val getDone: () -> Boolean = { true },
         _run: () -> Unit = { },
         _start: () -> Unit = { },
         _done: (interrupted: Boolean) -> Unit = { }
 ): CustomCommand(getDone, _run, _start, _done) {
 
     override val _isDone: Boolean
-        get() = super._isDone && timer.seconds() > time
+        get() = getDone.invoke() && timer.seconds() > time
 
-    private val timer = ElapsedTime()
+    val timer = ElapsedTime()
 }

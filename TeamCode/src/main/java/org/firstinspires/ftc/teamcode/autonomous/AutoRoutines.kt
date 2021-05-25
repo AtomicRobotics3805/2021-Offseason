@@ -12,9 +12,8 @@ import org.firstinspires.ftc.teamcode.subsystems.mechanisms.Wobble
 import org.firstinspires.ftc.teamcode.trajectory.TrajectoryFactory
 import org.firstinspires.ftc.teamcode.util.Vector2d
 
-@Autonomous
 @Suppress("Unused")
-class AutoRoutines {
+object AutoRoutines {
     private val startPose = Pose2d()
 
     val initRoutine: AtomicCommand
