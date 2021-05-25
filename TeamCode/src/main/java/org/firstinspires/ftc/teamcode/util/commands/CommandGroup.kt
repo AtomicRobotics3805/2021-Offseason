@@ -37,9 +37,6 @@ class SequentialCommandGroup: CommandGroup() {
 
     override fun execute() {
         if (commands.isNotEmpty()) {
-            MecanumDrive.telemetry.addData("Command 0", commands[0])
-            MecanumDrive.telemetry.addData("Command 0 _isDone", commands[0]._isDone)
-            MecanumDrive.telemetry.addData("Command 0 isDone", commands[0].isDone)
             if (!commands[0].isDone)
                 commands[0].execute()
             else {
@@ -79,12 +76,6 @@ class ParallelCommandGroup: CommandGroup() {
             commands -= command
         }
         toCancel.clear()
-        MecanumDrive.telemetry.addData("This", this)
-        MecanumDrive.telemetry.addData("Commands", commands)
-        MecanumDrive.telemetry.addData("_isDone", _isDone)
-        MecanumDrive.telemetry.addData("isDone", isDone)
-        MecanumDrive.telemetry.addData("Commands Empty", commands.isEmpty())
-        MecanumDrive.telemetry.update()
     }
 }
 
