@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.util.commands
 
+import com.qualcomm.robotcore.util.ElapsedTime
+import org.firstinspires.ftc.teamcode.subsystems.driving.MecanumDrive
 import org.firstinspires.ftc.teamcode.util.CommandGamepad
 import org.firstinspires.ftc.teamcode.util.commands.subsystems.Subsystem
 import org.firstinspires.ftc.teamcode.util.commands.subsystems.SubsystemBusyException
@@ -8,6 +10,8 @@ import org.firstinspires.ftc.teamcode.util.commands.subsystems.SubsystemBusyExce
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 object CommandScheduler {
     val commands = mutableListOf<AtomicCommand>()
+    val commandsToSchedule = mutableListOf<AtomicCommand>()
+    val commandsToCancel = mutableMapOf<AtomicCommand, Boolean>()
 
     // these actions run whenever a command is initialized, executed, interrupted, or finished
     val initActions = mutableListOf<(AtomicCommand) -> Unit>()
@@ -19,40 +23,55 @@ object CommandScheduler {
     val gamepads = mutableListOf<CommandGamepad>()
     val subsystems = mutableListOf<Subsystem>()
 
+    val timer = ElapsedTime()
+
     // exercise is healthy
     fun run() {
         updateGamepads()
         updateSubsystems()
+        scheduleCommands()
+        cancelCommands()
         for (command in commands) {
-            try {
-                if (!command.isStarted)
-                    initCommand(command)
-            } catch(e: SubsystemBusyException) {
-                commands -= command
-                continue
-            }
-            if (command.isDone) {
-                cancel(command, false)
-                continue
-            }
             command.execute()
+            if (command._isDone) {
+                MecanumDrive.telemetry.addData("Finished Command", command)
+                MecanumDrive.telemetry.update()
+                commandsToCancel += Pair(command, false)
+            }
         }
+    }
+
+    fun scheduleCommands() {
+        for (command in commandsToSchedule)
+            try {
+                initCommand(command)
+            } catch(e: SubsystemBusyException) { }
+        commandsToSchedule.clear()
+    }
+
+    fun cancelCommands() {
+        for (pair in commandsToCancel)
+            cancel(pair.key, pair.value)
+        commandsToCancel.clear()
     }
 
     @Throws(SubsystemBusyException::class)
     fun initCommand(command: AtomicCommand) {
         for (requirement in command.requirements) {
-            val conflicts = findCommands({ it.requirements.contains(requirement) })
+            val conflicts = findCommands({ it.requirements.contains(requirement) }).toMutableList()
+            if (conflicts.contains(command)) {
+                conflicts -= command
+            }
             for (conflict in conflicts)
                 if (!conflict.interruptible) {
                     doActions(interruptActions, conflict)
                     throw SubsystemBusyException(requirement)
                 }
             for (conflict in conflicts)
-                cancel(conflict, true)
-            command.start()
-            commands += command
+                commandsToCancel += Pair(command, true)
         }
+        command.start()
+        commands += command
         doActions(initActions, command)
     }
 
@@ -64,7 +83,7 @@ object CommandScheduler {
 
     fun cancelAll() {
         for (command in commands)
-            cancel(command, true)
+            commandsToCancel += Pair(command, true)
     }
 
     fun updateGamepads() {
