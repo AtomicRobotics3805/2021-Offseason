@@ -27,7 +27,7 @@ object Shooter : Subsystem {
     @JvmField
     var RIGHT_INDEXER_EXTENDED_POSITION = 0.575
     @JvmField
-    var SHOOTER_SPEED = 1.0
+    var SHOOTER_SPEED = 0.0
     @JvmField
     var RING_DELAY = 0.8
 

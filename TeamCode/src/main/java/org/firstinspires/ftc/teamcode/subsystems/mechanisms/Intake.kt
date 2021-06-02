@@ -19,7 +19,7 @@ object Intake : Subsystem {
     val switch: AtomicCommand
         get() = if (on) start else stop
     val start: AtomicCommand
-        get() = powerIntake(INTAKE_SPEED)
+        get() = powerIntake(-INTAKE_SPEED)
     val stop: AtomicCommand
         get() = powerIntake(0.0)
 

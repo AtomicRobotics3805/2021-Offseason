@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.util.commands.driving
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.drive.DriveSignal
+import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.Constants.drive
 import org.firstinspires.ftc.teamcode.subsystems.driving.MecanumDrive
 import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
@@ -11,7 +12,16 @@ import org.firstinspires.ftc.teamcode.util.trajectories.ParallelTrajectory
 @Suppress("unused")
 class FollowTrajectory(private val trajectory: ParallelTrajectory): AtomicCommand() {
     override val _isDone: Boolean
-        get() = MecanumDrive.follower.isFollowing()
+        get() = false
+
+    val timer = ElapsedTime()
+
+    override fun start() {
+        MecanumDrive.follower.followTrajectory(trajectory.trajectory)
+        //MecanumDrive.telemetry.addLine("Started Following Trajectory")
+        //MecanumDrive.telemetry.update()
+        timer.reset()
+    }
 
     override fun execute() {
         val packet = TelemetryPacket()
@@ -20,7 +30,9 @@ class FollowTrajectory(private val trajectory: ParallelTrajectory): AtomicComman
 
         MecanumDrive.setDriveSignal(MecanumDrive.follower.update(drive.poseEstimate))
 
-        MecanumDrive.telemetry.addLine("Following Trajectory")
+        //MecanumDrive.telemetry.addLine("Following Trajectory")
+        //MecanumDrive.telemetry.addData("Time Elapsed", timer)
+        //MecanumDrive.telemetry.update()
 
         packet.addLine("following trajectory")
         packet.put("x", drive.poseEstimate.x)
@@ -39,5 +51,8 @@ class FollowTrajectory(private val trajectory: ParallelTrajectory): AtomicComman
 
     override fun done(interrupted: Boolean) {
         MecanumDrive.setDriveSignal(DriveSignal())
+        //MecanumDrive.telemetry.addLine("Stopped Following Trajectory")
+        //MecanumDrive.telemetry.addData("Time Elapsed", timer)
+        //MecanumDrive.telemetry.update()
     }
 }

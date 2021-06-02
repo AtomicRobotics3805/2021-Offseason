@@ -12,7 +12,7 @@ fun parallel(block: ParallelCommandGroup.() -> Unit): ParallelCommandGroup {
 
 abstract class CommandGroup: AtomicCommand() {
     override val _isDone: Boolean
-        get() = commands.isEmpty()
+        get() = false
 
     val commands: MutableList<AtomicCommand> = mutableListOf()
 
@@ -31,17 +31,23 @@ abstract class CommandGroup: AtomicCommand() {
 
 class SequentialCommandGroup: CommandGroup() {
     override fun start() {
-        if (commands.isNotEmpty())
+        if (commands.isNotEmpty()) {
             commands[0].start()
+        }
     }
 
     override fun execute() {
+        MecanumDrive.telemetry.addLine("Executed")
+        MecanumDrive.telemetry.update()
         if (commands.isNotEmpty()) {
-            if (!commands[0].isDone)
-                commands[0].execute()
-            else {
+            if (!commands[0].isStarted) {
+                commands[0].start()
+                commands[0].isStarted = true
+            }
+            commands[0].execute()
+            if (false) {
                 commands[0].done(false)
-                commands.removeAt(0)
+                commands.removeFirst()
                 if (commands.isNotEmpty())
                     commands[0].start()
             }
@@ -50,7 +56,7 @@ class SequentialCommandGroup: CommandGroup() {
 }
 
 class ParallelCommandGroup: CommandGroup() {
-    val toCancel: MutableList<AtomicCommand> = mutableListOf()
+    private val commandsToCancel: MutableMap<AtomicCommand, Boolean> = mutableMapOf()
 
     override fun start() {
         for (command in commands) {
@@ -65,17 +71,26 @@ class ParallelCommandGroup: CommandGroup() {
                 command.start()
                 command.isStarted = true
             }
-            if (!command.isDone)
-                command.execute()
-            else {
-                command.done(false)
-                toCancel += commands
+            command.execute()
+            if(command.isDone) {
+                commandsToCancel += Pair(command, false)
             }
         }
-        for (command in toCancel) {
-            commands -= command
-        }
-        toCancel.clear()
+        clearCommands()
     }
+
+    private fun clearCommands() {
+        for (pair in commandsToCancel) {
+            cancel(pair.key, pair.value)
+        }
+        commandsToCancel.clear()
+    }
+
+    private fun cancel(command: AtomicCommand, interrupted: Boolean) {
+        command.done(interrupted)
+        CommandScheduler.doActions(CommandScheduler.finishActions, command)
+        CommandScheduler.commands -= command
+    }
+
 }
 
