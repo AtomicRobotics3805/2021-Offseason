@@ -22,14 +22,14 @@ import org.firstinspires.ftc.teamcode.util.roadrunner.Encoder
 */
 
 @Config
-object OdometryLocalizer : ThreeTrackingWheelLocalizer(listOf(
+class OdometryLocalizer : ThreeTrackingWheelLocalizer(listOf(
         Pose2d(0.0, Constants.LATERAL_DISTANCE / 2, 0.0),  // left
         Pose2d(0.0, -Constants.LATERAL_DISTANCE / 2, 0.0),  // right
         Pose2d(Constants.FORWARD_OFFSET, 0.0, Math.toRadians(90.0)) // front
 )) {
-    private val leftEncoder: Encoder = Encoder(opMode.hardwareMap.get(DcMotorEx::class.java, "LF"))
-    private val rightEncoder: Encoder = Encoder(opMode.hardwareMap.get(DcMotorEx::class.java, "RF"))
-    private val frontEncoder: Encoder = Encoder(opMode.hardwareMap.get(DcMotorEx::class.java, "LB"))
+    val leftEncoder: Encoder = Encoder(opMode.hardwareMap.get(DcMotorEx::class.java, "LF"))
+    val rightEncoder: Encoder = Encoder(opMode.hardwareMap.get(DcMotorEx::class.java, "RF"))
+    val frontEncoder: Encoder = Encoder(opMode.hardwareMap.get(DcMotorEx::class.java, "LB"))
 
     init {
         // FINISHED: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
@@ -81,6 +81,6 @@ object OdometryLocalizer : ThreeTrackingWheelLocalizer(listOf(
         @JvmField
         var X_MULTIPLIER = 1.04
         @JvmField
-        var Y_MULTIPLIER = 1.04
+        var Y_MULTIPLIER = 1.062
     }
 }

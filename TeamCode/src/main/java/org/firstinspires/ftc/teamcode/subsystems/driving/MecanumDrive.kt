@@ -102,7 +102,7 @@ object MecanumDrive : MecanumDrive(Constants.kA, Constants.kStatic, Constants.kV
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS
         imu.initialize(parameters)
 
-        poseEstimate = startPose
+        poseEstimate = Pose2d(-63.0, 48.0, 0.0)
 
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next()
 
@@ -150,7 +150,7 @@ object MecanumDrive : MecanumDrive(Constants.kA, Constants.kStatic, Constants.kV
 
         // FINISHED: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-        localizer = OdometryLocalizer
+        localizer = OdometryLocalizer()
 
         CommandScheduler.registerSubsystems(this)
     }
