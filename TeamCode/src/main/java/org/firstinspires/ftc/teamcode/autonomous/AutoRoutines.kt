@@ -39,9 +39,9 @@ object AutoRoutines {
                     +MecanumDrive.followTrajectory(TrajectoryFactory.powershotToWobble)
                     +Shooter.stop
                     +Wobble.grab
-                    parallel {
+                    +parallel {
                         +Wobble.raiseArm
-                        sequential {
+                        +sequential {
                             +MecanumDrive.followTrajectory(TrajectoryFactory.wobbleToLow)
                             +Wobble.openClaw
                             +MecanumDrive.followTrajectory(TrajectoryFactory.lowToPark)
