@@ -2,12 +2,12 @@ package org.firstinspires.ftc.teamcode.subsystems.localization
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.localization.Localizer
-import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap
 import org.firstinspires.ftc.robotcore.external.ClassFactory
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix
 import org.firstinspires.ftc.robotcore.external.navigation.*
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer
+import org.firstinspires.ftc.teamcode.Constants.opMode
 import org.firstinspires.ftc.teamcode.subsystems.driving.MecanumDrive
 import org.firstinspires.ftc.teamcode.util.Pose2d
 import org.firstinspires.ftc.teamcode.util.inchesToMm
@@ -31,7 +31,7 @@ object VuforiaLocalizer : Localizer {
     private val HALF_FIELD = 72.0.inchesToMm.toFloat()
     private val QUARTER_FIELD = 36.0.inchesToMm.toFloat()
 
-    private lateinit var lastLocation: OpenGLMatrix
+    private var lastLocation: OpenGLMatrix = OpenGLMatrix()
     private lateinit var vuforia: VuforiaLocalizer
 
     private var targetVisible = false
@@ -41,7 +41,7 @@ object VuforiaLocalizer : Localizer {
         /*
          * Retrieve the camera we are to use.
          */
-        val webcam = hardwareMap.get(WebcamName::class.java, "Webcam 1")
+        val webcam = opMode.hardwareMap.get(WebcamName::class.java, "Webcam 1")
 
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
@@ -49,7 +49,7 @@ object VuforiaLocalizer : Localizer {
          * If no camera monitor is desired, use the parameter-less constructor instead (commented out below).
          * Note: A preview window is required if you want to view the camera stream on the Driver Station Phone.
          */
-        val cameraMonitorViewId: Int = hardwareMap.appContext.resources.getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.packageName)
+        val cameraMonitorViewId: Int = opMode.hardwareMap.appContext.resources.getIdentifier("cameraMonitorViewId", "id", opMode.hardwareMap.appContext.packageName)
         val parameters = VuforiaLocalizer.Parameters(cameraMonitorViewId)
 
         parameters.vuforiaLicenseKey = MecanumDrive.Constants.VUFORIA_KEY
@@ -80,7 +80,7 @@ object VuforiaLocalizer : Localizer {
         frontWallTarget.name = "Front Wall Target"
 
         // For convenience, gather together all the trackable objects in one easily-iterable collection */
-        val allTrackables: MutableList<VuforiaTrackable> = ArrayList()
+        allTrackables = ArrayList()
         allTrackables.addAll(targetsUltimateGoal)
 
         //Set the position of the perimeter targets with relation to origin (center of field)
