@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.util.commands
 
-import org.firstinspires.ftc.teamcode.subsystems.driving.MecanumDrive
-
 fun sequential(block: SequentialCommandGroup.() -> Unit): SequentialCommandGroup {
     return SequentialCommandGroup().apply(block)
 }
@@ -12,7 +10,7 @@ fun parallel(block: ParallelCommandGroup.() -> Unit): ParallelCommandGroup {
 
 abstract class CommandGroup: AtomicCommand() {
     override val _isDone: Boolean
-        get() = false
+        get() = commands.isEmpty()
 
     val commands: MutableList<AtomicCommand> = mutableListOf()
 
@@ -37,15 +35,13 @@ class SequentialCommandGroup: CommandGroup() {
     }
 
     override fun execute() {
-        MecanumDrive.telemetry.addLine("Executed")
-        MecanumDrive.telemetry.update()
         if (commands.isNotEmpty()) {
             if (!commands[0].isStarted) {
                 commands[0].start()
                 commands[0].isStarted = true
             }
             commands[0].execute()
-            if (false) {
+            if (commands[0].isDone) {
                 commands[0].done(false)
                 commands.removeFirst()
                 if (commands.isNotEmpty())

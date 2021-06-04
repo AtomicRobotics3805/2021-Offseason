@@ -33,9 +33,7 @@ object CommandScheduler {
         cancelCommands()
         for (command in commands) {
             command.execute()
-            if (command._isDone) {
-                MecanumDrive.telemetry.addData("Finished Command", command)
-                MecanumDrive.telemetry.update()
+            if (command.isDone) {
                 commandsToCancel += Pair(command, false)
             }
         }
