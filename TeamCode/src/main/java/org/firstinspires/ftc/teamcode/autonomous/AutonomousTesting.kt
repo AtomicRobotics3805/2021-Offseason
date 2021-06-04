@@ -62,19 +62,13 @@ class AutonomousTesting : LinearOpMode() {
         Wobble.initialize()
 
         CommandScheduler.registerSubsystems(MecanumDrive, Intake, Shooter, Wobble)
-        //CommandScheduler.commandsToSchedule += AutoRoutines.lowRoutine
-        val simpleTrajectory = MecanumDrive.trajectoryBuilder(startPose)
-                .forward(10.0)
-                .build()
-        CommandScheduler.commandsToSchedule += MecanumDrive.followTrajectory(simpleTrajectory)
+        CommandScheduler.commandsToSchedule += AutoRoutines.lowRoutine
 
         waitForStart()
 
         while (opModeIsActive()) {
             MecanumDrive.periodic()
             CommandScheduler.run()
-            MecanumDrive.telemetry.addData("Position", MecanumDrive.localizer.poseEstimate)
-            MecanumDrive.telemetry.update()
         }
     }
 }
