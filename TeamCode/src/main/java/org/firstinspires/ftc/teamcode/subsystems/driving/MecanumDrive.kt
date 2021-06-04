@@ -28,6 +28,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.*
 import org.firstinspires.ftc.teamcode.Constants.opMode
 import org.firstinspires.ftc.teamcode.Constants.startPose
 import org.firstinspires.ftc.teamcode.subsystems.localization.OdometryLocalizer
+import org.firstinspires.ftc.teamcode.subsystems.localization.VuforiaLocalizer
 import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
 import org.firstinspires.ftc.teamcode.util.commands.CommandScheduler
 import org.firstinspires.ftc.teamcode.util.commands.CustomCommand
@@ -102,8 +103,6 @@ object MecanumDrive : MecanumDrive(Constants.kA, Constants.kStatic, Constants.kV
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS
         imu.initialize(parameters)
 
-        poseEstimate = Pose2d(-63.0, 48.0, 0.0)
-
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next()
 
         dashboard = FtcDashboard.getInstance()
@@ -151,8 +150,11 @@ object MecanumDrive : MecanumDrive(Constants.kA, Constants.kStatic, Constants.kV
         // FINISHED: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
         localizer = OdometryLocalizer()
+        VuforiaLocalizer.initialize()
 
         CommandScheduler.registerSubsystems(this)
+
+        poseEstimate = startPose
     }
 
     override fun periodic() {
@@ -162,6 +164,10 @@ object MecanumDrive : MecanumDrive(Constants.kA, Constants.kStatic, Constants.kV
         if (Constants.POSE_HISTORY_LIMIT > -1 && poseHistory.size > Constants.POSE_HISTORY_LIMIT) {
             poseHistory.removeFirst()
         }
+        VuforiaLocalizer.update()
+        telemetry.addData("Odometry Position", poseEstimate)
+        telemetry.addData("Vuforia Position", VuforiaLocalizer.poseEstimate)
+        telemetry.update()
         /*
         val packet = TelemetryPacket()
         val fieldOverlay = packet.fieldOverlay()
@@ -419,7 +425,7 @@ object MecanumDrive : MecanumDrive(Constants.kA, Constants.kStatic, Constants.kV
         var POSE_HISTORY_LIMIT = 100
 
         @JvmField
-        var VUFORIA_KEY = " --- YOUR NEW VUFORIA KEY GOES HERE  --- "
+        var VUFORIA_KEY = " AZ2jk6P/////AAABmck8NCyjWkCGvLdpx9HZ1kxI2vQPDlzN9vJnqy69nXRjvoXgBCEWZasRnd1hFjBpRiSXw4G4JwDFsk3kNSVko2UkuCgbi/RsiODF76MtldIi6YZGfrRMZTICMKwTanuOysh4Cn9Xd9nZzCpDiLAPLsUtKoj/DdBUn0gJuARMglUPW7/qirgtk0xI232ttZpXhgh9ya8R8LxnH+UTCCFtEaQft2ru0Tv+30Un82gG1uEzcrMc/8F3lefedcOTrelPQx8xUD8cME9dj99b5oZWfM60b36/xdswhYF7pygskPtXCS28j81xWKHGNhr5s8xL91cbKOovDzdJYdfVIILZnL1sjdbtN8zW4mULOYHwO4ur"
 
         @JvmField
         var CAMERA_FORWARD_DISPLACEMENT = 4.0.inchesToMm.toFloat() // eg: Camera is 4 Inches in front of robot-center
