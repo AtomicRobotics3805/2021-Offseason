@@ -17,9 +17,9 @@ object Wobble : Subsystem {
     @JvmField
     var WOBBLE_CLAW_NAME = "Hand"
     @JvmField
-    var CLAW_OPEN_POSITION = 0.7
+    var CLAW_OPEN_POSITION = 0.3
     @JvmField
-    var CLAW_CLOSED_POSITION = 0.3
+    var CLAW_CLOSED_POSITION = 0.7
     @JvmField
     var PICK_UP_ENCODER_POSITION = -1000
     @JvmField
