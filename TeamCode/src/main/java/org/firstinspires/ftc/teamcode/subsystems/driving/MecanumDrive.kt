@@ -428,12 +428,12 @@ object MecanumDrive : MecanumDrive(Constants.kA, Constants.kStatic, Constants.kV
         var VUFORIA_KEY = " AZ2jk6P/////AAABmck8NCyjWkCGvLdpx9HZ1kxI2vQPDlzN9vJnqy69nXRjvoXgBCEWZasRnd1hFjBpRiSXw4G4JwDFsk3kNSVko2UkuCgbi/RsiODF76MtldIi6YZGfrRMZTICMKwTanuOysh4Cn9Xd9nZzCpDiLAPLsUtKoj/DdBUn0gJuARMglUPW7/qirgtk0xI232ttZpXhgh9ya8R8LxnH+UTCCFtEaQft2ru0Tv+30Un82gG1uEzcrMc/8F3lefedcOTrelPQx8xUD8cME9dj99b5oZWfM60b36/xdswhYF7pygskPtXCS28j81xWKHGNhr5s8xL91cbKOovDzdJYdfVIILZnL1sjdbtN8zW4mULOYHwO4ur"
 
         @JvmField
-        var CAMERA_FORWARD_DISPLACEMENT = 4.0.inchesToMm.toFloat() // eg: Camera is 4 Inches in front of robot-center
+        var CAMERA_FORWARD_DISPLACEMENT = 8.5.inchesToMm.toFloat()
 
         @JvmField
-        var CAMERA_VERTICAL_DISPLACEMENT = 8.0.inchesToMm.toFloat() // eg: Camera is 8 Inches above ground
+        var CAMERA_VERTICAL_DISPLACEMENT = 9.9.inchesToMm.toFloat()
 
         @JvmField
-        var CAMERA_LEFT_DISPLACEMENT = 0f // eg: Camera is ON the robot's center line
+        var CAMERA_LEFT_DISPLACEMENT = -5.0.inchesToMm.toFloat()
     }
 }
