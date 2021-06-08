@@ -6,9 +6,9 @@ import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.Constants
 import org.firstinspires.ftc.teamcode.util.commands.AtomicCommand
 import org.firstinspires.ftc.teamcode.util.commands.CustomCommand
-import org.firstinspires.ftc.teamcode.util.commands.subsystems.Subsystem
 import org.firstinspires.ftc.teamcode.util.commands.delays.Delay
 import org.firstinspires.ftc.teamcode.util.commands.sequential
+import org.firstinspires.ftc.teamcode.util.commands.subsystems.Subsystem
 
 @Suppress("Unused", "MemberVisibilityCanBePrivate")
 object Shooter : Subsystem {
