@@ -15,13 +15,6 @@ plugins {
 
 apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
-apply plugin: 'kotlin-android'
-
-android {
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-}
 
 dependencies {
     implementation project(':FtcRobotController')
